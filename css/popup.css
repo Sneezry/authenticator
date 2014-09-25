@@ -1,0 +1,383 @@
+@font-face {
+	font-family: 'iconfont';
+	src: url('iconfont.woff') format('woff');
+}
+
+@-webkit-keyframes twinkling{
+	0%{
+		opacity:1;
+	}
+	100%{
+		opacity:0.5;
+	}
+}
+
+@-webkit-keyframes fadein{
+	0%{
+		opacity:0;
+		top:110px;
+	}
+	100%{
+		opacity:1;
+		top:10px;
+	}
+}
+
+@-webkit-keyframes fadeout{
+	0%{
+		opacity:1;
+		top:10px;
+	}
+	100%{
+		opacity:0;
+		top:110px;
+	}
+}
+
+@-webkit-keyframes qrfadein{
+	0%{
+		opacity:0;
+	}
+	100%{
+		opacity:1;
+	}
+}
+
+@-webkit-keyframes qrfadeout{
+	0%{
+		opacity:1;
+	}
+	100%{
+		opacity:0;
+	}
+}
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	width: 320px;
+	height: 480px;
+	overflow: hidden;
+	font-family: arial, 'Microsoft YaHei';
+	cursor: default;
+	-webkit-user-select: none;
+}
+
+#header {
+	height: 40px;
+	line-height: 40px;
+	position: relative;
+	text-align: center;
+	font-size: 16px;
+	border-bottom: #CCC 1px solid;
+	box-sizing: border-box;
+}
+
+#codes {
+	height: 440px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	background: #EEE;
+}
+
+.codeBox {
+	margin: 10px;
+	padding: 10px;
+	border: #CCC 1px solid;
+	background: white;
+	border-radius: 2px;
+	position: relative;
+}
+
+.codeBox[dropOver="true"] {
+	border: gray 1px dashed;
+}
+
+.issuer {
+	font-size: 12px;
+	color: black;
+	width: 80%;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+.code {
+	font-size: 36px;
+	color: #08C;
+	width: 80%;
+	-webkit-user-select: text;
+}
+
+#codes.edit .code {
+	color: gray;
+	-webkit-user-select: none;
+}
+
+#codes.edit .account, #codes.edit .issuer {
+	display: none;
+}
+
+.accountEdit, .issuerEdit {
+	display: none;
+}
+
+.accountEdit input, .issuerEdit input {
+	border: none;
+	height: 15px;
+	width: 70%;
+	font-size: 12px;
+	outline: none;
+	background: #eee;
+}
+
+#codes.edit .accountEdit, #codes.edit .issuerEdit {
+	display: block;
+}
+
+#codes.timeout .code {
+	color: #DD4B39;
+	-webkit-animation: twinkling 1s infinite ease-in-out;
+}
+
+.movehandle {
+	height: 70px;
+	line-height: 70px;
+	right: 10px;
+	top: 0;
+	position: absolute;
+	font-family: 'iconfont';
+	font-size: 24px;
+	color: #CCC;
+	cursor: move;
+	display: none;
+}
+
+#codes.edit .movehandle {
+	display: block;
+}
+
+.showqr {
+	right: 10px;
+	top: 10px;
+	position: absolute;
+	font-family: 'iconfont';
+	font-size: 20px;
+	color: #CCC;
+}
+
+.showqr:hover {
+	color: gray;
+}
+
+#codes.edit .showqr {
+	display: none;
+}
+
+.account {
+	font-size: 12px;
+	color: gray;
+	width: 80%;
+	text-overflow: ellipsis;
+	overflow: hidden;
+}
+
+#codes #add, #add_qr, #add_secret, #add_button, #message_close {
+	margin: 10px;
+	padding: 20px;
+	border: #CCC 1px solid;
+	background: white;
+	border-radius: 2px;
+	position: relative;
+	text-align: center;
+	font-size: 16px;
+	color: gray;
+}
+
+#message_close {
+	font-size: 12px;
+	margin: 20px 100px;
+	padding: 10px;
+}
+
+#codes #add {
+	font-size: 36px;
+	display: none;
+}
+
+#codes.edit #add {
+	display: block;
+}
+
+#codes #add:hover {
+	color: black;
+}
+
+#codes .deleteAction {
+	font-family: 'iconfont';
+	font-size: 20px;
+	color: #DD4B39;
+	position: absolute;
+	top: -10px;
+	left: -10px;
+	z-index: 10;
+	display: none;
+}
+
+#codes.edit .deleteAction {
+	display: block;
+}
+
+#infoActione {
+	position: absolute;
+	left: 20px;
+	bottom: 0;
+	height: 40px;
+	line-height: 40px;
+	font-size: 16px;
+	font-family: 'iconfont';
+	color: gray;
+}
+
+#infoActione:hover {
+	color: black;
+}
+
+#editActione {
+	position: absolute;
+	right: 20px;
+	bottom: 0;
+	height: 40px;
+	line-height: 40px;
+	font-size: 16px;
+	font-family: 'iconfont';
+	color: gray;
+}
+
+#editActione:hover {
+	color: black;
+}
+
+.sector {
+	width: 20px;
+	height: 20px;
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+}
+
+#codes.edit .sector {
+	display: none;
+}
+
+#info, #addAccount {
+	position: absolute;
+	height: 460px;
+	width: 300px;
+	padding: 10px;
+	box-sizing: border-box;
+	border: gray;
+	background: white;
+	left: 10px;
+	top: -1000px;
+	box-shadow: 1px 1px 3px gray;
+	z-index: 100;
+}
+
+#info.fadein, #addAccount.fadein {
+	top: 10px;
+	-webkit-animation: fadein 0.2s 1 ease-out;
+}
+
+#info.fadeout, #addAccount.fadeout {
+	top: 110px;
+	-webkit-animation: fadeout 0.2s 1 ease-in;
+}
+
+#infoClose, #addAccountClose {
+	height: 20px;
+	width: 20px;
+	font-size: 14px;
+	font-family: 'iconfont';
+	color: gray;
+}
+
+#infoClose:hover, #addAccountClose:hover {
+	color: black;
+}
+
+#infoContent, #addAccountContent {
+	height: 420px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+#infoContent p {
+	font-size: 12px;
+	margin-bottom: 20px;
+}
+
+#infoContent a {
+	color: #4183c4;
+}
+
+#qr {
+	width: 100%;
+	height: 100%;
+	top: -1000px;
+	left: 0;
+	position: absolute;
+	z-index: 10;
+	background-color: rgba(0, 0, 0, 0.5);
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#qr canvas {
+	display: none;
+}
+
+#qr.qrfadein {
+	top: 0;
+	-webkit-animation: qrfadein 0.2s 1 ease-out;
+}
+
+#qr.qrfadeout {
+	top: 0;
+	-webkit-animation: qrfadeout 0.2s 1 ease-in;
+}
+
+#secret_box {
+	display: none;
+}
+
+#secret_box input {
+	display: block;
+	margin: 0 10px 10px 10px;
+	padding: 10px;
+	width: 260px;
+	border: #CCC 1px solid;
+	background: white;
+	outline: none;
+}
+
+#secret_box label {
+	display: block;
+	margin: 10px 0 0 10px;
+}
+
+#message {
+	position: absolute;
+	width: 300px;
+	padding: 10px;
+	box-sizing: border-box;
+	border: gray;
+	background: white;
+	left: 10px;
+	top: 150px;
+	box-shadow: 1px 1px 3px gray;
+	display: none;
+	z-index: 1000;
+}

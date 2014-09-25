@@ -1,0 +1,42 @@
+<html>
+<head>
+<script src="assist/jquery.min.js"></script>
+<script src="totp/jssha-1.31.min.js"></script>
+<script src="totp/totp.js"></script>
+<script src="qrcode.js/qrcode.js"></script>
+<link href="css/popup.css" type="text/css" rel="stylesheet" charset="utf-8" />
+</head>
+<body>
+<div id="header"><span id="extName">Google Authenticator</span><div id="infoActione">&#xf0142;</div><div id="editActione" edit='false'>&#xf014f;</div></div>
+<div id="codes">
+<div id="codeList"></div>
+<div id="add">+</div>
+</div>
+<div id="info">
+<div id="infoClose">&#xf0155;</div>
+<div id="infoContent"></div>
+</div>
+<div id="addAccount">
+<div id="addAccountClose">&#xf0155;</div>
+<div id="addAccountContent">
+<div id="add_qr"></div>
+<div id="add_secret"></div>
+<div id="secret_box">
+<label for="account_input" id="account_label"></label>
+<input type="text" id="account_input" />
+<label for="secret_input" id="secret_label"></label>
+<input type="text" id="secret_input" />
+<div id="add_button"></div>
+</div>
+</div>
+</div>
+<div id="message">
+<div id="message_content"></div>
+<div id="message_close"></div>
+</div>
+<div id="qr"></div>
+<canvas id="sector" width="20" height="20" style="display:none"></canvas>
+<script src="javascript/sector.js"></script>
+<script src="javascript/popup.js"></script>
+</body>
+</html>
