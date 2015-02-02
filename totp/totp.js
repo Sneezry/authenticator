@@ -44,9 +44,12 @@ var KeyUtilities = function() {
 		else if(/^[0-9a-f]+$/.test(secret.toLowerCase())) {
 			var key = secret;
 		}
-		else if(/^bliz\-/.test(secret.toLowerCase()) ||
-			/^blz\-/.test(secret.toLowerCase())) {
+		else if(/^bliz\-/.test(secret.toLowerCase())) {
 			var key = base32tohex(secret.substr(5));
+			len = 8;
+		}
+		else if(/^blz\-/.test(secret.toLowerCase())) {
+			var key = base32tohex(secret.substr(4));
 			len = 8;
 		}
 		var epoch = Math.round(new Date().getTime() / 1000.0);
