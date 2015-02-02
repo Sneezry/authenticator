@@ -44,7 +44,8 @@ var KeyUtilities = function() {
 		else if(/^[0-9a-f]+$/.test(secret.toLowerCase())) {
 			var key = secret;
 		}
-		else if(/^bliz\-/.test(secret.toLowerCase())){
+		else if(/^bliz\-/.test(secret.toLowerCase()) ||
+			/^blz\-/.test(secret.toLowerCase())) {
 			var key = base32tohex(secret.substr(5));
 			len = 8;
 		}
