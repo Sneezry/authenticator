@@ -67,19 +67,24 @@ function getTotp(text){
 			if(!secret){
 				chrome.tabs.sendMessage(id, {action: 'errorqr'});
 			}
-			chrome.storage.sync.get(function(result){
-				var index = Object.keys(result).length;
-				var addSecret = {};
-				addSecret[secret] = {
-					account: account,
-					issuer: issuer,
-					secret: secret,
-					index: index
-				}
-				chrome.storage.sync.set(addSecret, function(){
-					chrome.tabs.sendMessage(id, {action: 'added', account: account});
+			else if(!/^[0-9a-f]+$/.test(secret.toLowerCase()) && !/^[2-7a-z]+=*$/.test(secret.toLowerCase())){
+				chrome.tabs.sendMessage(id, {action: 'secretqr', secret: secret});
+			}
+			else{
+				chrome.storage.sync.get(function(result){
+					var index = Object.keys(result).length;
+					var addSecret = {};
+					addSecret[secret] = {
+						account: account,
+						issuer: issuer,
+						secret: secret,
+						index: index
+					}
+					chrome.storage.sync.set(addSecret, function(){
+						chrome.tabs.sendMessage(id, {action: 'added', account: account});
+					});
 				});
-			});
+			}
 		}
 	}
 }

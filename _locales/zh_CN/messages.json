@@ -8,7 +8,7 @@
 		"description": "Extension Short Name."
 	},
 	"extDesc": {
-		"message": "用于Google™身份验证器。点击编辑按钮后点击添加按钮，拖拽鼠标选择QR码区域添加新账号。",
+		"message": "适用于Google™身份验证器。点击编辑按钮后点击添加按钮，拖拽鼠标选择QR码区域添加新账号。",
 		"description": "Extension Name."
 	},
 	"added": {
@@ -18,6 +18,10 @@
 	"errorqr": {
 		"message": "无法识别的QR码。",
 		"description": "QR Error."
+	},
+	"errorsecret": {
+		"message": "秘钥错误，仅支持Base32(A-Z, 2-7 and =)和HEX(0-9 and A-F)格式，然而您的秘钥是：",
+		"description": "Secret Error."
 	},
 	"info": {
 		"message": "<p><strong>Authenticator</strong> for Google&trade; Authenticator,<br/>&copy; 2014 <a target='_blank' href='http://sneezry.com'>Sneezry</a>.</p><p>Google&trade;是Google的商标，Google Authenticator是Google的商品名，以上所有权归Google公司所有。</p><p><a target='_blank' href='https://github.com/LazarSoft/jsqrcode'>jsqrcode</a>的所有权归jsqrcode的作者所有。以Apache协议授权。</p><p><a target='_blank' href='https://github.com/zxing/zxing'>ZXing</a>的所有权归ZXing的作者所有。以Apache协议授权。</p><p><a target='_blank' href='http://blog.tinisles.com/2011/10/google-authenticator-one-time-password-algorithm-in-javascript/'>totp.js</a>的所有权归其作者所有。</p><p><a target='_blank' href='http://caligatio.github.com/jsSHA/'>jsSHA</a>的所有权归jsSHA的作者所有。以BSD协议授权。</p><p><a target='_blank' href='http://davidshimjs.github.io/qrcodejs/'>qrcode.js</a>的所有权归qrcode.js作者所有。以MIT协议授权。</p>",
@@ -50,5 +54,17 @@
 	"secret": {
 		"message": "密钥",
 		"description": "Secret."
+	},
+	"exportWarning": {
+		"message": "警告！如果你不知道正在做什么可能会丢失你的数据！",
+		"description": "Export Warning."
+	},
+	"updateSuccess": {
+		"message": "成功。",
+		"description": "Update Success."
+	},
+	"updateFailure": {
+		"message": "失败。",
+		"description": "Update Failure."
 	}
 }

@@ -184,7 +184,7 @@ body {
 	overflow: hidden;
 }
 
-#codes #add, #add_qr, #add_secret, #add_button, #message_close {
+#codes #add, #add_qr, #add_secret, #add_button, #message_close, #exportButton {
 	margin: 10px;
 	padding: 20px;
 	border: #CCC 1px solid;
@@ -196,7 +196,7 @@ body {
 	color: gray;
 }
 
-#message_close {
+#message_close, #exportButton {
 	font-size: 12px;
 	margin: 20px 100px;
 	padding: 10px;
@@ -209,10 +209,6 @@ body {
 
 #codes.edit #add {
 	display: block;
-}
-
-#codes #add:hover {
-	color: black;
 }
 
 #codes .deleteAction {
@@ -241,10 +237,6 @@ body {
 	color: gray;
 }
 
-#infoActione:hover {
-	color: black;
-}
-
 #editActione {
 	position: absolute;
 	right: 20px;
@@ -254,10 +246,6 @@ body {
 	font-size: 16px;
 	font-family: 'iconfont';
 	color: gray;
-}
-
-#editActione:hover {
-	color: black;
 }
 
 .sector {
@@ -272,7 +260,7 @@ body {
 	display: none;
 }
 
-#info, #addAccount {
+#info, #addAccount, #export {
 	position: absolute;
 	height: 460px;
 	width: 300px;
@@ -286,17 +274,17 @@ body {
 	z-index: 100;
 }
 
-#info.fadein, #addAccount.fadein {
+#info.fadein, #addAccount.fadein, #export.fadein {
 	top: 10px;
 	-webkit-animation: fadein 0.2s 1 ease-out;
 }
 
-#info.fadeout, #addAccount.fadeout {
+#info.fadeout, #addAccount.fadeout, #export.fadeout {
 	top: 110px;
 	-webkit-animation: fadeout 0.2s 1 ease-in;
 }
 
-#infoClose, #addAccountClose {
+#infoClose, #addAccountClose, #exportClose {
 	height: 20px;
 	width: 20px;
 	font-size: 14px;
@@ -304,14 +292,32 @@ body {
 	color: gray;
 }
 
-#infoClose:hover, #addAccountClose:hover {
+#exportButton:hover,
+#message_close:hover,
+#add_button:hover,
+#add_secret:hover,
+#add_qr:hover,
+#editActione:hover,
+#infoActione:hover,
+#codes #add:hover,
+#infoClose:hover,
+#addAccountClose:hover,
+#export:hover {
 	color: black;
 }
 
-#infoContent, #addAccountContent {
+#infoContent, #addAccountContent, #exportContent {
 	height: 420px;
 	overflow-y: auto;
 	overflow-x: hidden;
+}
+
+#exportData {
+	height: 340px;
+	width: 100%;
+	word-break: break-all;
+	resize: none;
+	outline: none;
 }
 
 #infoContent p {

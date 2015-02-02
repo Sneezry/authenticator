@@ -36,7 +36,18 @@ var KeyUtilities = function() {
 	};
 
 	var generate = function(secret) {
-		var key = base32tohex(secret);
+		secret = secret.replace(/\s/g, '');
+		var len = 6;
+		if(/^[a-z2-7]+=*$/.test(secret.toLowerCase())) {
+			var key = base32tohex(secret);
+		}
+		else if(/^[0-9a-f]+$/.test(secret.toLowerCase())) {
+			var key = secret;
+		}
+		else if(/^bliz\-/.test(secret.toLowerCase())){
+			var key = base32tohex(secret.substr(5));
+			len = 8;
+		}
 		var epoch = Math.round(new Date().getTime() / 1000.0);
 		var time = leftpad(dec2hex(Math.floor(epoch / 30)), 16, '0');
 
@@ -50,7 +61,7 @@ var KeyUtilities = function() {
 		}
 
 		var otp = (hex2dec(hmac.substr(offset * 2, 8)) & hex2dec('7fffffff')) + '';
-		return (otp).substr(otp.length - 6, 6).toString();
+		return (otp).substr(otp.length - len, len).toString();
 	};
 
 	// exposed functions

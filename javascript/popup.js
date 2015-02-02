@@ -61,6 +61,26 @@ document.getElementById('add_secret').onclick = function(){
 	document.getElementById('secret_box').style.display = 'block';
 }
 
+document.getElementById('exportClose').onclick = function(){
+	document.getElementById('export').className = 'fadeout';
+	setTimeout(function(){
+		document.getElementById('export').className = '';
+		document.getElementById('export').style.opacity = 0;
+	}, 200);
+}
+
+document.getElementById('exportButton').onclick = function(){
+	var data = document.getElementById('exportData').value;
+	try{
+		data = JSON.parse(data);
+		chrome.storage.sync.set(data);
+		showMessage(chrome.i18n.getMessage('updateSuccess'));
+	}
+	catch(e){
+		showMessage(chrome.i18n.getMessage('updateFailure'));
+	}
+}
+
 document.getElementById('editActione').onclick = editCodes;
 
 document.getElementById('qr').onclick = function(){
@@ -267,13 +287,13 @@ function getSector(){
 	second = second%30;
 	var canvas = document.getElementById('sector');
 	var ctx = canvas.getContext('2d');
-	ctx.clearRect(0,0,20,20);
+	ctx.clearRect(0,0,40,40);
 	ctx.fillStyle = '#888';
-	sector(ctx, 10, 10, Math.PI/180*second/30*360, Math.PI/180*(1-second/30)*360, 8, 0, true);
+	sector(ctx, 20, 20, Math.PI/180*second/30*360, Math.PI/180*(1-second/30)*360, 16, 0, true);
 	var url = canvas.toDataURL();
 	var sectors = document.getElementsByClassName('sector');
 	for(var i=0; i<sectors.length; i++){
-		sectors[i].style.background = 'url('+url+') center';
+		sectors[i].style.background = 'url('+url+') center / 20px 20px';
 	}
 }
 
@@ -296,6 +316,14 @@ function showCodes(result){
 			});
 		}
 		for(var i=0; i<_secret.length; i++){
+			try{
+				_secret[i].issuer = decodeURIComponent(_secret[i].issuer);
+			}
+			catch(e){}
+			try{
+				_secret[i].account = decodeURIComponent(_secret[i].account);
+			}
+			catch(e){}
 			var el = document.createElement('div');
 			el.id = 'codeBox-'+i;
 			el.className = 'codeBox';
@@ -389,3 +417,32 @@ function showQr(){
 		}, 200);
 	});
 }
+
+function showExport(){
+	document.getElementById('export').className = 'fadein';
+	setTimeout(function(){
+		document.getElementById('export').style.opacity = 1;
+		showMessage(chrome.i18n.getMessage('exportWarning'));
+		chrome.storage.sync.get(function(data){
+			document.getElementById('exportData').value = JSON.stringify(data);
+		});
+	}, 200);
+}
+
+(function(){
+	var extName = document.getElementById('extName');
+	var count = 0;
+	var timer;
+	extName.onclick = function(){
+		clearTimeout(timer);
+		timer = setTimeout(function(){
+			count = 0;
+		}, 1000);
+
+		count++;
+		if(count==5){
+			count = 0;
+			showExport();
+		}
+	}
+})();

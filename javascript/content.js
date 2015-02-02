@@ -100,6 +100,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 	if(message.action == 'capture'){
 		showGrayLayout();
 	}
+	else if(message.action == 'errorsecret'){
+		alert(chrome.i18n.getMessage('errorsecret')+message.secret);
+	}
 	else if(message.action == 'errorqr'){
 		alert(chrome.i18n.getMessage('errorqr'));
 	}
