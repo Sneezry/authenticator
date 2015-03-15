@@ -20,6 +20,8 @@
     },
     "background": {
         "scripts": [
+            "assist/aes.js",
+            "assist/md5.js",
             "jsqrcode/grid.js",
             "jsqrcode/version.js",
             "jsqrcode/detector.js",

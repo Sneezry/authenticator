@@ -74,11 +74,22 @@ function getTotp(text){
 				chrome.storage.sync.get(function(result){
 					var index = Object.keys(result).length;
 					var addSecret = {};
-					addSecret[secret] = {
-						account: account,
-						issuer: issuer,
-						secret: secret,
-						index: index
+					if(localStorage.phrase){
+						addSecret[CryptoJS.MD5(secret)] = {
+							account: account||'',
+							issuer: issuer||'',
+							secret: CryptoJS.AES.encrypt(secret, localStorage.phrase).toString(),
+							index: index,
+							encrypted: true
+						}
+					}
+					else{
+						addSecret[CryptoJS.MD5(secret)] = {
+							account: account||'',
+							issuer: issuer||'',
+							secret: secret,
+							index: index
+						}
 					}
 					chrome.storage.sync.set(addSecret, function(){
 						chrome.tabs.sendMessage(id, {action: 'added', account: account});
