@@ -416,10 +416,17 @@ function showCodes(result){
 			_secret = [];
 			for(var i in result){
 				if(result[i].encrypted){
-					result[i].secret = 
-						localStorage.phrase?
-							CryptoJS.AES.decrypt(result[i].secret, localStorage.phrase).toString(CryptoJS.enc.Utf8):
-							'';
+					if(localStorage.phrase){
+						try{
+							result[i].secret = CryptoJS.AES.decrypt(result[i].secret, localStorage.phrase).toString(CryptoJS.enc.Utf8);
+						}
+						catch(e){
+							result[i].secret = '';
+						}
+					}
+					else{
+						result[i].secret = '';
+					}
 				}
 				result[i].hash = i;
 				_secret.push(result[i]);
@@ -565,12 +572,22 @@ function encryptSecret(phrase, success, fail){
 	chrome.storage.sync.get(function(result){
 		for(var i in result){
 			if(result[i].encrypted){
-				decryptedSecret = CryptoJS.AES.decrypt(result[i].secret, old_phrase).toString(CryptoJS.enc.Utf8);
+				try{
+					decryptedSecret = CryptoJS.AES.decrypt(result[i].secret, old_phrase).toString(CryptoJS.enc.Utf8);
+				}
+				catch(e){
+					decryptedSecret = '';
+				}
 				if(decryptedSecret){
 					result[i].secret = decryptedSecret;
 				}
 				else{
-					decryptedSecret2 = CryptoJS.AES.decrypt(result[i].secret, phrase).toString(CryptoJS.enc.Utf8);
+					try{
+						decryptedSecret2 = CryptoJS.AES.decrypt(result[i].secret, phrase).toString(CryptoJS.enc.Utf8);
+					}
+					catch(e){
+						decryptedSecret2 = '';
+					}
 					if(decryptedSecret2){
 						result[i].secret = decryptedSecret2;
 					}
