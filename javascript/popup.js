@@ -10,17 +10,82 @@ document.getElementById('extName').innerText = chrome.i18n.getMessage('extShortN
 document.getElementById('add_qr').innerText = chrome.i18n.getMessage('add_qr');
 document.getElementById('add_secret').innerText = chrome.i18n.getMessage('add_secret');
 document.getElementById('add_button').innerText = chrome.i18n.getMessage('ok');
-document.getElementById('message_close').innerText = chrome.i18n.getMessage('close');
+document.getElementById('message_close').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('account_label').innerText = chrome.i18n.getMessage('account');
 document.getElementById('secret_label').innerText = chrome.i18n.getMessage('secret');
+document.getElementById('menuName').innerText = chrome.i18n.getMessage('settings');
+document.getElementById('menuAbout').innerText = chrome.i18n.getMessage('about');
+document.getElementById('menuExImport').innerText = chrome.i18n.getMessage('export_import');
+document.getElementById('menuSecurity').innerText = chrome.i18n.getMessage('security');
+document.getElementById('security_new_phrase_label').innerText = chrome.i18n.getMessage('new_phrase');
+document.getElementById('security_confirm_phrase_label').innerText = chrome.i18n.getMessage('confirm_phrase');
+document.getElementById('security_warning').innerText = chrome.i18n.getMessage('security_warning');
+document.getElementById('security_save').innerText = chrome.i18n.getMessage('security_warning');
+document.getElementById('exportButton').innerText = chrome.i18n.getMessage('update');
+document.getElementById('security_save').innerText = chrome.i18n.getMessage('update');
 
 chrome.storage.sync.get(showCodes);
 
-document.getElementById('infoActione').onclick = function(){
+document.getElementById('menuExImport').onclick = showExport;
+
+document.getElementById('menuAbout').onclick = function(){
 	document.getElementById('info').className = 'fadein';
 	setTimeout(function(){
 		document.getElementById('info').style.opacity = 1;
 		document.getElementById('infoContent').innerHTML = chrome.i18n.getMessage('info');
+	}, 200);
+}
+
+document.getElementById('menuSecurity').onclick = function(){
+	document.getElementById('security').className = 'fadein';
+	setTimeout(function(){
+		document.getElementById('security').style.opacity = 1;
+	}, 200);
+}
+
+document.getElementById('security_save').onclick = function(){
+	var phrase = document.getElementById('security_new_phrase').value;
+	var phrase2 = document.getElementById('security_confirm_phrase').value;
+	if(phrase === phrase2){
+		document.getElementById('security_new_phrase').value = '';
+		document.getElementById('security_confirm_phrase').value = '';
+		encryptSecret(phrase, function(){
+			showMessage(chrome.i18n.getMessage('updateSuccess'), function(){
+				document.getElementById('security').className = 'fadeout';
+				setTimeout(function(){
+					document.getElementById('security').className = '';
+					document.getElementById('security').style.opacity = 0;
+				}, 200);
+			});
+		}, function(){
+			showMessage(chrome.i18n.getMessage('phrase_incorrect'));
+		});
+	}
+	else{
+		showMessage(chrome.i18n.getMessage('phrase_not_match'));
+	}
+}
+
+document.getElementById('securityClose').onclick = function(){
+	document.getElementById('security').className = 'fadeout';
+	setTimeout(function(){
+		document.getElementById('security').className = '';
+		document.getElementById('security').style.opacity = 0;
+	}, 200);
+}
+
+document.getElementById('infoActione').onclick = function(){
+	document.getElementById('menu').className = 'slidein';
+	setTimeout(function(){
+		document.getElementById('menu').style.opacity = 1;
+	}, 200);
+}
+
+document.getElementById('menuClose').onclick = function(){
+	document.getElementById('menu').className = 'slideout';
+	setTimeout(function(){
+		document.getElementById('menu').className = '';
+		document.getElementById('menu').style.opacity = 0;
 	}, 200);
 }
 
@@ -73,8 +138,20 @@ document.getElementById('exportButton').onclick = function(){
 	var data = document.getElementById('exportData').value;
 	try{
 		data = JSON.parse(data);
-		chrome.storage.sync.set(data);
-		showMessage(chrome.i18n.getMessage('updateSuccess'));
+		chrome.storage.sync.set(data, function(){
+			if(localStorage.phrase){
+				encryptSecret(localStorage.phrase);
+			}
+			chrome.storage.sync.get(showCodes);
+		});
+		showMessage(chrome.i18n.getMessage('updateSuccess'), function(){
+			document.getElementById('export').className = 'fadeout';
+			setTimeout(function(){
+				document.getElementById('export').className = '';
+				document.getElementById('export').style.opacity = 0;
+				document.getElementById('exportData').value = '';
+			}, 200);
+		});
 	}
 	catch(e){
 		showMessage(chrome.i18n.getMessage('updateFailure'));
@@ -97,9 +174,15 @@ document.getElementById('message_close').onclick = function(){
 
 document.getElementById('add_button').onclick = saveSecret;
 
-function showMessage(msg){
+function showMessage(msg, closeAction){
 	document.getElementById('message_content').innerText = msg;
 	document.getElementById('message').style.display = 'block';
+	document.getElementById('message_close').onclick = function(){
+		document.getElementById('message').style.display = 'none';
+		if(closeAction){
+			closeAction();
+		}
+	}
 }
 
 function saveSecret(){
@@ -112,11 +195,22 @@ function saveSecret(){
 	chrome.storage.sync.get(function(result){
 		var index = Object.keys(result).length;
 		var addSecret = {};
-		addSecret[secret] = {
-			account: account,
-			issuer: '',
-			secret: secret,
-			index: index
+		if(localStorage.phrase){
+			addSecret[CryptoJS.MD5(secret)] = {
+				account: account,
+				issuer: '',
+				secret: CryptoJS.AES.encrypt(secret, localStorage.phrase).toString(),
+				index: index,
+				encrypted: true
+			}
+		}
+		else{
+			addSecret[CryptoJS.MD5(secret)] = {
+				account: account,
+				issuer: '',
+				secret: secret,
+				index: index
+			}
 		}
 		chrome.storage.sync.set(addSecret);
 		document.getElementById('addAccount').className = '';
@@ -182,6 +276,7 @@ function overBox(e){
 function editCodes(){
 	var codes = document.getElementById('codes');
 	if(this.getAttribute('edit') == 'false'){
+		document.getElementById('infoActione').className = 'hidden';
 		clearInterval(updateInterval);
 		codes.className = 'edit';
 		this.innerHTML = '&#xf00b2;';
@@ -201,6 +296,7 @@ function editCodes(){
 		codes.scrollTop = codes.scrollHeight;
 	}
 	else{
+		document.getElementById('infoActione').className = '';
 		codes.className = '';
 		this.innerHTML = '&#xf014f;';
 		this.setAttribute('edit', 'false');
@@ -217,10 +313,13 @@ function editCodes(){
 			chrome.storage.sync.get(function(secret){
 				var changeSecret = {};
 				for(var i=0; i<_secret.length; i++){
-					if(secret[_secret[i].secret].index != _secret[i].index ||
+					if(secret[_secret[i].secret] && (secret[_secret[i].secret].index != _secret[i].index ||
 								secret[_secret[i].secret].account != _secret[i].account ||
-								secret[_secret[i].secret].issuer != _secret[i].issuer){
-						changeSecret[_secret[i].secret] = _secret[i];
+								secret[_secret[i].secret].issuer != _secret[i].issuer) ||
+						secret[CryptoJS.MD5(_secret[i].secret)] && (secret[CryptoJS.MD5(_secret[i].secret)].index != _secret[i].index ||
+								secret[CryptoJS.MD5(_secret[i].secret)].account != _secret[i].account ||
+								secret[CryptoJS.MD5(_secret[i].secret)].issuer != _secret[i].issuer)){
+						changeSecret[CryptoJS.MD5(_secret[i].secret)] = _secret[i];
 					}
 				}
 				if(changeSecret){
@@ -263,7 +362,12 @@ function deleteCode(){
 
 function updateCode(){
 	for(var i=0; i<_secret.length; i++){
-		document.getElementById('code-'+i).innerText = getCode(_secret[i].secret);
+		if(!_secret[i].secret){
+			document.getElementById('code-'+i).innerText = chrome.i18n.getMessage('encrypted');
+		}
+		else{
+			document.getElementById('code-'+i).innerText = getCode(_secret[i].secret);
+		}
 	}
 }
 
@@ -306,9 +410,17 @@ function showCodes(result){
 		return false;
 	}
 	else{
+		result = changeDataSub2Md5(result);
 		if(result){
 			_secret = [];
 			for(var i in result){
+				if(result[i].encrypted){
+					result[i].secret = 
+						localStorage.phrase?
+							CryptoJS.AES.decrypt(result[i].secret, localStorage.phrase).toString(CryptoJS.enc.Utf8):
+							'';
+				}
+				result[i].hash = i;
 				_secret.push(result[i]);
 			}
 			_secret.sort(function(a, b){
@@ -327,7 +439,7 @@ function showCodes(result){
 			var el = document.createElement('div');
 			el.id = 'codeBox-'+i;
 			el.className = 'codeBox';
-			el.innerHTML = '<div class="deleteAction" codeId="'+i+'" key="'+_secret[i].secret+'">&#xf00b4;</div>'+
+			el.innerHTML = '<div class="deleteAction" codeId="'+i+'" key="'+_secret[i].hash+'">&#xf00b4;</div>'+
 							'<div class="sector"></div>'+
 							(_secret[i].issuer?('<div class="issuer">'+_secret[i].issuer+'</div>'):'')+
 							'<div class="issuerEdit"><input class="issuerEditBox" type="text" codeId="'+i+'" value="'+(_secret[i].issuer?_secret[i].issuer:'')+'" /></div>'+
@@ -396,6 +508,22 @@ function changeDataForm(result){
 	return newResult;
 }
 
+function changeDataSub2Md5(result){
+	var modified = false;
+	for(i in result){
+		if(i == result[i].secret){
+			modified = true;
+			result[CryptoJS.MD5(i)] = result[i];
+			delete result[i];
+			chrome.storage.sync.remove(i);
+		}
+	}
+	if(modified){
+		chrome.storage.sync.set(result);
+	}
+	return result;
+}
+
 function showQr(){
 	var codeId = this.id.substr(7);
 	codeId = Number(codeId);
@@ -422,11 +550,52 @@ function showExport(){
 	document.getElementById('export').className = 'fadein';
 	setTimeout(function(){
 		document.getElementById('export').style.opacity = 1;
-		showMessage(chrome.i18n.getMessage('exportWarning'));
+		//showMessage(chrome.i18n.getMessage('exportWarning'));
 		chrome.storage.sync.get(function(data){
 			document.getElementById('exportData').value = JSON.stringify(data);
 		});
 	}, 200);
+}
+
+function encryptSecret(phrase, success, fail){
+	var old_phrase = localStorage.phrase;
+	var errorPhrase = false;
+	chrome.storage.sync.get(function(result){
+		for(var i in result){
+			if(result[i].encrypted){
+				decryptedSecret = CryptoJS.AES.decrypt(result[i].secret, old_phrase).toString(CryptoJS.enc.Utf8);
+				if(decryptedSecret){
+					result[i].secret = decryptedSecret;
+				}
+				else{
+					decryptedSecret2 = CryptoJS.AES.decrypt(result[i].secret, phrase).toString(CryptoJS.enc.Utf8);
+					if(decryptedSecret2){
+						result[i].secret = decryptedSecret2;
+					}
+					else{
+						errorPhrase = true;
+						continue;
+					}
+				}	
+			}
+			if(phrase){
+				result[i].secret = CryptoJS.AES.encrypt(result[i].secret, phrase).toString();
+				result[i].encrypted = true;
+			}
+			else{
+				result[i].encrypted = false;
+			}
+		}
+		localStorage.phrase = phrase;
+		chrome.storage.sync.set(result);
+		showCodes(result);
+		if(errorPhrase && fail){
+			fail();
+		}
+		else if(success){
+			success();
+		}
+	});
 }
 
 (function(){

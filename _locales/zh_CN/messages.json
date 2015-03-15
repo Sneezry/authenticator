@@ -24,7 +24,7 @@
 		"description": "Secret Error."
 	},
 	"info": {
-		"message": "<p><strong>Authenticator</strong> for Google&trade; Authenticator,<br/>&copy; 2014 <a target='_blank' href='http://sneezry.com'>Sneezry</a>.</p><p>Google&trade;是Google的商标，Google Authenticator是Google的商品名，以上所有权归Google公司所有。</p><p><a target='_blank' href='https://github.com/LazarSoft/jsqrcode'>jsqrcode</a>的所有权归jsqrcode的作者所有。以Apache协议授权。</p><p><a target='_blank' href='https://github.com/zxing/zxing'>ZXing</a>的所有权归ZXing的作者所有。以Apache协议授权。</p><p><a target='_blank' href='http://blog.tinisles.com/2011/10/google-authenticator-one-time-password-algorithm-in-javascript/'>totp.js</a>的所有权归其作者所有。</p><p><a target='_blank' href='http://caligatio.github.com/jsSHA/'>jsSHA</a>的所有权归jsSHA的作者所有。以BSD协议授权。</p><p><a target='_blank' href='http://davidshimjs.github.io/qrcodejs/'>qrcode.js</a>的所有权归qrcode.js作者所有。以MIT协议授权。</p>",
+		"message": "<p><strong>Authenticator</strong> for Google&trade; Authenticator,<br/>&copy; 2014 <a target='_blank' href='http://sneezry.com'>Sneezry</a>.</p><p>Google&trade;是Google的商标，Google Authenticator是Google的商品名，以上所有权归Google公司所有。</p><p><a target='_blank' href='https://github.com/LazarSoft/jsqrcode'>jsqrcode</a>的所有权归jsqrcode的作者所有。以Apache协议授权。</p><p><a target='_blank' href='https://github.com/zxing/zxing'>ZXing</a>的所有权归ZXing的作者所有。以Apache协议授权。</p><p><a target='_blank' href='http://blog.tinisles.com/2011/10/google-authenticator-one-time-password-algorithm-in-javascript/'>totp.js</a>的所有权归其作者所有。</p><p><a target='_blank' href='http://caligatio.github.com/jsSHA/'>jsSHA</a>的所有权归jsSHA的作者所有。以BSD协议授权。</p><p><a target='_blank' href='http://davidshimjs.github.io/qrcodejs/'>qrcode.js</a>的所有权归qrcode.js作者所有。以MIT协议授权。</p><p>感谢 Mike Robinson &lt;3</p>",
 		"description": "Information."
 	},
 	"add_qr": {
@@ -66,5 +66,53 @@
 	"updateFailure": {
 		"message": "失败。",
 		"description": "Update Failure."
+	},
+	"about": {
+		"message": "关于",
+		"description": "About."
+	},
+	"export_import": {
+		"message": "导出 / 导入",
+		"description": "Export and Import."
+	},
+	"settings": {
+		"message": "设置",
+		"description": "Settings."
+	},
+	"security": {
+		"message": "安全",
+		"description": "Security."
+	},
+	"current_phrase": {
+		"message": "当前密钥",
+		"description": "Current Phrase."
+	},
+	"new_phrase": {
+		"message": "新秘钥",
+		"description": "New Phrase."
+	},
+	"confirm_phrase": {
+		"message": "确认密钥",
+		"description": "Confirmm Phrase."
+	},
+	"security_warning": {
+		"message": "警告！如果您忘记了密钥没有人能够帮助您。旧版本身份验证器扩展无法正确显示加密账户。",
+		"description": "Phrase Warning."
+	},
+	"update": {
+		"message": "更新",
+		"description": "Update."
+	},
+	"phrase_incorrect": {
+		"message": "部分账户与密钥不匹配。",
+		"description": "Phrase Incorrect."
+	},
+	"phrase_not_match": {
+		"message": "两次密钥不一致。",
+		"description": "Phrase Not Match."
+	},
+	"encrypted": {
+		"message": "已加密",
+		"description": "Encrypted."
 	}
 }

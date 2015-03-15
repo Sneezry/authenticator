@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "__MSG_extName__",
     "short_name": "__MSG_extShortName__",
-    "version": "3.6",
+    "version": "4.0",
     "default_locale": "en",
     "description": "__MSG_extDesc__",
     "icons": {
@@ -52,6 +52,10 @@
         "activeTab",
         "storage"
     ],
+    "optional_permissions": [
+        "clipboardWrite"
+    ],
+    "offline_enabled": true,
     "web_accessible_resources": [
         "qr.html",
         "images/scan.gif"

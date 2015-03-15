@@ -1,6 +1,8 @@
 <html>
 <head>
 <script src="assist/jquery.min.js"></script>
+<script src="assist/md5.js"></script>
+<script src="assist/aes.js"></script>
 <script src="totp/jssha-1.31.min.js"></script>
 <script src="totp/totp.js"></script>
 <script src="qrcode.js/qrcode.js"></script>
@@ -11,6 +13,19 @@
 <div id="codes">
 <div id="codeList"></div>
 <div id="add">+</div>
+</div>
+<div id="menu">
+<div id="menuHead">
+<span id="menuName"></span>
+<div id="menuClose">&#171;</div>
+</div>
+<div class="menuList">
+	<p id="menuAbout"></p>
+</div>
+<div class="menuList">
+	<p id="menuExImport"></p>
+	<p id="menuSecurity"></p>
+</div>
 </div>
 <div id="info">
 <div id="infoClose">&#xf0155;</div>
@@ -30,11 +45,20 @@
 </div>
 </div>
 </div>
+<div id="security">
+<div id="securityClose">&#xf0155;</div>
+<div id="security_warning"></div>
+<label for="security_new_phrase" id="security_new_phrase_label"></label>
+<input id="security_new_phrase" type="password" />
+<label for="security_confirm_phrase" id="security_confirm_phrase_label"></label>
+<input id="security_confirm_phrase" type="password" />
+<div id="security_save"></div>
+</div>
 <div id="export">
 <div id="exportClose">&#xf0155;</div>
 <div id="exportContent">
 <textarea id="exportData"></textarea>
-<div id="exportButton">Update</div>
+<div id="exportButton"></div>
 </div>
 </div>
 <div id="message">

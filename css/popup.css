@@ -34,6 +34,28 @@
 	}
 }
 
+@-webkit-keyframes slidein{
+	0%{
+		opacity:0;
+		left:-55px;
+	}
+	100%{
+		opacity:1;
+		left:0;
+	}
+}
+
+@-webkit-keyframes slideout{
+	0%{
+		opacity:1;
+		left:0;
+	}
+	100%{
+		opacity:0;
+		left:-55px;
+	}
+}
+
 @-webkit-keyframes qrfadein{
 	0%{
 		opacity:0;
@@ -66,7 +88,7 @@ body {
 	-webkit-user-select: none;
 }
 
-#header {
+#header, #menuHead {
 	height: 40px;
 	line-height: 40px;
 	position: relative;
@@ -165,11 +187,11 @@ body {
 	position: absolute;
 	font-family: 'iconfont';
 	font-size: 20px;
-	color: #CCC;
+	color: #FFF;
 }
 
 .showqr:hover {
-	color: gray;
+	color: #DDD;
 }
 
 #codes.edit .showqr {
@@ -184,7 +206,7 @@ body {
 	overflow: hidden;
 }
 
-#codes #add, #add_qr, #add_secret, #add_button, #message_close, #exportButton {
+#codes #add, #add_qr, #add_secret, #add_button, #security_save, #message_close, #exportButton {
 	margin: 10px;
 	padding: 20px;
 	border: #CCC 1px solid;
@@ -196,7 +218,7 @@ body {
 	color: gray;
 }
 
-#message_close, #exportButton {
+#message_close, #add_button, #exportButton, #security_save {
 	font-size: 12px;
 	margin: 20px 100px;
 	padding: 10px;
@@ -237,6 +259,10 @@ body {
 	color: gray;
 }
 
+#infoActione.hidden {
+	display: none;
+}
+
 #editActione {
 	position: absolute;
 	right: 20px;
@@ -260,7 +286,69 @@ body {
 	display: none;
 }
 
-#info, #addAccount, #export {
+#menu {
+	width: 320px;
+	height: 480px;
+	position: absolute;
+	left: -1000px;
+	background: #EEE;
+	top: 0;
+}
+
+#menu.slidein {
+	left: 0;
+	-webkit-animation: slidein 0.2s 1 ease-out;
+}
+
+#menu.slideout {
+	left: -55px;
+	-webkit-animation: slideout 0.2s 1 ease-in;
+}
+
+#menuHead {
+	background: #FFF;
+}
+
+#menu .menuList {
+	margin: 10px;
+	border: #CCC 1px solid;
+	border-radius: 2px;
+	background: #FFF;
+}
+
+#menu .menuList p {
+	position: relative;
+	border-bottom: #CCC 1px solid;
+	padding: 10px;
+	font-size: 16px;
+	color: gray;
+}
+
+#menu .menuList p:after {
+	content: "»";
+	position: absolute;
+	display: block;
+	padding: 10px 0;
+	right: 10px;
+	top: 0;
+	font-size: 16px;
+	color: gray;
+}
+
+#menu .menuList p:hover {
+	background: #F4FCFF;
+	color: black;
+}
+
+#menu .menuList p:hover:after {
+	color: black;
+}
+
+#menu .menuList p:last-child {
+	border-bottom: none;
+}
+
+#info, #addAccount, #security, #export {
 	position: absolute;
 	height: 460px;
 	width: 300px;
@@ -274,17 +362,17 @@ body {
 	z-index: 100;
 }
 
-#info.fadein, #addAccount.fadein, #export.fadein {
+#info.fadein, #addAccount.fadein, #security.fadein, #export.fadein {
 	top: 10px;
 	-webkit-animation: fadein 0.2s 1 ease-out;
 }
 
-#info.fadeout, #addAccount.fadeout, #export.fadeout {
+#info.fadeout, #addAccount.fadeout, #security.fadeout,  #export.fadeout {
 	top: 110px;
 	-webkit-animation: fadeout 0.2s 1 ease-in;
 }
 
-#infoClose, #addAccountClose, #exportClose {
+#infoClose, #addAccountClose, #securityClose, #exportClose {
 	height: 20px;
 	width: 20px;
 	font-size: 14px;
@@ -292,6 +380,15 @@ body {
 	color: gray;
 }
 
+#menuClose {
+	position: absolute;
+	left: 20px;
+	font-size: 24px;
+	color: gray;
+	top: 0;
+}
+
+#menuClose:hover,
 #exportButton:hover,
 #message_close:hover,
 #add_button:hover,
@@ -302,6 +399,8 @@ body {
 #codes #add:hover,
 #infoClose:hover,
 #addAccountClose:hover,
+#securityClose:hover,
+#security_save:hover,
 #export:hover {
 	color: black;
 }
@@ -359,7 +458,7 @@ body {
 	display: none;
 }
 
-#secret_box input {
+#secret_box input, #security input {
 	display: block;
 	margin: 0 10px 10px 10px;
 	padding: 10px;
@@ -369,9 +468,13 @@ body {
 	outline: none;
 }
 
-#secret_box label {
+#secret_box label, #security label, #security_warning {
 	display: block;
 	margin: 10px 0 0 10px;
+}
+
+#security_warning {
+	color: gray;
 }
 
 #message {
