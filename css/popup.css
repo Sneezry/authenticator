@@ -95,6 +95,7 @@
 * {
 	margin: 0;
 	padding: 0;
+	box-sizing: border-box;
 }
 
 body {
@@ -113,7 +114,6 @@ body {
 	text-align: center;
 	font-size: 16px;
 	border-bottom: #CCC 1px solid;
-	box-sizing: border-box;
 }
 
 #notification {
@@ -400,7 +400,6 @@ body {
 	height: 460px;
 	width: 300px;
 	padding: 10px;
-	box-sizing: border-box;
 	border: gray;
 	background: white;
 	left: 10px;
@@ -528,7 +527,6 @@ body {
 	position: absolute;
 	width: 300px;
 	padding: 10px;
-	box-sizing: border-box;
 	border: gray;
 	background: white;
 	left: 10px;

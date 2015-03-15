@@ -436,6 +436,9 @@ function showCodes(result){
 				return a.index - b.index;
 			});
 		}
+		document.getElementById('infoAction').className = '';
+		document.getElementById('editAction').setAttribute('edit', 'false');
+		document.getElementById('editAction').innerHTML = '&#xf014f;';
 		for(var i=0; i<_secret.length; i++){
 			try{
 				_secret[i].issuer = decodeURIComponent(_secret[i].issuer);
