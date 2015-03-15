@@ -114,5 +114,9 @@
 	"encrypted": {
 		"message": "已加密",
 		"description": "Encrypted."
+	},
+	"copied": {
+		"message": "已复制",
+		"description": "Copied."
 	}
 }

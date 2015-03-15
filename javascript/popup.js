@@ -5,6 +5,7 @@ var deleteIdList = [];
 var deleteKeyList = [];
 var updateInterval;
 var dragBox;
+var notificationTimeout;
 
 document.getElementById('extName').innerText = chrome.i18n.getMessage('extShortName');
 document.getElementById('add_qr').innerText = chrome.i18n.getMessage('add_qr');
@@ -458,6 +459,10 @@ function showCodes(result){
 							'<div class="movehandle">&#xf0025;</div>';
 			document.getElementById('codeList').appendChild(el);
 		}
+		var codeCopy = document.getElementsByClassName('code');
+		for(var i=0; i<codeCopy.length; i++){
+			codeCopy[i].onclick = copyCode;
+		}
 		var deleteAction = document.getElementsByClassName('deleteAction');
 		for(var i=0; i<deleteAction.length; i++){
 			deleteAction[i].onclick = deleteCode;
@@ -566,6 +571,25 @@ function showExport(){
 	}, 200);
 }
 
+function copyCode(){
+	var code = this.innerText;
+	if(!/^\d+$/.test(code)){
+		return;
+	}
+	chrome.permissions.request({
+		permissions: ['clipboardWrite']
+	}, function(granted){
+		if(granted){
+			var codeClipboard = document.getElementById('codeClipboard');
+			codeClipboard.value = code;
+			codeClipboard.focus();
+			codeClipboard.select();
+			document.execCommand('Copy');
+			showNotification(chrome.i18n.getMessage('copied'));
+		}
+	});
+}
+
 function encryptSecret(phrase, success, fail){
 	var old_phrase = localStorage.phrase;
 	var errorPhrase = false;
@@ -615,6 +639,19 @@ function encryptSecret(phrase, success, fail){
 			success();
 		}
 	});
+}
+
+function showNotification(message){
+	var notification = document.getElementById('notification');
+	notification.innerText = message;
+	notification.className = 'fadein';
+	clearTimeout(notificationTimeout);
+	notificationTimeout = setTimeout(function(){
+		notification.className = 'fadeout';
+		setTimeout(function(){
+			notification.className = '';
+		},200);
+	},1000);
 }
 
 (function(){

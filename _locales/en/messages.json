@@ -114,5 +114,9 @@
 	"encrypted": {
 		"message": "Encrypted",
 		"description": "Encrypted."
+	},
+	"copied": {
+		"message": "Copied",
+		"description": "Copied."
 	}
 }

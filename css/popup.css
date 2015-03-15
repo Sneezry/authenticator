@@ -12,6 +12,24 @@
 	}
 }
 
+@-webkit-keyframes fadeshow{
+	0%{
+		opacity:0;
+	}
+	100%{
+		opacity:1;
+	}
+}
+
+@-webkit-keyframes fadehide{
+	0%{
+		opacity:1;
+	}
+	100%{
+		opacity:0;
+	}
+}
+
 @-webkit-keyframes fadein{
 	0%{
 		opacity:0;
@@ -98,11 +116,40 @@ body {
 	box-sizing: border-box;
 }
 
+#notification {
+	position: absolute;
+	left: 100px;
+	top: -1000px;
+	width: 120px;
+	height: 60px;
+	line-height: 60px;
+	text-align: center;
+	background: rgba(0,0,0,0.5);
+	color: #FFF;
+	font-size: 20px;
+	border-radius: 2px;
+}
+
+#notification.fadein {
+	top: 190px;
+	-webkit-animation: fadeshow 0.2s 1 ease-out;
+}
+
+#notification.fadeout {
+	top: 190px;
+	-webkit-animation: fadehide 0.2s 1 ease-in;
+}
+
 #codes {
 	height: 440px;
 	overflow-x: hidden;
 	overflow-y: auto;
 	background: #EEE;
+}
+
+#codeClipboard {
+	position: absolute;
+	top: -1000px;
 }
 
 .codeBox {
