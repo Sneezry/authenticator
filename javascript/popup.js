@@ -74,7 +74,7 @@ document.getElementById('securityClose').onclick = function(){
 	}, 200);
 }
 
-document.getElementById('infoActione').onclick = function(){
+document.getElementById('infoAction').onclick = function(){
 	document.getElementById('menu').className = 'slidein';
 	setTimeout(function(){
 		document.getElementById('menu').style.opacity = 1;
@@ -143,14 +143,14 @@ document.getElementById('exportButton').onclick = function(){
 				encryptSecret(localStorage.phrase);
 			}
 			chrome.storage.sync.get(showCodes);
-		});
-		showMessage(chrome.i18n.getMessage('updateSuccess'), function(){
-			document.getElementById('export').className = 'fadeout';
-			setTimeout(function(){
-				document.getElementById('export').className = '';
-				document.getElementById('export').style.opacity = 0;
-				document.getElementById('exportData').value = '';
-			}, 200);
+			showMessage(chrome.i18n.getMessage('updateSuccess'), function(){
+				document.getElementById('export').className = 'fadeout';
+				setTimeout(function(){
+					document.getElementById('export').className = '';
+					document.getElementById('export').style.opacity = 0;
+					document.getElementById('exportData').value = '';
+				}, 200);
+			});
 		});
 	}
 	catch(e){
@@ -158,7 +158,7 @@ document.getElementById('exportButton').onclick = function(){
 	}
 }
 
-document.getElementById('editActione').onclick = editCodes;
+document.getElementById('editAction').onclick = editCodes;
 
 document.getElementById('qr').onclick = function(){
 	this.className = 'qrfadeout';
@@ -213,12 +213,13 @@ function saveSecret(){
 			}
 		}
 		chrome.storage.sync.set(addSecret);
+		document.getElementById('infoAction').className = '';
 		document.getElementById('addAccount').className = '';
 		document.getElementById('addAccount').style.opacity = 0;
 		document.getElementById('account_input').value = '';
 		document.getElementById('secret_input').value = '';
-		document.getElementById('editActione').setAttribute('edit', 'false');
-		document.getElementById('editActione').innerHTML = '&#xf014f;';
+		document.getElementById('editAction').setAttribute('edit', 'false');
+		document.getElementById('editAction').innerHTML = '&#xf014f;';
 		chrome.storage.sync.get(showCodes);
 	});
 }
@@ -276,7 +277,7 @@ function overBox(e){
 function editCodes(){
 	var codes = document.getElementById('codes');
 	if(this.getAttribute('edit') == 'false'){
-		document.getElementById('infoActione').className = 'hidden';
+		document.getElementById('infoAction').className = 'hidden';
 		clearInterval(updateInterval);
 		codes.className = 'edit';
 		this.innerHTML = '&#xf00b2;';
@@ -296,7 +297,7 @@ function editCodes(){
 		codes.scrollTop = codes.scrollHeight;
 	}
 	else{
-		document.getElementById('infoActione').className = '';
+		document.getElementById('infoAction').className = '';
 		codes.className = '';
 		this.innerHTML = '&#xf014f;';
 		this.setAttribute('edit', 'false');
@@ -468,6 +469,7 @@ function showCodes(result){
 		}
 		updateCode();
 		update();
+		clearInterval(updateInterval);
 		updateInterval = setInterval(update, 500);
 	}
 }

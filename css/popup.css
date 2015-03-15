@@ -248,7 +248,7 @@ body {
 	display: block;
 }
 
-#infoActione {
+#infoAction {
 	position: absolute;
 	left: 20px;
 	bottom: 0;
@@ -259,11 +259,11 @@ body {
 	color: gray;
 }
 
-#infoActione.hidden {
+#infoAction.hidden {
 	display: none;
 }
 
-#editActione {
+#editAction {
 	position: absolute;
 	right: 20px;
 	bottom: 0;
@@ -394,8 +394,8 @@ body {
 #add_button:hover,
 #add_secret:hover,
 #add_qr:hover,
-#editActione:hover,
-#infoActione:hover,
+#editAction:hover,
+#infoAction:hover,
 #codes #add:hover,
 #infoClose:hover,
 #addAccountClose:hover,
