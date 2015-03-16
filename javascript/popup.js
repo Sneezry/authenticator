@@ -324,16 +324,19 @@ function editCodes(){
 								secret[CryptoJS.MD5(_secret[i].secret)].account != _secret[i].account ||
 								secret[CryptoJS.MD5(_secret[i].secret)].issuer != _secret[i].issuer)){
 						changeSecret[CryptoJS.MD5(_secret[i].secret)] = _secret[i];
+						if(localStorage.phrase){
+							changeSecret[CryptoJS.MD5(_secret[i].secret)].secret = CryptoJS.AES.encrypt(_secret[i].secret, localStorage.phrase).toString();
+						}
 					}
 				}
 				if(changeSecret){
 					chrome.storage.sync.set(changeSecret, function(){
-						showCodes();
+						chrome.storage.sync.get(showCodes);
 						codes.scrollTop = 0;
 					});
 				}
 				else{
-					showCodes();
+					chrome.storage.sync.get(showCodes);
 					codes.scrollTop = 0;
 				}
 			});
