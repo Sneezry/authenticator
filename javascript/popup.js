@@ -24,6 +24,8 @@ document.getElementById('security_warning').innerText = chrome.i18n.getMessage('
 document.getElementById('security_save').innerText = chrome.i18n.getMessage('security_warning');
 document.getElementById('exportButton').innerText = chrome.i18n.getMessage('update');
 document.getElementById('security_save').innerText = chrome.i18n.getMessage('ok');
+document.getElementById('menuSource').innerText = chrome.i18n.getMessage('source');
+document.getElementById('menuFeedback').innerText = chrome.i18n.getMessage('feedback');
 
 chrome.storage.sync.get(showCodes);
 

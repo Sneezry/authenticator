@@ -122,5 +122,13 @@
 	"copied": {
 		"message": "已复制",
 		"description": "Copied."
+	},
+	"feedback": {
+		"message": "问题反馈",
+		"description": "Feedback."
+	},
+	"source": {
+		"message": "源代码",
+		"description": "Source Code."
 	}
 }

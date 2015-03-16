@@ -122,5 +122,13 @@
 	"copied": {
 		"message": "Copied",
 		"description": "Copied."
+	},
+	"feedback": {
+		"message": "Feedback",
+		"description": "Feedback."
+	},
+	"source": {
+		"message": "Source Code",
+		"description": "Source Code."
 	}
 }
