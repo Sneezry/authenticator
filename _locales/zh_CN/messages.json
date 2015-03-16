@@ -91,6 +91,10 @@
 		"message": "新秘钥",
 		"description": "New Phrase."
 	},
+	"phrase": {
+		"message": "秘钥",
+		"description": "Phrase."
+	},
 	"confirm_phrase": {
 		"message": "确认密钥",
 		"description": "Confirmm Phrase."

@@ -18,12 +18,12 @@ document.getElementById('menuName').innerText = chrome.i18n.getMessage('settings
 document.getElementById('menuAbout').innerText = chrome.i18n.getMessage('about');
 document.getElementById('menuExImport').innerText = chrome.i18n.getMessage('export_import');
 document.getElementById('menuSecurity').innerText = chrome.i18n.getMessage('security');
-document.getElementById('security_new_phrase_label').innerText = chrome.i18n.getMessage('new_phrase');
+document.getElementById('security_new_phrase_label').innerText = chrome.i18n.getMessage('phrase');
 document.getElementById('security_confirm_phrase_label').innerText = chrome.i18n.getMessage('confirm_phrase');
 document.getElementById('security_warning').innerText = chrome.i18n.getMessage('security_warning');
 document.getElementById('security_save').innerText = chrome.i18n.getMessage('security_warning');
 document.getElementById('exportButton').innerText = chrome.i18n.getMessage('update');
-document.getElementById('security_save').innerText = chrome.i18n.getMessage('update');
+document.getElementById('security_save').innerText = chrome.i18n.getMessage('ok');
 
 chrome.storage.sync.get(showCodes);
 
@@ -576,7 +576,14 @@ function showExport(){
 
 function copyCode(){
 	var code = this.innerText;
-	if(!/^\d+$/.test(code)){
+	if('Encrypted'==code){
+		document.getElementById('security').className = 'fadein';
+		setTimeout(function(){
+			document.getElementById('security').style.opacity = 1;
+		}, 200);
+		return;
+	}
+	else if(!/^\d+$/.test(code)){
 		return;
 	}
 	chrome.permissions.request({

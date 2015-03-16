@@ -91,6 +91,10 @@
 		"message": "New Phrase",
 		"description": "New Phrase."
 	},
+	"phrase": {
+		"message": "Phrase",
+		"description": "Phrase."
+	},
 	"confirm_phrase": {
 		"message": "Confirm Phrase",
 		"description": "Confirmm Phrase."
