@@ -24,7 +24,7 @@
 		"description": "Secret Error."
 	},
 	"info": {
-		"message": "<p><strong>Authenticator</strong> for Google&trade; Authenticator,<br/>&copy; 2014 <a target='_blank' href='http://sneezry.com'>Sneezry</a>.</p><p>Google&trade; is Google's trademark, Google Authenticator is Google’s trade name, those rights of ownership belong with Google Inc.</p><p><a target='_blank' href='https://github.com/LazarSoft/jsqrcode'>jsqrcode</a> Copyright jsqrcode authors. Licensed under the Apache License.</p><p><a target='_blank' href='https://github.com/zxing/zxing'>ZXing</a> Copyright ZXing authors. Licensed under the Apache License.</p><p><a target='_blank' href='http://blog.tinisles.com/2011/10/google-authenticator-one-time-password-algorithm-in-javascript/'>totp.js</a> Copyright its author. Licensed under the MIT License.</p><p><a target='_blank' href='http://caligatio.github.com/jsSHA/'>jsSHA</a> Copyright jsSHA authors. Licensed under the BSD License.</p><p><a target='_blank' href='http://davidshimjs.github.io/qrcodejs/'>qrcode.js</a> Copyright qrcode.js author. Licensed under the MIT License.</p><p><a target='_blank' href='https://code.google.com/p/crypto-js/'>crypto-js</a> Copyright crypto-js author. Licensed under the BSD License.</p><p>Thanks to Mike Robinson &lt;3</p>",
+		"message": "<p><strong>Authenticator</strong> for Google&trade; Authenticator,<br/>&copy; 2014 <a target='_blank' href='http://sneezry.com'>Sneezry</a>. Released under the Apache License 2.0.</p><p>Google&trade; is Google's trademark, Google Authenticator is Google’s trade name, those rights of ownership belong with Google Inc.</p><p><a target='_blank' href='https://github.com/LazarSoft/jsqrcode'>jsqrcode</a> Copyright jsqrcode authors. Licensed under the Apache License.</p><p><a target='_blank' href='https://github.com/zxing/zxing'>ZXing</a> Copyright ZXing authors. Licensed under the Apache License.</p><p><a target='_blank' href='http://blog.tinisles.com/2011/10/google-authenticator-one-time-password-algorithm-in-javascript/'>totp.js</a> Copyright its author. Licensed under the MIT License.</p><p><a target='_blank' href='http://caligatio.github.com/jsSHA/'>jsSHA</a> Copyright jsSHA authors. Licensed under the BSD License.</p><p><a target='_blank' href='http://davidshimjs.github.io/qrcodejs/'>qrcode.js</a> Copyright qrcode.js author. Licensed under the MIT License.</p><p><a target='_blank' href='https://code.google.com/p/crypto-js/'>crypto-js</a> Copyright crypto-js author. Licensed under the BSD License.</p><p>Thanks to Mike Robinson &lt;3</p>",
 		"description": "Information."
 	},
 	"add_qr": {
@@ -84,36 +84,36 @@
 		"description": "Security."
 	},
 	"current_phrase": {
-		"message": "Current Phrase",
-		"description": "Current Phrase."
+		"message": "Current Passphrase",
+		"description": "Current Passphrase."
 	},
 	"new_phrase": {
-		"message": "New Phrase",
-		"description": "New Phrase."
+		"message": "New Passphrase",
+		"description": "New Passphrase."
 	},
 	"phrase": {
-		"message": "Phrase",
-		"description": "Phrase."
+		"message": "Passphrase",
+		"description": "Passphrase."
 	},
 	"confirm_phrase": {
-		"message": "Confirm Phrase",
-		"description": "Confirmm Phrase."
+		"message": "Confirm Passphrase",
+		"description": "Confirmm Passphrase."
 	},
 	"security_warning": {
-		"message": "Warning! No one can help you if you forget your phrase. Old version Authenticator extension can not display encrypted accounts correctly.",
-		"description": "Phrase Warning."
+		"message": "Warning! No one can help you if you forget your passphrase. Old version Authenticator extension can not display encrypted accounts correctly.",
+		"description": "Passphrase Warning."
 	},
 	"update": {
 		"message": "Update",
 		"description": "Update."
 	},
 	"phrase_incorrect": {
-		"message": "Some accounts and phrase do not match.",
-		"description": "Phrase Incorrect."
+		"message": "Some accounts and passphrase do not match.",
+		"description": "Passphrase Incorrect."
 	},
 	"phrase_not_match": {
-		"message": "Two phrases do not match.",
-		"description": "Phrase Not Match."
+		"message": "Two passphrases do not match.",
+		"description": "Passphrase Not Match."
 	},
 	"encrypted": {
 		"message": "Encrypted",

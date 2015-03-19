@@ -1,3 +1,14 @@
+var decodedPhrase;
+
+if(localStorage.phrase){
+	decodedPhrase = localStorage.phrase;
+	localStorage.encodedPhrase = CryptoJS.AES.encrypt(localStorage.phrase,'').toString();
+	localStorage.removeItem('phrase');
+}
+else if(localStorage.encodedPhrase){
+	decodedPhrase = CryptoJS.AES.decrypt(localStorage.encodedPhrase, '').toString(CryptoJS.enc.Utf8);
+}
+
 function getQr(tab, left, top, width, height, windowWidth){
 	chrome.tabs.captureVisibleTab(tab.windowId, {format: 'png'}, function(dataUrl){
 		var qr = new Image();
@@ -74,11 +85,11 @@ function getTotp(text){
 				chrome.storage.sync.get(function(result){
 					var index = Object.keys(result).length;
 					var addSecret = {};
-					if(localStorage.phrase){
+					if(decodedPhrase){
 						addSecret[CryptoJS.MD5(secret)] = {
 							account: account||'',
 							issuer: issuer||'',
-							secret: CryptoJS.AES.encrypt(secret, localStorage.phrase).toString(),
+							secret: CryptoJS.AES.encrypt(secret, decodedPhrase).toString(),
 							index: index,
 							encrypted: true
 						}

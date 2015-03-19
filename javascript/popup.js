@@ -7,6 +7,16 @@ var updateInterval;
 var dragBox;
 var notificationTimeout;
 var editTimeout;
+var decodedPhrase;
+
+if(localStorage.phrase){
+	decodedPhrase = localStorage.phrase;
+	localStorage.encodedPhrase = CryptoJS.AES.encrypt(localStorage.phrase,'').toString();
+	localStorage.removeItem('phrase');
+}
+else if(localStorage.encodedPhrase){
+	decodedPhrase = CryptoJS.AES.decrypt(localStorage.encodedPhrase, '').toString(CryptoJS.enc.Utf8);
+}
 
 document.getElementById('extName').innerText = chrome.i18n.getMessage('extShortName');
 document.getElementById('add_qr').innerText = chrome.i18n.getMessage('add_qr');
@@ -27,6 +37,7 @@ document.getElementById('exportButton').innerText = chrome.i18n.getMessage('upda
 document.getElementById('security_save').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('menuSource').innerText = chrome.i18n.getMessage('source');
 document.getElementById('menuFeedback').innerText = chrome.i18n.getMessage('feedback');
+document.getElementById('version').innerText = 'Version '+chrome.runtime.getManifest().version;
 
 chrome.storage.sync.get(showCodes);
 
@@ -141,8 +152,8 @@ document.getElementById('exportButton').onclick = function(){
 	try{
 		data = JSON.parse(data);
 		chrome.storage.sync.set(data, function(){
-			if(localStorage.phrase){
-				encryptSecret(localStorage.phrase);
+			if(decodedPhrase){
+				encryptSecret(decodedPhrase);
 			}
 			chrome.storage.sync.get(showCodes);
 			showMessage(chrome.i18n.getMessage('updateSuccess'), function(){
@@ -201,11 +212,11 @@ function saveSecret(){
 	chrome.storage.sync.get(function(result){
 		var index = Object.keys(result).length;
 		var addSecret = {};
-		if(localStorage.phrase){
+		if(decodedPhrase){
 			addSecret[CryptoJS.MD5(secret)] = {
 				account: account,
 				issuer: '',
-				secret: CryptoJS.AES.encrypt(secret, localStorage.phrase).toString(),
+				secret: CryptoJS.AES.encrypt(secret, decodedPhrase).toString(),
 				index: index,
 				encrypted: true
 			}
@@ -292,7 +303,11 @@ function editCodes(){
 		var code = document.getElementsByClassName('code');
 		var codeBox = document.getElementsByClassName('codeBox');
 		for(var i=0; i<code.length; i++){
-			code[i].innerHTML = '&bull;&bull;&bull;&bull;&bull;&bull;';
+			var bulls = ''
+			for(var b=0; b<code[i].innerText.length; b++){
+				bulls += '&bull;'
+			}
+			code[i].innerHTML = bulls;
 			codeBox[i].draggable = 'true';
 			codeBox[i].ondragstart = startMoveBox;
 			codeBox[i].ondragenter = enterBox;
@@ -328,8 +343,8 @@ function editCodes(){
 								secret[CryptoJS.MD5(_secret[i].secret)].account != _secret[i].account ||
 								secret[CryptoJS.MD5(_secret[i].secret)].issuer != _secret[i].issuer)){
 						changeSecret[CryptoJS.MD5(_secret[i].secret)] = _secret[i];
-						if(localStorage.phrase){
-							changeSecret[CryptoJS.MD5(_secret[i].secret)].secret = CryptoJS.AES.encrypt(_secret[i].secret, localStorage.phrase).toString();
+						if(decodedPhrase){
+							changeSecret[CryptoJS.MD5(_secret[i].secret)].secret = CryptoJS.AES.encrypt(_secret[i].secret, decodedPhrase).toString();
 						}
 					}
 				}
@@ -426,9 +441,9 @@ function showCodes(result){
 			_secret = [];
 			for(var i in result){
 				if(result[i].encrypted){
-					if(localStorage.phrase){
+					if(decodedPhrase){
 						try{
-							result[i].secret = CryptoJS.AES.decrypt(result[i].secret, localStorage.phrase).toString(CryptoJS.enc.Utf8);
+							result[i].secret = CryptoJS.AES.decrypt(result[i].secret, decodedPhrase).toString(CryptoJS.enc.Utf8);
 						}
 						catch(e){
 							result[i].secret = '';
@@ -610,7 +625,8 @@ function copyCode(){
 }
 
 function encryptSecret(phrase, success, fail){
-	var old_phrase = localStorage.phrase;
+	var old_phrase = decodedPhrase;
+	decodedPhrase = phrase;
 	var errorPhrase = false;
 	chrome.storage.sync.get(function(result){
 		for(var i in result){
@@ -648,7 +664,7 @@ function encryptSecret(phrase, success, fail){
 				result[i].encrypted = false;
 			}
 		}
-		localStorage.phrase = phrase;
+		localStorage.encodedPhrase = CryptoJS.AES.encrypt(phrase,'').toString();
 		chrome.storage.sync.set(result);
 		showCodes(result);
 		if(errorPhrase && fail){
