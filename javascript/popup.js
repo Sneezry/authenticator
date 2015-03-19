@@ -7,20 +7,13 @@ var updateInterval;
 var dragBox;
 var notificationTimeout;
 var editTimeout;
-var decodedPhrase;
-
-if(localStorage.phrase){
-	decodedPhrase = localStorage.phrase;
-	localStorage.encodedPhrase = CryptoJS.AES.encrypt(localStorage.phrase,'').toString();
-	localStorage.removeItem('phrase');
-}
-else if(localStorage.encodedPhrase){
-	decodedPhrase = CryptoJS.AES.decrypt(localStorage.encodedPhrase, '').toString(CryptoJS.enc.Utf8);
-}
 
 document.getElementById('extName').innerText = chrome.i18n.getMessage('extShortName');
 document.getElementById('add_qr').innerText = chrome.i18n.getMessage('add_qr');
 document.getElementById('add_secret').innerText = chrome.i18n.getMessage('add_secret');
+document.getElementById('phrase_required').innerText = chrome.i18n.getMessage('phrase_required');
+document.getElementById('phrase_label').innerText = chrome.i18n.getMessage('phrase');
+document.getElementById('enter_phrase_button').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('add_button').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('message_close').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('account_label').innerText = chrome.i18n.getMessage('account');
@@ -37,7 +30,6 @@ document.getElementById('exportButton').innerText = chrome.i18n.getMessage('upda
 document.getElementById('security_save').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('menuSource').innerText = chrome.i18n.getMessage('source');
 document.getElementById('menuFeedback').innerText = chrome.i18n.getMessage('feedback');
-document.getElementById('version').innerText = 'Version '+chrome.runtime.getManifest().version;
 
 chrome.storage.sync.get(showCodes);
 
@@ -152,9 +144,11 @@ document.getElementById('exportButton').onclick = function(){
 	try{
 		data = JSON.parse(data);
 		chrome.storage.sync.set(data, function(){
-			if(decodedPhrase){
-				encryptSecret(decodedPhrase);
-			}
+			chrome.runtime.sendMessage({action: 'getPhrase'}, function(response) {
+				if (response.phrase.length > 0){
+					encryptSecret(response.phrase);
+				}
+			});
 			chrome.storage.sync.get(showCodes);
 			showMessage(chrome.i18n.getMessage('updateSuccess'), function(){
 				document.getElementById('export').className = 'fadeout';
@@ -189,6 +183,16 @@ document.getElementById('message_close').onclick = function(){
 	document.getElementById('message').style.display = 'none';
 }
 
+document.getElementById('enter_phrase_button').onclick = function() {
+	var phrase = document.getElementById('phrase_input').value;
+
+	chrome.runtime.sendMessage({action: 'setPhrase', phrase: phrase}, function() {
+		chrome.storage.sync.get(function(result){
+			showCodes(result);
+		});
+	});
+};
+
 document.getElementById('add_button').onclick = saveSecret;
 
 function showMessage(msg, closeAction){
@@ -212,32 +216,35 @@ function saveSecret(){
 	chrome.storage.sync.get(function(result){
 		var index = Object.keys(result).length;
 		var addSecret = {};
-		if(decodedPhrase){
-			addSecret[CryptoJS.MD5(secret)] = {
-				account: account,
-				issuer: '',
-				secret: CryptoJS.AES.encrypt(secret, decodedPhrase).toString(),
-				index: index,
-				encrypted: true
+
+		chrome.runtime.sendMessage({action: 'getPhrase'}, function(response) {
+			if (response.phrase.length > 0){
+				addSecret[CryptoJS.MD5(secret)] = {
+					account: account,
+					issuer: '',
+					secret: CryptoJS.AES.encrypt(secret, response.phrase).toString(),
+					index: index,
+					encrypted: true
+				}
 			}
-		}
-		else{
-			addSecret[CryptoJS.MD5(secret)] = {
-				account: account,
-				issuer: '',
-				secret: secret,
-				index: index
+			else{
+				addSecret[CryptoJS.MD5(secret)] = {
+					account: account,
+					issuer: '',
+					secret: secret,
+					index: index
+				}
 			}
-		}
-		chrome.storage.sync.set(addSecret);
-		document.getElementById('infoAction').className = '';
-		document.getElementById('addAccount').className = '';
-		document.getElementById('addAccount').style.opacity = 0;
-		document.getElementById('account_input').value = '';
-		document.getElementById('secret_input').value = '';
-		document.getElementById('editAction').setAttribute('edit', 'false');
-		document.getElementById('editAction').innerHTML = '&#xf014f;';
-		chrome.storage.sync.get(showCodes);
+			chrome.storage.sync.set(addSecret);
+			document.getElementById('infoAction').className = '';
+			document.getElementById('addAccount').className = '';
+			document.getElementById('addAccount').style.opacity = 0;
+			document.getElementById('account_input').value = '';
+			document.getElementById('secret_input').value = '';
+			document.getElementById('editAction').setAttribute('edit', 'false');
+			document.getElementById('editAction').innerHTML = '&#xf014f;';
+			chrome.storage.sync.get(showCodes);
+		});
 	});
 }
 
@@ -303,11 +310,7 @@ function editCodes(){
 		var code = document.getElementsByClassName('code');
 		var codeBox = document.getElementsByClassName('codeBox');
 		for(var i=0; i<code.length; i++){
-			var bulls = ''
-			for(var b=0; b<code[i].innerText.length; b++){
-				bulls += '&bull;'
-			}
-			code[i].innerHTML = bulls;
+			code[i].innerHTML = '&bull;&bull;&bull;&bull;&bull;&bull;';
 			codeBox[i].draggable = 'true';
 			codeBox[i].ondragstart = startMoveBox;
 			codeBox[i].ondragenter = enterBox;
@@ -334,30 +337,35 @@ function editCodes(){
 			deleteIdList = [];
 			deleteKeyList = [];
 			chrome.storage.sync.get(function(secret){
-				var changeSecret = {};
-				for(var i=0; i<_secret.length; i++){
-					if(secret[_secret[i].secret] && (secret[_secret[i].secret].index != _secret[i].index ||
-								secret[_secret[i].secret].account != _secret[i].account ||
-								secret[_secret[i].secret].issuer != _secret[i].issuer) ||
-						secret[CryptoJS.MD5(_secret[i].secret)] && (secret[CryptoJS.MD5(_secret[i].secret)].index != _secret[i].index ||
-								secret[CryptoJS.MD5(_secret[i].secret)].account != _secret[i].account ||
-								secret[CryptoJS.MD5(_secret[i].secret)].issuer != _secret[i].issuer)){
-						changeSecret[CryptoJS.MD5(_secret[i].secret)] = _secret[i];
-						if(decodedPhrase){
-							changeSecret[CryptoJS.MD5(_secret[i].secret)].secret = CryptoJS.AES.encrypt(_secret[i].secret, decodedPhrase).toString();
+				chrome.runtime.sendMessage({action: 'getPhrase'}, function(response) {
+					var phrase = response.phrase;
+
+					var changeSecret = {};
+					for(var i=0; i<_secret.length; i++){
+						if(secret[_secret[i].secret] && (secret[_secret[i].secret].index != _secret[i].index ||
+									secret[_secret[i].secret].account != _secret[i].account ||
+									secret[_secret[i].secret].issuer != _secret[i].issuer) ||
+									secret[CryptoJS.MD5(_secret[i].secret)] && (secret[CryptoJS.MD5(_secret[i].secret)].index != _secret[i].index ||
+									secret[CryptoJS.MD5(_secret[i].secret)].account != _secret[i].account ||
+									secret[CryptoJS.MD5(_secret[i].secret)].issuer != _secret[i].issuer)){
+							changeSecret[CryptoJS.MD5(_secret[i].secret)] = _secret[i];
+							if(phrase.length > 0){
+								changeSecret[CryptoJS.MD5(_secret[i].secret)].secret = CryptoJS.AES.encrypt(_secret[i].secret, phrase).toString();
+							}
 						}
 					}
-				}
-				if(changeSecret){
-					chrome.storage.sync.set(changeSecret, function(){
+					if(changeSecret){
+						chrome.storage.sync.set(changeSecret, function(){
+							chrome.storage.sync.get(showCodes);
+							codes.scrollTop = 0;
+						});
+					}
+					else{
 						chrome.storage.sync.get(showCodes);
 						codes.scrollTop = 0;
-					});
-				}
-				else{
-					chrome.storage.sync.get(showCodes);
-					codes.scrollTop = 0;
-				}
+					}
+				});
+
 			});
 		});
 	}
@@ -389,11 +397,16 @@ function deleteCode(){
 function updateCode(){
 	for(var i=0; i<_secret.length; i++){
 		if(!_secret[i].secret){
-			document.getElementById('code-'+i).innerText = chrome.i18n.getMessage('encrypted');
+			document.getElementById('enterPhrase').className = 'fadein';
+			setTimeout(function(){
+				document.getElementById('enterPhrase').style.opacity = 1;
+			}, 200);
+			return false;
 		}
-		else{
-			document.getElementById('code-'+i).innerText = getCode(_secret[i].secret);
-		}
+	}
+
+	for(var i=0; i<_secret.length; i++){
+		document.getElementById('code-'+i).innerText = getCode(_secret[i].secret);
 	}
 }
 
@@ -427,6 +440,23 @@ function getSector(){
 	}
 }
 
+function handlePhrase(valid){
+	var phraseElem = document.getElementById('phrase_input');
+	if (phraseElem.value.length > 0) {
+		phraseElem.value = '';
+		if (valid) {
+			document.getElementById('enterPhrase').className = 'fadeout';
+			setTimeout(function(){
+				document.getElementById('enterPhrase').className = '';
+				document.getElementById('enterPhrase').style.opacity = 0;
+			}, 200);
+		}
+		else {
+			showMessage(chrome.i18n.getMessage('invalid_phrase'));
+		}
+	}
+}
+
 function showCodes(result){
 	document.getElementById('codeList').innerHTML = '';
 	if(result && result.secret){
@@ -436,91 +466,106 @@ function showCodes(result){
 		return false;
 	}
 	else{
-		result = changeDataSub2Md5(result);
-		if(result){
-			_secret = [];
-			for(var i in result){
-				if(result[i].encrypted){
-					if(decodedPhrase){
-						try{
-							result[i].secret = CryptoJS.AES.decrypt(result[i].secret, decodedPhrase).toString(CryptoJS.enc.Utf8);
+		chrome.runtime.sendMessage({action: 'getPhrase'}, function(response) {
+			var phrase = response.phrase;
+			var phraseIsValid = false;
+
+			result = changeDataSub2Md5(result);
+			if(result){
+				_secret = [];
+				for(var i in result){
+					if(result[i].encrypted){
+						if(phrase.length > 0){
+							try{
+								result[i].secret = CryptoJS.AES.decrypt(result[i].secret, phrase).toString(CryptoJS.enc.Utf8);
+
+							}
+							catch(e){
+								result[i].secret = '';
+							}
 						}
-						catch(e){
+						else{
 							result[i].secret = '';
 						}
 					}
-					else{
-						result[i].secret = '';
+					result[i].hash = i;
+					_secret.push(result[i]);
+
+					if (result[i].secret.length > 0) {
+						phraseIsValid = true;
 					}
 				}
-				result[i].hash = i;
-				_secret.push(result[i]);
+
+				handlePhrase(phraseIsValid);
+
+				_secret.sort(function(a, b){
+					return a.index - b.index;
+				});
 			}
-			_secret.sort(function(a, b){
-				return a.index - b.index;
-			});
-		}
-		document.getElementById('infoAction').className = '';
-		document.getElementById('editAction').setAttribute('edit', 'false');
-		document.getElementById('editAction').innerHTML = '&#xf014f;';
-		for(var i=0; i<_secret.length; i++){
-			try{
-				_secret[i].issuer = decodeURIComponent(_secret[i].issuer);
+
+			document.getElementById('infoAction').className = '';
+			document.getElementById('editAction').setAttribute('edit', 'false');
+			document.getElementById('editAction').innerHTML = '&#xf014f;';
+			for(var i=0; i<_secret.length; i++){
+				try{
+					_secret[i].issuer = decodeURIComponent(_secret[i].issuer);
+				}
+				catch(e){}
+				try{
+					_secret[i].account = decodeURIComponent(_secret[i].account);
+				}
+				catch(e){}
+				var el = document.createElement('div');
+				el.id = 'codeBox-'+i;
+				el.className = 'codeBox';
+				el.innerHTML = '<div class="deleteAction" codeId="'+i+'" key="'+_secret[i].hash+'">&#xf00b4;</div>'+
+								'<div class="sector"></div>'+
+								(_secret[i].issuer?('<div class="issuer">'+_secret[i].issuer+'</div>'):'')+
+								'<div class="issuerEdit"><input class="issuerEditBox" type="text" codeId="'+i+'" value="'+(_secret[i].issuer?_secret[i].issuer:'')+'" /></div>'+
+								'<div class="code" id="code-'+i+'">&bull;&bull;&bull;&bull;&bull;&bull;</div>'+
+								'<div class="account">'+_secret[i].account+'</div>'+
+								'<div class="accountEdit"><input class="accountEditBox" type="text" codeId="'+i+'" value="'+_secret[i].account+'" /></div>'+
+								'<div id="showqr-'+i+'" class="showqr">&#x3433;</div>'+
+								'<div class="movehandle">&#xf0025;</div>';
+				document.getElementById('codeList').appendChild(el);
 			}
-			catch(e){}
-			try{
-				_secret[i].account = decodeURIComponent(_secret[i].account);
+
+			var codeCopy = document.getElementsByClassName('code');
+			for(var i=0; i<codeCopy.length; i++){
+				codeCopy[i].onclick = copyCode;
 			}
-			catch(e){}
-			var el = document.createElement('div');
-			el.id = 'codeBox-'+i;
-			el.className = 'codeBox';
-			el.innerHTML = '<div class="deleteAction" codeId="'+i+'" key="'+_secret[i].hash+'">&#xf00b4;</div>'+
-							'<div class="sector"></div>'+
-							(_secret[i].issuer?('<div class="issuer">'+_secret[i].issuer+'</div>'):'')+
-							'<div class="issuerEdit"><input class="issuerEditBox" type="text" codeId="'+i+'" value="'+(_secret[i].issuer?_secret[i].issuer:'')+'" /></div>'+
-							'<div class="code" id="code-'+i+'">&bull;&bull;&bull;&bull;&bull;&bull;</div>'+
-							'<div class="account">'+_secret[i].account+'</div>'+
-							'<div class="accountEdit"><input class="accountEditBox" type="text" codeId="'+i+'" value="'+_secret[i].account+'" /></div>'+
-							'<div id="showqr-'+i+'" class="showqr">&#x3433;</div>'+
-							'<div class="movehandle">&#xf0025;</div>';
-			document.getElementById('codeList').appendChild(el);
-		}
-		var codeCopy = document.getElementsByClassName('code');
-		for(var i=0; i<codeCopy.length; i++){
-			codeCopy[i].onclick = copyCode;
-		}
-		var deleteAction = document.getElementsByClassName('deleteAction');
-		for(var i=0; i<deleteAction.length; i++){
-			deleteAction[i].onclick = deleteCode;
-		}
-		var showQrAction = document.getElementsByClassName('showqr');
-		for(var i=0; i<showQrAction.length; i++){
-			showQrAction[i].onclick = showQr;
-		}
-		var accountEditBox = document.getElementsByClassName('accountEditBox');
-		for(var i=0; i<accountEditBox.length; i++){
-			accountEditBox[i].onblur = saveAccount;
-		}
-		var issuerEditBox = document.getElementsByClassName('issuerEditBox');
-		for(var i=0; i<issuerEditBox.length; i++){
-			issuerEditBox[i].onblur = saveIssuer;
-		}
-		updateCode();
-		update();
-		clearInterval(updateInterval);
-		updateInterval = setInterval(update, 500);
+			var deleteAction = document.getElementsByClassName('deleteAction');
+			for(var i=0; i<deleteAction.length; i++){
+				deleteAction[i].onclick = deleteCode;
+			}
+			var showQrAction = document.getElementsByClassName('showqr');
+			for(var i=0; i<showQrAction.length; i++){
+				showQrAction[i].onclick = showQr;
+			}
+			var accountEditBox = document.getElementsByClassName('accountEditBox');
+			for(var i=0; i<accountEditBox.length; i++){
+				accountEditBox[i].onblur = saveAccount;
+			}
+			var issuerEditBox = document.getElementsByClassName('issuerEditBox');
+			for(var i=0; i<issuerEditBox.length; i++){
+				issuerEditBox[i].onblur = saveIssuer;
+			}
+			updateCode();
+			update();
+			clearInterval(updateInterval);
+			updateInterval = setInterval(update, 500);
+		});
 	}
 }
 
 function saveAccount(){
 	var codeId = this.getAttribute('codeId');
 	var s = this.value;
-	s = s.replace(/&/g, "&amp;"); 
-	s = s.replace(/</g, "&lt;"); 
-	s = s.replace(/>/g, "&gt;"); 
-	s = s.replace(/ /g, "&nbsp;"); 
-	s = s.replace(/\'/g, "&#39;"); 
+	s = s.replace(/&/g, "&amp;");
+	s = s.replace(/</g, "&lt;");
+	s = s.replace(/>/g, "&gt;");
+	s = s.replace(/ /g, "&nbsp;");
+	s = s.replace(/\'/g, "&#39;");
 	s = s.replace(/\"/g, "&quot;");
 	_secret[codeId].account = s;
 }
@@ -528,11 +573,11 @@ function saveAccount(){
 function saveIssuer(){
 	var codeId = this.getAttribute('codeId');
 	var s = this.value;
-	s = s.replace(/&/g, "&amp;"); 
-	s = s.replace(/</g, "&lt;"); 
-	s = s.replace(/>/g, "&gt;"); 
-	s = s.replace(/ /g, "&nbsp;"); 
-	s = s.replace(/\'/g, "&#39;"); 
+	s = s.replace(/&/g, "&amp;");
+	s = s.replace(/</g, "&lt;");
+	s = s.replace(/>/g, "&gt;");
+	s = s.replace(/ /g, "&nbsp;");
+	s = s.replace(/\'/g, "&#39;");
 	s = s.replace(/\"/g, "&quot;");
 	_secret[codeId].issuer = s;
 }
@@ -625,54 +670,55 @@ function copyCode(){
 }
 
 function encryptSecret(phrase, success, fail){
-	var old_phrase = decodedPhrase;
-	decodedPhrase = phrase;
-	var errorPhrase = false;
-	chrome.storage.sync.get(function(result){
-		for(var i in result){
-			if(result[i].encrypted){
-				try{
-					decryptedSecret = CryptoJS.AES.decrypt(result[i].secret, old_phrase).toString(CryptoJS.enc.Utf8);
-				}
-				catch(e){
-					decryptedSecret = '';
-				}
-				if(decryptedSecret){
-					result[i].secret = decryptedSecret;
-				}
-				else{
+	chrome.runtime.sendMessage({action: 'getPhrase'}, function(response) {
+		var old_phrase = response.phrase;
+		var errorPhrase = false;
+		chrome.storage.sync.get(function(result){
+			for(var i in result){
+				if(result[i].encrypted){
 					try{
-						decryptedSecret2 = CryptoJS.AES.decrypt(result[i].secret, phrase).toString(CryptoJS.enc.Utf8);
+						decryptedSecret = CryptoJS.AES.decrypt(result[i].secret, old_phrase).toString(CryptoJS.enc.Utf8);
 					}
 					catch(e){
-						decryptedSecret2 = '';
+						decryptedSecret = '';
 					}
-					if(decryptedSecret2){
-						result[i].secret = decryptedSecret2;
+					if(decryptedSecret){
+						result[i].secret = decryptedSecret;
 					}
 					else{
-						errorPhrase = true;
-						continue;
+						try{
+							decryptedSecret2 = CryptoJS.AES.decrypt(result[i].secret, phrase).toString(CryptoJS.enc.Utf8);
+						}
+						catch(e){
+							decryptedSecret2 = '';
+						}
+						if(decryptedSecret2){
+							result[i].secret = decryptedSecret2;
+						}
+						else{
+							errorPhrase = true;
+							continue;
+						}
 					}
-				}	
+				}
+				if(phrase){
+					result[i].secret = CryptoJS.AES.encrypt(result[i].secret, phrase).toString();
+					result[i].encrypted = true;
+				}
+				else{
+					result[i].encrypted = false;
+				}
 			}
-			if(phrase){
-				result[i].secret = CryptoJS.AES.encrypt(result[i].secret, phrase).toString();
-				result[i].encrypted = true;
+			chrome.runtime.sendMessage({action: 'setPhrase', phrase: phrase});
+			chrome.storage.sync.set(result);
+			showCodes(result);
+			if(errorPhrase && fail){
+				fail();
 			}
-			else{
-				result[i].encrypted = false;
+			else if(success){
+				success();
 			}
-		}
-		localStorage.encodedPhrase = CryptoJS.AES.encrypt(phrase,'').toString();
-		chrome.storage.sync.set(result);
-		showCodes(result);
-		if(errorPhrase && fail){
-			fail();
-		}
-		else if(success){
-			success();
-		}
+		});
 	});
 }
 

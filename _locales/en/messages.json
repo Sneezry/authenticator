@@ -24,7 +24,7 @@
 		"description": "Secret Error."
 	},
 	"info": {
-		"message": "<p><strong>Authenticator</strong> for Google&trade; Authenticator,<br/>&copy; 2014 <a target='_blank' href='http://sneezry.com'>Sneezry</a>. Released under the Apache License 2.0.</p><p>Google&trade; is Google's trademark, Google Authenticator is Google’s trade name, those rights of ownership belong with Google Inc.</p><p><a target='_blank' href='https://github.com/LazarSoft/jsqrcode'>jsqrcode</a> Copyright jsqrcode authors. Licensed under the Apache License.</p><p><a target='_blank' href='https://github.com/zxing/zxing'>ZXing</a> Copyright ZXing authors. Licensed under the Apache License.</p><p><a target='_blank' href='http://blog.tinisles.com/2011/10/google-authenticator-one-time-password-algorithm-in-javascript/'>totp.js</a> Copyright its author. Licensed under the MIT License.</p><p><a target='_blank' href='http://caligatio.github.com/jsSHA/'>jsSHA</a> Copyright jsSHA authors. Licensed under the BSD License.</p><p><a target='_blank' href='http://davidshimjs.github.io/qrcodejs/'>qrcode.js</a> Copyright qrcode.js author. Licensed under the MIT License.</p><p><a target='_blank' href='https://code.google.com/p/crypto-js/'>crypto-js</a> Copyright crypto-js author. Licensed under the BSD License.</p><p>Thanks to Mike Robinson &lt;3</p>",
+		"message": "<p><strong>Authenticator</strong> for Google&trade; Authenticator,<br/>&copy; 2014 <a target='_blank' href='http://sneezry.com'>Sneezry</a>.</p><p>Google&trade; is Google's trademark, Google Authenticator is Google’s trade name, those rights of ownership belong with Google Inc.</p><p><a target='_blank' href='https://github.com/LazarSoft/jsqrcode'>jsqrcode</a> Copyright jsqrcode authors. Licensed under the Apache License.</p><p><a target='_blank' href='https://github.com/zxing/zxing'>ZXing</a> Copyright ZXing authors. Licensed under the Apache License.</p><p><a target='_blank' href='http://blog.tinisles.com/2011/10/google-authenticator-one-time-password-algorithm-in-javascript/'>totp.js</a> Copyright its author. Licensed under the MIT License.</p><p><a target='_blank' href='http://caligatio.github.com/jsSHA/'>jsSHA</a> Copyright jsSHA authors. Licensed under the BSD License.</p><p><a target='_blank' href='http://davidshimjs.github.io/qrcodejs/'>qrcode.js</a> Copyright qrcode.js author. Licensed under the MIT License.</p><p><a target='_blank' href='https://code.google.com/p/crypto-js/'>crypto-js</a> Copyright crypto-js author. Licensed under the BSD License.</p><p>Thanks to Mike Robinson &lt;3</p>",
 		"description": "Information."
 	},
 	"add_qr": {
@@ -83,37 +83,45 @@
 		"message": "Security",
 		"description": "Security."
 	},
+	"phrase_required": {
+		"message": "Please enter your passphrase to continue.",
+		"description": "Phrase required."
+	},
+	"invalid_phrase": {
+		"message": "Invalid phrase.",
+		"description": "Invalid phrase."
+	},
 	"current_phrase": {
-		"message": "Current Passphrase",
-		"description": "Current Passphrase."
+		"message": "Current Phrase",
+		"description": "Current Phrase."
 	},
 	"new_phrase": {
-		"message": "New Passphrase",
-		"description": "New Passphrase."
+		"message": "New Phrase",
+		"description": "New Phrase."
 	},
 	"phrase": {
-		"message": "Passphrase",
-		"description": "Passphrase."
+		"message": "Phrase",
+		"description": "Phrase."
 	},
 	"confirm_phrase": {
-		"message": "Confirm Passphrase",
-		"description": "Confirmm Passphrase."
+		"message": "Confirm Phrase",
+		"description": "Confirmm Phrase."
 	},
 	"security_warning": {
-		"message": "Warning! No one can help you if you forget your passphrase. Old version Authenticator extension can not display encrypted accounts correctly.",
-		"description": "Passphrase Warning."
+		"message": "Warning! No one can help you if you forget your phrase. Old version Authenticator extension can not display encrypted accounts correctly.",
+		"description": "Phrase Warning."
 	},
 	"update": {
 		"message": "Update",
 		"description": "Update."
 	},
 	"phrase_incorrect": {
-		"message": "Some accounts and passphrase do not match.",
-		"description": "Passphrase Incorrect."
+		"message": "Some accounts and phrase do not match.",
+		"description": "Phrase Incorrect."
 	},
 	"phrase_not_match": {
-		"message": "Two passphrases do not match.",
-		"description": "Passphrase Not Match."
+		"message": "Two phrases do not match.",
+		"description": "Phrase Not Match."
 	},
 	"encrypted": {
 		"message": "Encrypted",
