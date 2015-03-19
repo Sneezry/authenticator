@@ -119,11 +119,11 @@ function getTotp(text){
 				chrome.storage.sync.get(function(result){
 					var index = Object.keys(result).length;
 					var addSecret = {};
-					if(localStorage.phrase){
+					if(phrase.length > 0){
 						addSecret[CryptoJS.MD5(secret)] = {
 							account: account||'',
 							issuer: issuer||'',
-							secret: CryptoJS.AES.encrypt(secret, localStorage.phrase).toString(),
+							secret: CryptoJS.AES.encrypt(secret, phrase).toString(),
 							index: index,
 							encrypted: true
 						}
