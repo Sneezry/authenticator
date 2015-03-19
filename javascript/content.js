@@ -17,7 +17,7 @@ function showGrayLayout(){
 		grayLayout.oncontextmenu = function(){
 			var e = event || window.event;
 			e.preventDefault();
-		    return false;
+			return false;
 		}
 	}
 	grayLayout.style.display = 'block';

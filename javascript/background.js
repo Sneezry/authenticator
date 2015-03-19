@@ -1,12 +1,42 @@
-var decodedPhrase;
+var phrase = '';
 
-if(localStorage.phrase){
-	decodedPhrase = localStorage.phrase;
-	localStorage.encodedPhrase = CryptoJS.AES.encrypt(localStorage.phrase,'').toString();
-	localStorage.removeItem('phrase');
-}
-else if(localStorage.encodedPhrase){
-	decodedPhrase = CryptoJS.AES.decrypt(localStorage.encodedPhrase, '').toString(CryptoJS.enc.Utf8);
+function loadScripts( callback ){
+	var scripts = [
+		'assist/aes.js',
+		'assist/md5.js',
+		'jsqrcode/grid.js',
+		'jsqrcode/version.js',
+		'jsqrcode/detector.js',
+		'jsqrcode/formatinf.js',
+		'jsqrcode/errorlevel.js',
+		'jsqrcode/bitmat.js',
+		'jsqrcode/datablock.js',
+		'jsqrcode/bmparser.js',
+		'jsqrcode/datamask.js',
+		'jsqrcode/rsdecoder.js',
+		'jsqrcode/gf256poly.js',
+		'jsqrcode/gf256.js',
+		'jsqrcode/decoder.js',
+		'jsqrcode/qrcode.js',
+		'jsqrcode/findpat.js',
+		'jsqrcode/alignpat.js',
+		'jsqrcode/databr.js'
+	];
+	var script;
+	var scriptsLoaded = 0;
+
+	for (var i=0; i<scripts.length; i++) {
+		var script = document.createElement('script');
+		script.src = scripts[i];
+		document.head.appendChild(script);
+
+		script.onload = function () {
+			scriptsLoaded++;
+			if (scriptsLoaded === scripts.length){
+				callback();
+			}
+		};
+	}
 }
 
 function getQr(tab, left, top, width, height, windowWidth){
@@ -14,6 +44,7 @@ function getQr(tab, left, top, width, height, windowWidth){
 		var qr = new Image();
 		qr.src = dataUrl;
 		qr.onload = function(){
+			var thisQr = this;
 			if(windowWidth*2 == qr.width){
 				//Retina Display
 				left *= 2;
@@ -21,7 +52,7 @@ function getQr(tab, left, top, width, height, windowWidth){
 				width *= 2;
 				height *= 2;
 			}
-			this.tab = tab;
+			thisQr.tab = tab;
 			var captureCanvas = document.getElementById('__ga_captureCanvas__');
 			if(!captureCanvas){
 				captureCanvas = document.createElement('canvas')
@@ -32,8 +63,11 @@ function getQr(tab, left, top, width, height, windowWidth){
 			captureCanvas.height = height;
 			captureCanvas.getContext('2d').drawImage(qr,left,top,width,height,0,0,width,height);
 			var url = captureCanvas.toDataURL();
-			qrcode.callback = getTotp.bind(this);
-			qrcode.decode(url);
+
+			loadScripts(function() {
+				qrcode.callback = getTotp.bind(thisQr);
+				qrcode.decode(url);
+			});
 		}
 	});
 }
@@ -85,11 +119,11 @@ function getTotp(text){
 				chrome.storage.sync.get(function(result){
 					var index = Object.keys(result).length;
 					var addSecret = {};
-					if(decodedPhrase){
+					if(localStorage.phrase){
 						addSecret[CryptoJS.MD5(secret)] = {
 							account: account||'',
 							issuer: issuer||'',
-							secret: CryptoJS.AES.encrypt(secret, decodedPhrase).toString(),
+							secret: CryptoJS.AES.encrypt(secret, localStorage.phrase).toString(),
 							index: index,
 							encrypted: true
 						}
@@ -114,5 +148,12 @@ function getTotp(text){
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 	if(message.action == 'position'){
 		getQr(sender.tab, message.info.left, message.info.top, message.info.width, message.info.height, message.info.windowWidth);
+	}
+	else if (message.action == 'getPhrase') {
+		sendResponse({phrase: phrase});
+	}
+	else if (message.action == 'setPhrase') {
+		phrase = message.phrase;
+		sendResponse({saved: true});
 	}
 });
