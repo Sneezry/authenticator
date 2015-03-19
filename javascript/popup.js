@@ -6,6 +6,7 @@ var deleteKeyList = [];
 var updateInterval;
 var dragBox;
 var notificationTimeout;
+var editTimeout;
 
 document.getElementById('extName').innerText = chrome.i18n.getMessage('extShortName');
 document.getElementById('add_qr').innerText = chrome.i18n.getMessage('add_qr');
@@ -119,9 +120,7 @@ document.getElementById('addAccountClose').onclick = function(){
 	}, 200);
 }
 
-document.getElementById('add_qr').onclick = function(){
-	beginCapture();
-}
+document.getElementById('add_qr').onclick = beginCapture;
 
 document.getElementById('add_secret').onclick = function(){
 	document.getElementById('add_qr').style.display = 'none';
@@ -159,6 +158,10 @@ document.getElementById('exportButton').onclick = function(){
 	catch(e){
 		showMessage(chrome.i18n.getMessage('updateFailure'));
 	}
+}
+
+document.getElementById('editAction').onmousedown = function(){
+	editTimeout = setTimeout(beginCapture, 500);
 }
 
 document.getElementById('editAction').onclick = editCodes;
@@ -278,6 +281,7 @@ function overBox(e){
 }
 
 function editCodes(){
+	clearTimeout(editTimeout);
 	var codes = document.getElementById('codes');
 	if(this.getAttribute('edit') == 'false'){
 		document.getElementById('infoAction').className = 'hidden';
