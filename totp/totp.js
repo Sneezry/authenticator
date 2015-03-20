@@ -65,6 +65,9 @@ var KeyUtilities = function() {
 		}
 
 		var otp = (hex2dec(hmac.substr(offset * 2, 8)) & hex2dec('7fffffff')) + '';
+		if(otp.length < len){
+			otp = new Array(len - otp.length + 1).join('0') + otp;
+		}
 		return (otp).substr(otp.length - len, len).toString();
 	};
 
