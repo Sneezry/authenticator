@@ -53,6 +53,9 @@ var KeyUtilities = function() {
 			len = 8;
 		}
 		var epoch = Math.round(new Date().getTime() / 1000.0);
+		if(localStorage.offset){
+			epoch = epoch+Number(localStorage.offset);
+		}
 		var time = leftpad(dec2hex(Math.floor(epoch / 30)), 16, '0');
 
 		// external library for SHA functionality

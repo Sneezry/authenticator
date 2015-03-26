@@ -30,6 +30,7 @@ document.getElementById('menuName').innerText = chrome.i18n.getMessage('settings
 document.getElementById('menuAbout').innerText = chrome.i18n.getMessage('about');
 document.getElementById('menuExImport').innerText = chrome.i18n.getMessage('export_import');
 document.getElementById('menuSecurity').innerText = chrome.i18n.getMessage('security');
+document.getElementById('menuSyncTime').innerText = chrome.i18n.getMessage('sync_clock');
 document.getElementById('security_new_phrase_label').innerText = chrome.i18n.getMessage('phrase');
 document.getElementById('security_confirm_phrase_label').innerText = chrome.i18n.getMessage('confirm_phrase');
 document.getElementById('security_warning').innerText = chrome.i18n.getMessage('security_warning');
@@ -59,6 +60,28 @@ document.getElementById('menuSecurity').onclick = function(){
 	setTimeout(function(){
 		document.getElementById('security').style.opacity = 1;
 	}, 200);
+}
+
+document.getElementById('menuSyncTime').onclick = function(){
+	chrome.permissions.request({
+		origins: ['https://www.google.com/']
+	}, function(granted){
+		if(granted){
+			var xhr = new XMLHttpRequest();
+			xhr.open('HEAD', 'https://www.google.com/');
+			xhr.onreadystatechange = function() {
+				if(xhr.readyState==4) {
+					var serverTime = new Date(xhr.getResponseHeader('date'));
+					serverTime = serverTime.getTime();
+					var clientTime = new Date();
+					clientTime = clientTime.getTime();
+					localStorage.offset = Math.round((serverTime - clientTime)/1000);
+					showMessage(chrome.i18n.getMessage('updateSuccess'));
+				}
+			};
+			xhr.send();
+		}
+	});
 }
 
 document.getElementById('security_save').onclick = function(){
@@ -434,6 +457,9 @@ function updateCode(){
 function update(){
 	getSector();
 	var second = new Date().getSeconds();
+	if(localStorage.offset){
+		second += Number(localStorage.offset)+30;
+	}
 	second = second%30;
 	if(second>25){
 		document.getElementById('codes').className = 'timeout';
@@ -448,6 +474,9 @@ function update(){
 
 function getSector(){
 	var second = new Date().getSeconds();
+	if(localStorage.offset){
+		second += Number(localStorage.offset)+30;
+	}
 	second = second%30;
 	var canvas = document.getElementById('sector');
 	var ctx = canvas.getContext('2d');

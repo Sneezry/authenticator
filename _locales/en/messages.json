@@ -134,5 +134,9 @@
 	"passphrase_info": {
 		"message": "Input passphrase to decrypt account data.",
 		"description": "Passphrase Info"
+	},
+	"sync_clock": {
+		"message": "Sync Clock with Google",
+		"description": "Sync Clock"
 	}
 }

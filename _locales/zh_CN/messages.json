@@ -134,5 +134,9 @@
 	"passphrase_info": {
 		"message": "输入密钥以解码账户数据。",
 		"description": "Passphrase Info"
+	},
+	"sync_clock": {
+		"message": "通过Google校准时间",
+		"description": "Sync Clock"
 	}
 }
