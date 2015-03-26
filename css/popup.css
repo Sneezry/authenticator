@@ -266,7 +266,7 @@ body {
 	overflow: hidden;
 }
 
-#codes #add, #add_qr, #add_secret, #add_button, #security_save, #message_close, #exportButton {
+#codes #add, #add_qr, #add_secret, #add_button, #security_save, #passphrase_ok, #message_close, #exportButton {
 	margin: 10px;
 	padding: 20px;
 	border: #CCC 1px solid;
@@ -279,7 +279,7 @@ body {
 	cursor: pointer;
 }
 
-#message_close, #add_button, #exportButton, #security_save {
+#message_close, #add_button, #exportButton, #security_save, #passphrase_ok {
 	font-size: 12px;
 	margin: 20px 100px;
 	padding: 10px;
@@ -426,7 +426,7 @@ body {
 	margin: 10px;
 }
 
-#info, #addAccount, #security, #export {
+#info, #addAccount, #security, #passphrase, #export {
 	position: absolute;
 	height: 460px;
 	width: 300px;
@@ -439,17 +439,17 @@ body {
 	z-index: 100;
 }
 
-#info.fadein, #addAccount.fadein, #security.fadein, #export.fadein {
+#info.fadein, #addAccount.fadein, #security.fadein, #passphrase.fadein, #export.fadein {
 	top: 10px;
 	-webkit-animation: fadein 0.2s 1 ease-out;
 }
 
-#info.fadeout, #addAccount.fadeout, #security.fadeout,  #export.fadeout {
+#info.fadeout, #addAccount.fadeout, #security.fadeout, #passphrase.fadeout, #export.fadeout {
 	top: 110px;
 	-webkit-animation: fadeout 0.2s 1 ease-in;
 }
 
-#infoClose, #addAccountClose, #securityClose, #exportClose {
+#infoClose, #addAccountClose, #securityClose, #passphraseClose, #exportClose {
 	height: 20px;
 	width: 20px;
 	font-size: 14px;
@@ -479,7 +479,9 @@ body {
 #infoClose:hover,
 #addAccountClose:hover,
 #securityClose:hover,
+#passphraseClose:hover,
 #security_save:hover,
+#passphrase_ok:hover,
 #export:hover {
 	color: black;
 }
@@ -537,7 +539,7 @@ body {
 	display: none;
 }
 
-#secret_box input, #security input {
+#secret_box input, #security input, #passphrase input {
 	display: block;
 	margin: 0 10px 10px 10px;
 	padding: 10px;
@@ -547,12 +549,12 @@ body {
 	outline: none;
 }
 
-#secret_box label, #security label, #security_warning {
+#secret_box label, #security label, #passphrase label, #security_warning, #passphrase_info {
 	display: block;
 	margin: 10px 0 0 10px;
 }
 
-#security_warning {
+#security_warning, #passphrase_info {
 	color: gray;
 }
 

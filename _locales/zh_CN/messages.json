@@ -130,5 +130,9 @@
 	"source": {
 		"message": "源代码",
 		"description": "Source Code."
+	},
+	"passphrase_info": {
+		"message": "输入密钥以解码账户数据。",
+		"description": "Passphrase Info"
 	}
 }

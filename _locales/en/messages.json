@@ -130,5 +130,9 @@
 	"source": {
 		"message": "Source Code",
 		"description": "Source Code."
+	},
+	"passphrase_info": {
+		"message": "Input passphrase to decrypt account data.",
+		"description": "Passphrase Info"
 	}
 }

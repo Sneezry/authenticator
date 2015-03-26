@@ -8,6 +8,7 @@ var dragBox;
 var notificationTimeout;
 var editTimeout;
 var decodedPhrase;
+var shownPassphrase = false;
 
 if(localStorage.phrase){
 	decodedPhrase = localStorage.phrase;
@@ -32,9 +33,11 @@ document.getElementById('menuSecurity').innerText = chrome.i18n.getMessage('secu
 document.getElementById('security_new_phrase_label').innerText = chrome.i18n.getMessage('phrase');
 document.getElementById('security_confirm_phrase_label').innerText = chrome.i18n.getMessage('confirm_phrase');
 document.getElementById('security_warning').innerText = chrome.i18n.getMessage('security_warning');
-document.getElementById('security_save').innerText = chrome.i18n.getMessage('security_warning');
 document.getElementById('exportButton').innerText = chrome.i18n.getMessage('update');
 document.getElementById('security_save').innerText = chrome.i18n.getMessage('ok');
+document.getElementById('passphrase_info').innerText = chrome.i18n.getMessage('passphrase_info');
+document.getElementById('passphrase_phrase_label').innerText = chrome.i18n.getMessage('passphrase');
+document.getElementById('passphrase_ok').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('menuSource').innerText = chrome.i18n.getMessage('source');
 document.getElementById('menuFeedback').innerText = chrome.i18n.getMessage('feedback');
 document.getElementById('version').innerText = 'Version '+chrome.runtime.getManifest().version;
@@ -64,7 +67,7 @@ document.getElementById('security_save').onclick = function(){
 	if(phrase === phrase2){
 		document.getElementById('security_new_phrase').value = '';
 		document.getElementById('security_confirm_phrase').value = '';
-		encryptSecret(phrase, function(){
+		encryptSecret(phrase, true, function(){
 			showMessage(chrome.i18n.getMessage('updateSuccess'), function(){
 				document.getElementById('security').className = 'fadeout';
 				setTimeout(function(){
@@ -81,11 +84,35 @@ document.getElementById('security_save').onclick = function(){
 	}
 }
 
+document.getElementById('passphrase_ok').onclick = function(){
+	var phrase = document.getElementById('phrase').value;
+	document.getElementById('phrase').value = '';
+	encryptSecret(phrase, false, function(){
+		showMessage(chrome.i18n.getMessage('updateSuccess'), function(){
+			document.getElementById('passphrase').className = 'fadeout';
+			setTimeout(function(){
+				document.getElementById('passphrase').className = '';
+				document.getElementById('passphrase').style.opacity = 0;
+			}, 200);
+		});
+	}, function(){
+		showMessage(chrome.i18n.getMessage('phrase_incorrect'));
+	});
+}
+
 document.getElementById('securityClose').onclick = function(){
 	document.getElementById('security').className = 'fadeout';
 	setTimeout(function(){
 		document.getElementById('security').className = '';
 		document.getElementById('security').style.opacity = 0;
+	}, 200);
+}
+
+document.getElementById('passphraseClose').onclick = function(){
+	document.getElementById('passphrase').className = 'fadeout';
+	setTimeout(function(){
+		document.getElementById('passphrase').className = '';
+		document.getElementById('passphrase').style.opacity = 0;
 	}, 200);
 }
 
@@ -153,7 +180,7 @@ document.getElementById('exportButton').onclick = function(){
 		data = JSON.parse(data);
 		chrome.storage.sync.set(data, function(){
 			if(decodedPhrase){
-				encryptSecret(decodedPhrase);
+				encryptSecret(decodedPhrase, true);
 			}
 			chrome.storage.sync.get(showCodes);
 			showMessage(chrome.i18n.getMessage('updateSuccess'), function(){
@@ -390,6 +417,13 @@ function updateCode(){
 	for(var i=0; i<_secret.length; i++){
 		if(!_secret[i].secret){
 			document.getElementById('code-'+i).innerText = chrome.i18n.getMessage('encrypted');
+			if(!shownPassphrase){
+				shownPassphrase = true;
+				document.getElementById('passphrase').className = 'fadein';
+				setTimeout(function(){
+					document.getElementById('passphrase').style.opacity = 1;
+				}, 200);
+			}
 		}
 		else{
 			document.getElementById('code-'+i).innerText = getCode(_secret[i].secret);
@@ -601,9 +635,9 @@ function showExport(){
 function copyCode(){
 	var code = this.innerText;
 	if('Encrypted'==code){
-		document.getElementById('security').className = 'fadein';
+		document.getElementById('passphrase').className = 'fadein';
 		setTimeout(function(){
-			document.getElementById('security').style.opacity = 1;
+			document.getElementById('passphrase').style.opacity = 1;
 		}, 200);
 		return;
 	}
@@ -624,15 +658,30 @@ function copyCode(){
 	});
 }
 
-function encryptSecret(phrase, success, fail){
-	var old_phrase = decodedPhrase;
-	decodedPhrase = phrase;
+function encryptSecret(phrase, updatePhrase, success, fail){
 	var errorPhrase = false;
+	var decryptedSecret;
 	chrome.storage.sync.get(function(result){
 		for(var i in result){
-			if(result[i].encrypted){
+			decryptedSecret = '';
+			if(result[i].encrypted && decodedPhrase){
 				try{
-					decryptedSecret = CryptoJS.AES.decrypt(result[i].secret, old_phrase).toString(CryptoJS.enc.Utf8);
+					decryptedSecret = CryptoJS.AES.decrypt(result[i].secret, decodedPhrase).toString(CryptoJS.enc.Utf8);
+				}
+				catch(e){
+					decryptedSecret = '';
+				}
+				if(decryptedSecret){
+					result[i].secret = decryptedSecret;
+				}
+				else if(updatePhrase){
+					errorPhrase = true;
+					continue;
+				}
+			}
+			if(result[i].encrypted && !decryptedSecret && !updatePhrase){
+				try{
+					decryptedSecret = CryptoJS.AES.decrypt(result[i].secret, phrase).toString(CryptoJS.enc.Utf8);
 				}
 				catch(e){
 					decryptedSecret = '';
@@ -641,30 +690,26 @@ function encryptSecret(phrase, success, fail){
 					result[i].secret = decryptedSecret;
 				}
 				else{
-					try{
-						decryptedSecret2 = CryptoJS.AES.decrypt(result[i].secret, phrase).toString(CryptoJS.enc.Utf8);
-					}
-					catch(e){
-						decryptedSecret2 = '';
-					}
-					if(decryptedSecret2){
-						result[i].secret = decryptedSecret2;
-					}
-					else{
-						errorPhrase = true;
-						continue;
-					}
-				}	
+					errorPhrase = true;
+					continue;
+				}
 			}
-			if(phrase){
+			if(phrase && decodedPhrase){
+				result[i].secret = CryptoJS.AES.encrypt(result[i].secret, updatePhrase?phrase:decodedPhrase).toString();
+				result[i].encrypted = true;
+			}
+			else if(phrase && !decodedPhrase){
 				result[i].secret = CryptoJS.AES.encrypt(result[i].secret, phrase).toString();
 				result[i].encrypted = true;
 			}
-			else{
+			else {
 				result[i].encrypted = false;
 			}
 		}
-		localStorage.encodedPhrase = CryptoJS.AES.encrypt(phrase,'').toString();
+		if(updatePhrase || !decodedPhrase){
+			decodedPhrase = phrase;
+			localStorage.encodedPhrase = CryptoJS.AES.encrypt(phrase,'').toString();
+		}
 		chrome.storage.sync.set(result);
 		showCodes(result);
 		if(errorPhrase && fail){
