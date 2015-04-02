@@ -13,10 +13,10 @@
 
 @-webkit-keyframes twinkling{
 	0%{
-		opacity:1;
+		color:#DD4B39;
 	}
 	100%{
-		opacity:0.5;
+		color:#EEA59C;
 	}
 }
 
@@ -151,8 +151,25 @@ body {
 #codes {
 	height: 440px;
 	overflow-x: hidden;
-	overflow-y: auto;
+	overflow-y: hidden;
 	background: #EEE;
+	padding-right:10px;
+}
+
+#codes:hover {
+	padding-right: 0;
+	overflow-y: scroll;
+}
+
+#codes::-webkit-scrollbar {
+	width: 10px;
+	background: #EEE;
+}
+
+#codes::-webkit-scrollbar-thumb {
+	background-color: #AAA;
+	border: 2px solid #EEE;
+	border-radius: 5px;
 }
 
 #codeClipboard {
@@ -162,6 +179,7 @@ body {
 
 .codeBox {
 	margin: 10px;
+	margin-right: 0;
 	padding: 10px;
 	border: #CCC 1px solid;
 	background: white;
@@ -219,7 +237,6 @@ body {
 }
 
 #codes.timeout .code {
-	color: #DD4B39;
 	-webkit-animation: twinkling 1s infinite ease-in-out;
 }
 
