@@ -12,11 +12,20 @@ var shownPassphrase = false;
 
 if(localStorage.phrase){
 	decodedPhrase = localStorage.phrase;
-	localStorage.encodedPhrase = CryptoJS.AES.encrypt(localStorage.phrase,'').toString();
+	if(localStorage.notRememberPassphrase){
+		document.cookie = 'passphrase='+CryptoJS.AES.encrypt(phrase,'').toString();
+		localStorage.removeItem('encodedPhrase');
+	}
+	else{
+		localStorage.encodedPhrase = CryptoJS.AES.encrypt(phrase,'').toString();
+	}
 	localStorage.removeItem('phrase');
 }
 else if(localStorage.encodedPhrase){
 	decodedPhrase = CryptoJS.AES.decrypt(localStorage.encodedPhrase, '').toString(CryptoJS.enc.Utf8);
+}
+else if(document.cookie){
+	decodedPhrase = CryptoJS.AES.decrypt(document.cookie.split('passphrase=')[1], '').toString(CryptoJS.enc.Utf8);
 }
 
 document.getElementById('extName').innerText = chrome.i18n.getMessage('extShortName');
@@ -38,10 +47,17 @@ document.getElementById('exportButton').innerText = chrome.i18n.getMessage('upda
 document.getElementById('security_save').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('passphrase_info').innerText = chrome.i18n.getMessage('passphrase_info');
 document.getElementById('passphrase_phrase_label').innerText = chrome.i18n.getMessage('passphrase');
+document.getElementById('remeber_new_phrase_label').innerText = chrome.i18n.getMessage('remeber_phrase');
+document.getElementById('remeber_phrase_label').innerText = chrome.i18n.getMessage('remeber_phrase');
 document.getElementById('passphrase_ok').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('menuSource').innerText = chrome.i18n.getMessage('source');
 document.getElementById('menuFeedback').innerText = chrome.i18n.getMessage('feedback');
 document.getElementById('version').innerText = 'Version '+chrome.runtime.getManifest().version;
+
+if(localStorage.notRememberPassphrase==='true'){
+	document.getElementById('remeber_new_phrase').checked = false;
+	document.getElementById('remeber_phrase').checked = false;
+}
 
 chrome.storage.sync.get(showCodes);
 
@@ -69,8 +85,13 @@ document.getElementById('menuSyncTime').onclick = function(){
 		if(granted){
 			var xhr = new XMLHttpRequest();
 			xhr.open('HEAD', 'https://www.google.com/');
+			xhrAbort = setTimeout(function(){
+				xhr.abort();
+				showMessage(chrome.i18n.getMessage('updateFailure'));
+			}, 5000);
 			xhr.onreadystatechange = function() {
 				if(xhr.readyState==4) {
+					clearTimeout(xhrAbort);
 					var serverTime = new Date(xhr.getResponseHeader('date'));
 					serverTime = serverTime.getTime();
 					var clientTime = new Date();
@@ -90,6 +111,8 @@ document.getElementById('security_save').onclick = function(){
 	if(phrase === phrase2){
 		document.getElementById('security_new_phrase').value = '';
 		document.getElementById('security_confirm_phrase').value = '';
+		localStorage.notRememberPassphrase = (!document.getElementById('remeber_new_phrase').checked).toString();
+		document.getElementById('remeber_phrase').checked = document.getElementById('remeber_new_phrase').checked;
 		encryptSecret(phrase, true, function(){
 			showMessage(chrome.i18n.getMessage('updateSuccess'), function(){
 				document.getElementById('security').className = 'fadeout';
@@ -110,14 +133,14 @@ document.getElementById('security_save').onclick = function(){
 document.getElementById('passphrase_ok').onclick = function(){
 	var phrase = document.getElementById('phrase').value;
 	document.getElementById('phrase').value = '';
+	localStorage.notRememberPassphrase = (!document.getElementById('remeber_phrase').checked).toString();
+	document.getElementById('remeber_new_phrase').checked = document.getElementById('remeber_phrase').checked;
 	encryptSecret(phrase, false, function(){
-		showMessage(chrome.i18n.getMessage('updateSuccess'), function(){
-			document.getElementById('passphrase').className = 'fadeout';
-			setTimeout(function(){
-				document.getElementById('passphrase').className = '';
-				document.getElementById('passphrase').style.opacity = 0;
-			}, 200);
-		});
+		document.getElementById('passphrase').className = 'fadeout';
+		setTimeout(function(){
+			document.getElementById('passphrase').className = '';
+			document.getElementById('passphrase').style.opacity = 0;
+		}, 200);
 	}, function(){
 		showMessage(chrome.i18n.getMessage('phrase_incorrect'));
 	});
@@ -252,6 +275,55 @@ function showMessage(msg, closeAction){
 	}
 }
 
+function updateSecret(callback){
+	for(var i=0; i<_secret.length; i++){
+		if(deleteIdList.indexOf(i)!=-1){
+			_secret[i] = null;
+		}
+	}
+	_secret = sortCode();
+	chrome.storage.sync.remove(deleteKeyList, function(){
+		deleteIdList = [];
+		deleteKeyList = [];
+		chrome.storage.sync.get(function(secret){
+			var changeSecret = {};
+			for(var i=0; i<_secret.length; i++){
+				if(secret[_secret[i].secret] && (secret[_secret[i].secret].index != _secret[i].index ||
+							secret[_secret[i].secret].account != _secret[i].account ||
+							secret[_secret[i].secret].issuer != _secret[i].issuer) ||
+					secret[CryptoJS.MD5(_secret[i].secret)] && (secret[CryptoJS.MD5(_secret[i].secret)].index != _secret[i].index ||
+							secret[CryptoJS.MD5(_secret[i].secret)].account != _secret[i].account ||
+							secret[CryptoJS.MD5(_secret[i].secret)].issuer != _secret[i].issuer)){
+					changeSecret[CryptoJS.MD5(_secret[i].secret)] = _secret[i];
+					if(decodedPhrase){
+						changeSecret[CryptoJS.MD5(_secret[i].secret)].secret = CryptoJS.AES.encrypt(_secret[i].secret, decodedPhrase).toString();
+					}
+				}
+			}
+			if(changeSecret){
+				chrome.storage.sync.set(changeSecret, function(){
+					if(callback){
+						callback();
+					}
+					else{
+						chrome.storage.sync.get(showCodes);
+						codes.scrollTop = 0;
+					}
+				});
+			}
+			else{
+				if(callback){
+					callback();
+				}
+				else{
+					chrome.storage.sync.get(showCodes);
+					codes.scrollTop = 0;
+				}
+			}
+		});
+	});
+}
+
 function saveSecret(){
 	var account = document.getElementById('account_input').value;
 	var secret = document.getElementById('secret_input').value;
@@ -259,35 +331,37 @@ function saveSecret(){
 		showMessage(chrome.i18n.getMessage('err_acc_sec'));
 		return;
 	}
-	chrome.storage.sync.get(function(result){
-		var index = Object.keys(result).length;
-		var addSecret = {};
-		if(decodedPhrase){
-			addSecret[CryptoJS.MD5(secret)] = {
-				account: account,
-				issuer: '',
-				secret: CryptoJS.AES.encrypt(secret, decodedPhrase).toString(),
-				index: index,
-				encrypted: true
+	updateSecret(function(){
+		chrome.storage.sync.get(function(result){
+			var index = Object.keys(result).length;
+			var addSecret = {};
+			if(decodedPhrase){
+				addSecret[CryptoJS.MD5(secret)] = {
+					account: account,
+					issuer: '',
+					secret: CryptoJS.AES.encrypt(secret, decodedPhrase).toString(),
+					index: index,
+					encrypted: true
+				}
 			}
-		}
-		else{
-			addSecret[CryptoJS.MD5(secret)] = {
-				account: account,
-				issuer: '',
-				secret: secret,
-				index: index
+			else{
+				addSecret[CryptoJS.MD5(secret)] = {
+					account: account,
+					issuer: '',
+					secret: secret,
+					index: index
+				}
 			}
-		}
-		chrome.storage.sync.set(addSecret);
-		document.getElementById('infoAction').className = '';
-		document.getElementById('addAccount').className = '';
-		document.getElementById('addAccount').style.opacity = 0;
-		document.getElementById('account_input').value = '';
-		document.getElementById('secret_input').value = '';
-		document.getElementById('editAction').setAttribute('edit', 'false');
-		document.getElementById('editAction').innerHTML = '&#xf014f;';
-		chrome.storage.sync.get(showCodes);
+			chrome.storage.sync.set(addSecret);
+			document.getElementById('infoAction').className = '';
+			document.getElementById('addAccount').className = '';
+			document.getElementById('addAccount').style.opacity = 0;
+			document.getElementById('account_input').value = '';
+			document.getElementById('secret_input').value = '';
+			document.getElementById('editAction').setAttribute('edit', 'false');
+			document.getElementById('editAction').innerHTML = '&#xf014f;';
+			chrome.storage.sync.get(showCodes);
+		});
 	});
 }
 
@@ -295,7 +369,9 @@ function beginCapture(){
 	chrome.tabs.query({ active: true, lastFocusedWindow: true }, function(tabs){
 		var tab = tabs[0];
 		chrome.tabs.sendMessage(tab.id, {action: 'capture'});
-		window.close();
+		updateSecret(function(){
+			window.close();
+		});
 	});
 }
 
@@ -373,43 +449,8 @@ function editCodes(){
 		codes.className = '';
 		this.innerHTML = '&#xf014f;';
 		this.setAttribute('edit', 'false');
-		for(var i=0; i<_secret.length; i++){
-			if(deleteIdList.indexOf(i)!=-1){
-				_secret[i] = null;
-			}
-		}
-		_secret = sortCode();
 		clearInterval(updateInterval);
-		chrome.storage.sync.remove(deleteKeyList, function(){
-			deleteIdList = [];
-			deleteKeyList = [];
-			chrome.storage.sync.get(function(secret){
-				var changeSecret = {};
-				for(var i=0; i<_secret.length; i++){
-					if(secret[_secret[i].secret] && (secret[_secret[i].secret].index != _secret[i].index ||
-								secret[_secret[i].secret].account != _secret[i].account ||
-								secret[_secret[i].secret].issuer != _secret[i].issuer) ||
-						secret[CryptoJS.MD5(_secret[i].secret)] && (secret[CryptoJS.MD5(_secret[i].secret)].index != _secret[i].index ||
-								secret[CryptoJS.MD5(_secret[i].secret)].account != _secret[i].account ||
-								secret[CryptoJS.MD5(_secret[i].secret)].issuer != _secret[i].issuer)){
-						changeSecret[CryptoJS.MD5(_secret[i].secret)] = _secret[i];
-						if(decodedPhrase){
-							changeSecret[CryptoJS.MD5(_secret[i].secret)].secret = CryptoJS.AES.encrypt(_secret[i].secret, decodedPhrase).toString();
-						}
-					}
-				}
-				if(changeSecret){
-					chrome.storage.sync.set(changeSecret, function(){
-						chrome.storage.sync.get(showCodes);
-						codes.scrollTop = 0;
-					});
-				}
-				else{
-					chrome.storage.sync.get(showCodes);
-					codes.scrollTop = 0;
-				}
-			});
-		});
+		updateSecret();
 	}
 }
 
@@ -737,7 +778,13 @@ function encryptSecret(phrase, updatePhrase, success, fail){
 		}
 		if(updatePhrase || !decodedPhrase){
 			decodedPhrase = phrase;
-			localStorage.encodedPhrase = CryptoJS.AES.encrypt(phrase,'').toString();
+			if(localStorage.notRememberPassphrase==='true'){
+				document.cookie = 'passphrase='+CryptoJS.AES.encrypt(phrase,'').toString();
+				localStorage.removeItem('encodedPhrase');
+			}
+			else{
+				localStorage.encodedPhrase = CryptoJS.AES.encrypt(phrase,'').toString();
+			}
 		}
 		chrome.storage.sync.set(result);
 		showCodes(result);

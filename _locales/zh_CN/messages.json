@@ -138,5 +138,9 @@
 	"sync_clock": {
 		"message": "通过Google校准时间",
 		"description": "Sync Clock"
+	},
+	"remeber_phrase": {
+		"message": "记住密钥",
+		"description": "Remeber Passphrase"
 	}
 }

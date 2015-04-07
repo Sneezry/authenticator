@@ -2,11 +2,20 @@ var decodedPhrase;
 
 if(localStorage.phrase){
 	decodedPhrase = localStorage.phrase;
-	localStorage.encodedPhrase = CryptoJS.AES.encrypt(localStorage.phrase,'').toString();
+	if(localStorage.notRememberPassphrase){
+		document.cookie = 'passphrase='+CryptoJS.AES.encrypt(phrase,'').toString();
+		localStorage.removeItem('encodedPhrase');
+	}
+	else{
+		localStorage.encodedPhrase = CryptoJS.AES.encrypt(phrase,'').toString();
+	}
 	localStorage.removeItem('phrase');
 }
 else if(localStorage.encodedPhrase){
 	decodedPhrase = CryptoJS.AES.decrypt(localStorage.encodedPhrase, '').toString(CryptoJS.enc.Utf8);
+}
+else if(localStorage.notRememberPassphrase==='true'){
+	decodedPhrase = CryptoJS.AES.decrypt(document.cookie.split('passphrase=')[1], '').toString(CryptoJS.enc.Utf8);
 }
 
 function getQr(tab, left, top, width, height, windowWidth){

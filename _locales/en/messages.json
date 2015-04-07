@@ -138,5 +138,9 @@
 	"sync_clock": {
 		"message": "Sync Clock with Google",
 		"description": "Sync Clock"
+	},
+	"remeber_phrase": {
+		"message": "Remeber Passphrase",
+		"description": "Remeber Passphrase"
 	}
 }

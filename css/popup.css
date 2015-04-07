@@ -116,8 +116,8 @@ body {
 }
 
 #header, #menuHead {
-	height: 40px;
-	line-height: 40px;
+	height: 38px;
+	line-height: 38px;
 	position: relative;
 	text-align: center;
 	font-size: 16px;
@@ -149,7 +149,7 @@ body {
 }
 
 #codes {
-	height: 440px;
+	height: 442px;
 	overflow-x: hidden;
 	overflow-y: hidden;
 	background: #EEE;
@@ -283,7 +283,7 @@ body {
 	overflow: hidden;
 }
 
-#codes #add, #add_qr, #add_secret, #add_button, #security_save, #passphrase_ok, #message_close, #exportButton {
+#add, #add_qr, #add_secret, #add_button, #security_save, #passphrase_ok, #message_close, #exportButton {
 	margin: 10px;
 	padding: 20px;
 	border: #CCC 1px solid;
@@ -294,6 +294,10 @@ body {
 	font-size: 16px;
 	color: gray;
 	cursor: pointer;
+}
+
+#add {
+	margin-right: 0;
 }
 
 #message_close, #add_button, #exportButton, #security_save, #passphrase_ok {
@@ -332,8 +336,8 @@ body {
 	position: absolute;
 	left: 20px;
 	bottom: 0;
-	height: 40px;
-	line-height: 40px;
+	height: 38px;
+	line-height: 38px;
 	font-size: 16px;
 	font-family: 'iconfont';
 	color: gray;
@@ -348,8 +352,8 @@ body {
 	position: absolute;
 	right: 20px;
 	bottom: 0;
-	height: 40px;
-	line-height: 40px;
+	height: 38px;
+	line-height: 38px;
 	font-size: 16px;
 	font-family: 'iconfont';
 	color: gray;
@@ -477,10 +481,12 @@ body {
 
 #menuClose {
 	position: absolute;
+	height: 38px;
+	line-height: 38px;
 	left: 20px;
 	font-size: 24px;
 	color: gray;
-	top: 0;
+	bottom: 0;
 	cursor: pointer;
 }
 
@@ -564,6 +570,16 @@ body {
 	border: #CCC 1px solid;
 	background: white;
 	outline: none;
+}
+
+.checkbox_group input[type="checkbox"] {
+	display: inline-block !important;
+	width: auto !important;
+}
+
+.checkbox_group label {
+	display: inline-block !important;
+	margin-left: 0 !important;
 }
 
 #secret_box label, #security label, #passphrase label, #security_warning, #passphrase_info {
