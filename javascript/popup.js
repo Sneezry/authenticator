@@ -804,7 +804,7 @@ function showNotification(message){
 function syncTimeWithGoogle(showStatusBox){
 	var xhr = new XMLHttpRequest();
 	xhr.open('HEAD', 'https://www.google.com/');
-	xhrAbort = setTimeout(function(){
+	var xhrAbort = setTimeout(function(){
 		xhr.abort();
 		if(showStatusBox){
 			showMessage(chrome.i18n.getMessage('updateFailure'));
@@ -818,7 +818,12 @@ function syncTimeWithGoogle(showStatusBox){
 			var clientTime = new Date();
 			clientTime = clientTime.getTime();
 			var offset = Math.round((serverTime - clientTime)/1000);
-			if(Math.abs(offset) <= 300){ // within 5 minutes
+			if(!serverTime){
+				if(showStatusBox){
+					showMessage(chrome.i18n.getMessage('updateFailure'));
+				}
+			}
+			else if(Math.abs(offset) <= 300){ // within 5 minutes
 				localStorage.offset = Math.round((serverTime - clientTime)/1000);
 				if(showStatusBox){
 					showMessage(chrome.i18n.getMessage('updateSuccess'));
