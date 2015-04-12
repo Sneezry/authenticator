@@ -142,5 +142,13 @@
 	"remeber_phrase": {
 		"message": "Remeber Passphrase",
 		"description": "Remeber Passphrase"
+	},
+	"clock_too_far_off": {
+		"message": "Caution! Your local clock is too far off, please fix it before continuing.",
+		"description": "Local Time is Too Far Off"
+	},
+	"remind_backup": {
+		"message": "Do you have a backup for your secrets? Please note that no one can help you with getting back locked account, don't wait until it's too late. We will remind you to make a backup again after 30 days.",
+		"description": "Remind Backup"
 	}
 }

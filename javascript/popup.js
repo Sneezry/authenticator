@@ -78,29 +78,20 @@ document.getElementById('menuSecurity').onclick = function(){
 	}, 200);
 }
 
+chrome.permissions.contains({
+	origins: ['https://www.google.com/']
+},function(hasPermission){
+	if(hasPermission){
+		syncTimeWithGoogle(false);
+	}
+});
+
 document.getElementById('menuSyncTime').onclick = function(){
 	chrome.permissions.request({
 		origins: ['https://www.google.com/']
 	}, function(granted){
 		if(granted){
-			var xhr = new XMLHttpRequest();
-			xhr.open('HEAD', 'https://www.google.com/');
-			xhrAbort = setTimeout(function(){
-				xhr.abort();
-				showMessage(chrome.i18n.getMessage('updateFailure'));
-			}, 5000);
-			xhr.onreadystatechange = function() {
-				if(xhr.readyState==4) {
-					clearTimeout(xhrAbort);
-					var serverTime = new Date(xhr.getResponseHeader('date'));
-					serverTime = serverTime.getTime();
-					var clientTime = new Date();
-					clientTime = clientTime.getTime();
-					localStorage.offset = Math.round((serverTime - clientTime)/1000);
-					showMessage(chrome.i18n.getMessage('updateSuccess'));
-				}
-			};
-			xhr.send();
+			syncTimeWithGoogle(true);
 		}
 	});
 }
@@ -809,6 +800,49 @@ function showNotification(message){
 		},200);
 	},1000);
 }
+
+function syncTimeWithGoogle(showStatusBox){
+	var xhr = new XMLHttpRequest();
+	xhr.open('HEAD', 'https://www.google.com/');
+	xhrAbort = setTimeout(function(){
+		xhr.abort();
+		if(showStatusBox){
+			showMessage(chrome.i18n.getMessage('updateFailure'));
+		}
+	}, 5000);
+	xhr.onreadystatechange = function() {
+		if(xhr.readyState==4) {
+			clearTimeout(xhrAbort);
+			var serverTime = new Date(xhr.getResponseHeader('date'));
+			serverTime = serverTime.getTime();
+			var clientTime = new Date();
+			clientTime = clientTime.getTime();
+			var offset = Math.round((serverTime - clientTime)/1000);
+			if(Math.abs(offset) <= 300){ // within 5 minutes
+				localStorage.offset = Math.round((serverTime - clientTime)/1000);
+				if(showStatusBox){
+					showMessage(chrome.i18n.getMessage('updateSuccess'));
+				}
+			}
+			else{
+				showMessage(chrome.i18n.getMessage('clock_too_far_off'));
+			}
+		}
+	};
+	xhr.send();
+}
+
+(function(){
+	var clientTime = new Date();
+	clientTime = Math.floor(clientTime.getTime()/1000/3600/24);
+	if(!localStorage.lastRemindingBackupTime){
+		localStorage.lastRemindingBackupTime = clientTime;
+	}
+	else if(clientTime-localStorage.lastRemindingBackupTime>=30 || clientTime-localStorage.lastRemindingBackupTime<0){
+		showMessage(chrome.i18n.getMessage('remind_backup'));
+		localStorage.lastRemindingBackupTime = clientTime;
+	}
+})();
 
 (function(){
 	var extName = document.getElementById('extName');
