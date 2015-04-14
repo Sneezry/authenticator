@@ -8,8 +8,8 @@
 		"description": "Extension Short Name."
 	},
 	"extDesc": {
-		"message": "适用于Google™身份验证器。点击编辑按钮后点击添加按钮，拖拽鼠标选择QR码区域添加新账号。",
-		"description": "Extension Name."
+		"message": "适用于Google身份验证器及战网安全令。",
+		"description": "Extension Description."
 	},
 	"added": {
 		"message": "已添加。",

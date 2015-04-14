@@ -8,8 +8,8 @@
 		"description": "Extension Short Name."
 	},
 	"extDesc": {
-		"message": "For Google™ Authenticator. Click edit button and add button, then drag mouse to select QR code area to add new account.",
-		"description": "Extension Name."
+		"message": "For Google Authenticator and Battle.net Authenticator.",
+		"description": "Extension Description."
 	},
 	"added": {
 		"message": " has been added.",
