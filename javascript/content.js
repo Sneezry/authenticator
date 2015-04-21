@@ -98,6 +98,7 @@ function showQrCode(msg){
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 	if(message.action == 'capture'){
+		sendResponse('beginCapture');
 		showGrayLayout();
 	}
 	else if(message.action == 'errorsecret'){

@@ -9,6 +9,7 @@ var notificationTimeout;
 var editTimeout;
 var decodedPhrase;
 var shownPassphrase = false;
+var capturing = false;
 
 if(localStorage.phrase){
 	decodedPhrase = localStorage.phrase;
@@ -195,7 +196,9 @@ document.getElementById('addAccountClose').onclick = function(){
 	}, 200);
 }
 
-document.getElementById('add_qr').onclick = beginCapture;
+document.getElementById('add_qr').onclick = function(){
+	beginCapture(false);
+};
 
 document.getElementById('add_secret').onclick = function(){
 	document.getElementById('add_qr').style.display = 'none';
@@ -236,7 +239,9 @@ document.getElementById('exportButton').onclick = function(){
 }
 
 document.getElementById('editAction').onmousedown = function(){
-	editTimeout = setTimeout(beginCapture, 500);
+	editTimeout = setTimeout(function(){
+		beginCapture(true);
+	}, 500);
 }
 
 document.getElementById('editAction').onclick = editCodes;
@@ -356,12 +361,19 @@ function saveSecret(){
 	});
 }
 
-function beginCapture(){
+function beginCapture(preventEdit){
+	capturing = !!preventEdit;
 	chrome.tabs.query({ active: true, lastFocusedWindow: true }, function(tabs){
 		var tab = tabs[0];
-		chrome.tabs.sendMessage(tab.id, {action: 'capture'});
-		updateSecret(function(){
-			window.close();
+		chrome.tabs.sendMessage(tab.id, {action: 'capture'}, function(result){
+			if(result!=='beginCapture'){
+				showMessage(chrome.i18n.getMessage('capture_failed'));
+			}
+			else{
+				updateSecret(function(){
+					window.close();
+				});
+			}
 		});
 	});
 }
@@ -410,6 +422,10 @@ function overBox(e){
 
 function editCodes(){
 	clearTimeout(editTimeout);
+	if(capturing){
+		capturing = false;
+		return;
+	}
 	var codes = document.getElementById('codes');
 	if(this.getAttribute('edit') == 'false'){
 		document.getElementById('infoAction').className = 'hidden';

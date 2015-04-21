@@ -150,5 +150,9 @@
 	"remind_backup": {
 		"message": "Do you have a backup for your secrets? Please note that no one can help you with getting back locked account, don't wait until it's too late. We will remind you to make a backup again after 30 days.",
 		"description": "Remind Backup"
+	},
+	"capture_failed": {
+		"message": "Capture failed, please reload the page you are veiwing and try again.",
+		"description": "Capture Failed"
 	}
 }
