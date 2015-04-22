@@ -37,10 +37,7 @@ document.getElementById('message_close').innerText = chrome.i18n.getMessage('ok'
 document.getElementById('account_label').innerText = chrome.i18n.getMessage('account');
 document.getElementById('secret_label').innerText = chrome.i18n.getMessage('secret');
 document.getElementById('menuName').innerText = chrome.i18n.getMessage('settings');
-document.getElementById('menuAbout').innerText = chrome.i18n.getMessage('about');
-document.getElementById('menuExImport').innerText = chrome.i18n.getMessage('export_import');
-document.getElementById('menuSecurity').innerText = chrome.i18n.getMessage('security');
-document.getElementById('menuSyncTime').innerText = chrome.i18n.getMessage('sync_clock');
+
 document.getElementById('security_new_phrase_label').innerText = chrome.i18n.getMessage('phrase');
 document.getElementById('security_confirm_phrase_label').innerText = chrome.i18n.getMessage('confirm_phrase');
 document.getElementById('security_warning').innerText = chrome.i18n.getMessage('security_warning');
@@ -51,9 +48,14 @@ document.getElementById('passphrase_phrase_label').innerText = chrome.i18n.getMe
 document.getElementById('remeber_new_phrase_label').innerText = chrome.i18n.getMessage('remeber_phrase');
 document.getElementById('remeber_phrase_label').innerText = chrome.i18n.getMessage('remeber_phrase');
 document.getElementById('passphrase_ok').innerText = chrome.i18n.getMessage('ok');
-document.getElementById('menuSource').innerText = chrome.i18n.getMessage('source');
-document.getElementById('menuFeedback').innerText = chrome.i18n.getMessage('feedback');
 document.getElementById('version').innerText = 'Version '+chrome.runtime.getManifest().version;
+
+document.getElementById('menuAbout').innerHTML += chrome.i18n.getMessage('about');
+document.getElementById('menuExImport').innerHTML += chrome.i18n.getMessage('export_import');
+document.getElementById('menuSecurity').innerHTML += chrome.i18n.getMessage('security');
+document.getElementById('menuSyncTime').innerHTML += chrome.i18n.getMessage('sync_clock');
+document.getElementById('menuSource').innerHTML += chrome.i18n.getMessage('source');
+document.getElementById('menuFeedback').innerHTML += chrome.i18n.getMessage('feedback');
 
 if(localStorage.notRememberPassphrase==='true'){
 	document.getElementById('remeber_new_phrase').checked = false;
@@ -355,7 +357,7 @@ function saveSecret(){
 			document.getElementById('account_input').value = '';
 			document.getElementById('secret_input').value = '';
 			document.getElementById('editAction').setAttribute('edit', 'false');
-			document.getElementById('editAction').innerHTML = '&#xf014f;';
+			document.getElementById('editAction').innerHTML = '<i class="fa fa-pencil"></i>';
 			chrome.storage.sync.get(showCodes);
 		});
 	});
@@ -431,8 +433,8 @@ function editCodes(){
 		document.getElementById('infoAction').className = 'hidden';
 		clearInterval(updateInterval);
 		codes.className = 'edit';
-		this.innerHTML = '&#xf00b2;';
 		this.setAttribute('edit', 'true');
+		this.innerHTML = '<i class="fa fa-check"></i>';
 		var code = document.getElementsByClassName('code');
 		var codeBox = document.getElementsByClassName('codeBox');
 		for(var i=0; i<code.length; i++){
@@ -454,8 +456,8 @@ function editCodes(){
 	else{
 		document.getElementById('infoAction').className = '';
 		codes.className = '';
-		this.innerHTML = '&#xf014f;';
 		this.setAttribute('edit', 'false');
+		this.innerHTML = '<i class="fa fa-pencil"></i>';
 		clearInterval(updateInterval);
 		updateSecret();
 	}
@@ -573,7 +575,7 @@ function showCodes(result){
 		}
 		document.getElementById('infoAction').className = '';
 		document.getElementById('editAction').setAttribute('edit', 'false');
-		document.getElementById('editAction').innerHTML = '&#xf014f;';
+		document.getElementById('editAction').innerHTML = '<i class="fa fa-pencil"></i>';
 		for(var i=0; i<_secret.length; i++){
 			try{
 				_secret[i].issuer = decodeURIComponent(_secret[i].issuer);
@@ -586,16 +588,30 @@ function showCodes(result){
 			var el = document.createElement('div');
 			el.id = 'codeBox-'+i;
 			el.className = 'codeBox';
-			el.innerHTML = '<div class="deleteAction" codeId="'+i+'" key="'+_secret[i].hash+'">&#xf00b4;</div>'+
+			el.innerHTML = '<div class="deleteAction" codeId="'+i+'" key="'+_secret[i].hash+'"><i class="fa fa-minus-circle"></i></div>'+
 							'<div class="sector"></div>'+
 							(_secret[i].issuer?('<div class="issuer">'+_secret[i].issuer+'</div>'):'')+
 							'<div class="issuerEdit"><input class="issuerEditBox" type="text" codeId="'+i+'" value="'+(_secret[i].issuer?_secret[i].issuer:'')+'" /></div>'+
 							'<div class="code" id="code-'+i+'">&bull;&bull;&bull;&bull;&bull;&bull;</div>'+
 							'<div class="account">'+_secret[i].account+'</div>'+
 							'<div class="accountEdit"><input class="accountEditBox" type="text" codeId="'+i+'" value="'+_secret[i].account+'" /></div>'+
-							'<div id="showqr-'+i+'" class="showqr">&#x3433;</div>'+
-							'<div class="movehandle">&#xf0025;</div>';
+							'<div id="showqr-'+i+'" class="showqr"><i class="fa fa-qrcode"></i></div>'+
+							'<div class="movehandle"><i class="fa fa-bars"></i></div>';
 			document.getElementById('codeList').appendChild(el);
+			if(!_secret[i].encrypted){
+				el.setAttribute('unencrypted', 'true');
+				var warning = document.createElement('div');
+				warning.className = 'warning';
+				warning.innerText = chrome.i18n.getMessage('unencrypted_secret_warning');
+				warning.onclick = function(){
+					document.getElementById('security').className = 'fadein';
+					setTimeout(function(){
+						document.getElementById('security').style.opacity = 1;
+					}, 200);
+				};
+				el.appendChild(warning);
+			}
+
 		}
 		var codeCopy = document.getElementsByClassName('code');
 		for(var i=0; i<codeCopy.length; i++){

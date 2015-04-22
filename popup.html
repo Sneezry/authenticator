@@ -8,40 +8,41 @@
 <script src="totp/jssha-1.31.min.js"></script>
 <script src="totp/totp.js"></script>
 <script src="qrcode.js/qrcode.js"></script>
+<link href="css/font-awesome.css" type="text/css" rel="stylesheet" charset="utf-8" />
 <link href="css/popup.css" type="text/css" rel="stylesheet" charset="utf-8" />
 </head>
 <body>
-<div id="header"><span id="extName">Google Authenticator</span><div id="infoAction">&#xf0142;</div><div id="editAction" edit='false'>&#xf014f;</div></div>
+<div id="header"><span id="extName">Google Authenticator</span><div id="infoAction"><i class="fa fa-cog"></i></div><div id="editAction" edit='false'><i class="fa fa-pencil"></i></div></div>
 <div id="codes">
 <div id="codeList"></div>
-<div id="add">+</div>
+<div id="add"><i class="fa fa-plus"></i></div>
 </div>
 <div id="notification"></div>
 <div id="menu">
 <div id="menuHead">
 <span id="menuName"></span>
-<div id="menuClose">&#171;</div>
+<div id="menuClose"><i class="fa fa-arrow-left"></i></div>
 </div>
 <div class="menuList">
-	<p id="menuAbout"></p>
+	<p id="menuAbout"><i class="fa fa-info-circle"></i></p>
 </div>
 <div class="menuList">
-	<p id="menuExImport"></p>
-	<p id="menuSecurity"></p>
-    <p id="menuSyncTime"></p>
+	<p id="menuExImport"><i class="fa fa-exchange"></i></p>
+	<p id="menuSecurity"><i class="fa fa-lock"></i></p>
+    <p id="menuSyncTime"><i class="fa fa-refresh"></i></p>
 </div>
 <div class="menuList">
-	<p><a id="menuFeedback" target="_blank" href="https://github.com/Sneezry/authenticator/issues/new"></a></p>
-	<p><a id="menuSource" target="_blank" href="https://github.com/Sneezry/authenticator"></a></p>
+	<p><i class="fa fa-comments-o"></i><a id="menuFeedback" target="_blank" href="https://github.com/Sneezry/authenticator/issues/new"></a></p>
+	<p><i class="fa fa-code"></i><a id="menuSource" target="_blank" href="https://github.com/Sneezry/authenticator"></a></p>
 </div>
 <div id="version"></div>
 </div>
 <div id="info">
-<div id="infoClose">&#xf0155;</div>
+<div id="infoClose"><i class="fa fa-times-circle"></i></div>
 <div id="infoContent"></div>
 </div>
 <div id="addAccount">
-<div id="addAccountClose">&#xf0155;</div>
+<div id="addAccountClose"><i class="fa fa-times-circle"></i></div>
 <div id="addAccountContent">
 <div id="add_qr"></div>
 <div id="add_secret"></div>
@@ -55,7 +56,7 @@
 </div>
 </div>
 <div id="security">
-<div id="securityClose">&#xf0155;</div>
+<div id="securityClose"><i class="fa fa-times-circle"></i></div>
 <div id="security_warning"></div>
 <label for="security_new_phrase" id="security_new_phrase_label"></label>
 <input id="security_new_phrase" type="password" />
@@ -68,7 +69,7 @@
 <div id="security_save"></div>
 </div>
 <div id="passphrase">
-<div id="passphraseClose">&#xf0155;</div>
+<div id="passphraseClose"><i class="fa fa-times-circle"></i></div>
 <div id="passphrase_info"></div>
 <label for="phrase" id="passphrase_phrase_label"></label>
 <input id="phrase" type="password" />
@@ -79,7 +80,7 @@
 <div id="passphrase_ok"></div>
 </div>
 <div id="export">
-<div id="exportClose">&#xf0155;</div>
+<div id="exportClose"><i class="fa fa-times-circle"></i></div>
 <div id="exportContent">
 <textarea id="exportData"></textarea>
 <div id="exportButton"></div>

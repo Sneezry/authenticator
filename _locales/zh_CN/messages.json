@@ -20,11 +20,11 @@
 		"description": "QR Error."
 	},
 	"errorsecret": {
-		"message": "秘钥错误，仅支持Base32(A-Z, 2-7 and =)和HEX(0-9 and A-F)格式，然而您的秘钥是：",
+		"message": "密钥错误，仅支持Base32（A-Z，2-7及=）和HEX（0-9及A-F）格式，然而您的密钥是：",
 		"description": "Secret Error."
 	},
 	"info": {
-		"message": "<p><strong>Authenticator</strong> for Google&trade; Authenticator,<br/>&copy; 2014 <a target='_blank' href='http://sneezry.com'>Sneezry</a>. Released under the Apache License 2.0.</p><p>Google&trade;是Google的商标，Google Authenticator是Google的商品名，以上所有权归Google公司所有。</p><p><a target='_blank' href='https://github.com/LazarSoft/jsqrcode'>jsqrcode</a>的所有权归jsqrcode的作者所有。以Apache协议授权。</p><p><a target='_blank' href='https://github.com/zxing/zxing'>ZXing</a>的所有权归ZXing的作者所有。以Apache协议授权。</p><p><a target='_blank' href='http://blog.tinisles.com/2011/10/google-authenticator-one-time-password-algorithm-in-javascript/'>totp.js</a>的所有权归其作者所有。以MIT协议授权。</p><p><a target='_blank' href='http://caligatio.github.com/jsSHA/'>jsSHA</a>的所有权归jsSHA的作者所有。以BSD协议授权。</p><p><a target='_blank' href='http://davidshimjs.github.io/qrcodejs/'>qrcode.js</a>的所有权归qrcode.js作者所有。以MIT协议授权。</p><p><a target='_blank' href='https://code.google.com/p/crypto-js/'>crypto-js</a>的所有权归crypto-js作者所有。以BSD协议授权。</p><p><a target='_blank' href='https://www.google.com/fonts/specimen/Droid+Sans+Mono'>Droid Sans Mono</a>的所有权归Steve Matteson所有。以Apache协议授权。</p><p>感谢 Mike Robinson &lt;3</p>",
+		"message": "<p><strong>Authenticator</strong> for Google&trade; Authenticator,<br/>&copy; 2014 <a target='_blank' href='http://sneezry.com'>Sneezry</a>. Released under the Apache License 2.0.</p><p>Google&trade;是Google的商标，Google Authenticator是Google的商品名，以上所有权归Google公司所有。</p><p><a target='_blank' href='https://github.com/LazarSoft/jsqrcode'>jsqrcode</a>的所有权归jsqrcode的作者所有。以Apache协议授权。</p><p><a target='_blank' href='https://github.com/zxing/zxing'>ZXing</a>的所有权归ZXing的作者所有。以Apache协议授权。</p><p><a target='_blank' href='http://blog.tinisles.com/2011/10/google-authenticator-one-time-password-algorithm-in-javascript/'>totp.js</a>的所有权归其作者所有。以MIT协议授权。</p><p><a target='_blank' href='http://caligatio.github.com/jsSHA/'>jsSHA</a>的所有权归jsSHA的作者所有。以BSD协议授权。</p><p><a target='_blank' href='http://davidshimjs.github.io/qrcodejs/'>qrcode.js</a>的所有权归qrcode.js作者所有。以MIT协议授权。</p><p><a target='_blank' href='https://code.google.com/p/crypto-js/'>crypto-js</a>的所有权归crypto-js作者所有。以BSD协议授权。</p><p><a target='_blank' href='https://www.google.com/fonts/specimen/Droid+Sans+Mono'>Droid Sans Mono</a>的所有权归Steve Matteson所有。以Apache协议授权。</p><p><a target='_blank' href='http://fontawesome.io'>Font Awesome</a>的所有权归所有。以SIL OFL协议1.1授权。</p><p>感谢 Mike Robinson &lt;3</p>",
 		"description": "Information."
 	},
 	"add_qr": {
@@ -100,7 +100,7 @@
 		"description": "Confirmm Phrase."
 	},
 	"security_warning": {
-		"message": "警告！如果您忘记了密码没有人能够帮助您。旧版本身份验证器扩展无法正确显示加密账户。",
+		"message": "您的密钥将使用此密码进行加密。如果您忘记了密码没有人能够提供帮助。",
 		"description": "Phrase Warning."
 	},
 	"update": {
@@ -154,5 +154,9 @@
 	"capture_failed": {
 		"message": "捕捉失败，请重载您正在浏览的页面后重试。",
 		"description": "Capture Failed"
+	},
+	"unencrypted_secret_warning": {
+		"message": "此密钥未被加密！点击此处打开安全设置以解决此问题。",
+		"description": "Unencrypted Secret Warning"
 	}
 }

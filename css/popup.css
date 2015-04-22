@@ -1,9 +1,4 @@
 @font-face {
-	font-family: 'iconfont';
-	src: url('iconfont.woff') format('woff');
-}
-
-@font-face {
   font-family: 'Droid Sans Mono';
   font-style: normal;
   font-weight: 400;
@@ -115,7 +110,8 @@ body {
 	-webkit-user-select: none;
 }
 
-#header, #menuHead {
+#header,
+#menuHead {
 	height: 38px;
 	line-height: 38px;
 	position: relative;
@@ -187,6 +183,28 @@ body {
 	position: relative;
 }
 
+.codeBox[unencrypted="true"] .warning {
+	position: absolute;
+	height: 0;
+	line-height: 12px;
+	font-size: 12px;
+	padding: 0 10px;
+	margin: 0 4px;
+	width: 290px;
+	bottom: 4px;
+	left: 0;
+	background: #EC6959;
+	color: #FFF;
+	cursor: pointer;
+	overflow: hidden;
+	border-radius: 2px;
+	-webkit-transition: height 0.2s;
+}
+
+#codes:not(.edit) .codeBox[unencrypted="true"]:hover .warning {
+	height: 24px;
+}
+
 .codeBox[dropOver="true"] {
 	border: gray 1px dashed;
 }
@@ -214,15 +232,18 @@ body {
 	cursor: default;
 }
 
-#codes.edit .account, #codes.edit .issuer {
+#codes.edit .account,
+#codes.edit .issuer {
 	display: none;
 }
 
-.accountEdit, .issuerEdit {
+.accountEdit,
+.issuerEdit {
 	display: none;
 }
 
-.accountEdit input, .issuerEdit input {
+.accountEdit input,
+.issuerEdit input {
 	border: none;
 	height: 14px;
 	width: 70%;
@@ -232,7 +253,8 @@ body {
 	background: #eee;
 }
 
-#codes.edit .accountEdit, #codes.edit .issuerEdit {
+#codes.edit .accountEdit,
+#codes.edit .issuerEdit {
 	display: block;
 }
 
@@ -241,12 +263,11 @@ body {
 }
 
 .movehandle {
-	height: 70px;
-	line-height: 70px;
+	height: 98px;
+	line-height: 98px;
 	right: 10px;
 	top: 0;
 	position: absolute;
-	font-family: 'iconfont';
 	font-size: 24px;
 	color: #CCC;
 	cursor: move;
@@ -261,14 +282,14 @@ body {
 	right: 10px;
 	top: 10px;
 	position: absolute;
-	font-family: 'iconfont';
 	font-size: 20px;
-	color: #FFF;
+	color: #CCC;
 	cursor: pointer;
+	opacity: 0;
 }
 
 .showqr:hover {
-	color: #DDD;
+	opacity: 1;
 }
 
 #codes.edit .showqr {
@@ -283,7 +304,14 @@ body {
 	overflow: hidden;
 }
 
-#add, #add_qr, #add_secret, #add_button, #security_save, #passphrase_ok, #message_close, #exportButton {
+#add,
+#add_qr,
+#add_secret,
+#add_button,
+#security_save,
+#passphrase_ok,
+#message_close,
+#exportButton {
 	margin: 10px;
 	padding: 20px;
 	border: #CCC 1px solid;
@@ -300,7 +328,11 @@ body {
 	margin-right: 0;
 }
 
-#message_close, #add_button, #exportButton, #security_save, #passphrase_ok {
+#message_close,
+#add_button,
+#exportButton,
+#security_save,
+#passphrase_ok {
 	font-size: 12px;
 	margin: 20px 100px;
 	padding: 10px;
@@ -308,7 +340,8 @@ body {
 }
 
 #codes #add {
-	font-size: 36px;
+	font-size: 16px;
+	line-height: 56px;
 	display: none;
 }
 
@@ -317,7 +350,6 @@ body {
 }
 
 #codes .deleteAction {
-	font-family: 'iconfont';
 	font-size: 20px;
 	color: #DD4B39;
 	position: absolute;
@@ -339,7 +371,6 @@ body {
 	height: 38px;
 	line-height: 38px;
 	font-size: 16px;
-	font-family: 'iconfont';
 	color: gray;
 	cursor: pointer;
 }
@@ -355,7 +386,6 @@ body {
 	height: 38px;
 	line-height: 38px;
 	font-size: 16px;
-	font-family: 'iconfont';
 	color: gray;
 	cursor: pointer;
 }
@@ -411,17 +441,6 @@ body {
 	cursor: pointer;
 }
 
-#menu .menuList p:after {
-	content: "»";
-	position: absolute;
-	display: block;
-	padding: 10px 0;
-	right: 10px;
-	top: 0;
-	font-size: 16px;
-	color: gray;
-}
-
 #menu .menuList p:hover {
 	background: #F4FCFF;
 	color: black;
@@ -438,7 +457,13 @@ body {
 #menu .menuList p a {
 	color: gray;
 	text-decoration: none;
-	display: block;
+	display: line-block;
+}
+
+#menu .menuList p i.fa {
+	font-size: 14px;
+	display: line-block;
+	width: 30px;
 }
 
 #version {
@@ -447,7 +472,11 @@ body {
 	margin: 10px;
 }
 
-#info, #addAccount, #security, #passphrase, #export {
+#info,
+#addAccount,
+#security,
+#passphrase,
+#export {
 	position: absolute;
 	height: 460px;
 	width: 300px;
@@ -460,21 +489,32 @@ body {
 	z-index: 100;
 }
 
-#info.fadein, #addAccount.fadein, #security.fadein, #passphrase.fadein, #export.fadein {
+#info.fadein,
+#addAccount.fadein,
+#security.fadein,
+#passphrase.fadein,
+#export.fadein {
 	top: 10px;
 	-webkit-animation: fadein 0.2s 1 ease-out;
 }
 
-#info.fadeout, #addAccount.fadeout, #security.fadeout, #passphrase.fadeout, #export.fadeout {
+#info.fadeout,
+#addAccount.fadeout,
+#security.fadeout,
+#passphrase.fadeout,
+#export.fadeout {
 	top: 110px;
 	-webkit-animation: fadeout 0.2s 1 ease-in;
 }
 
-#infoClose, #addAccountClose, #securityClose, #passphraseClose, #exportClose {
+#infoClose,
+#addAccountClose,
+#securityClose,
+#passphraseClose,
+#exportClose {
 	height: 20px;
 	width: 20px;
 	font-size: 14px;
-	font-family: 'iconfont';
 	color: gray;
 	cursor: pointer;
 }
@@ -484,7 +524,7 @@ body {
 	height: 38px;
 	line-height: 38px;
 	left: 20px;
-	font-size: 24px;
+	font-size: 16px;
 	color: gray;
 	bottom: 0;
 	cursor: pointer;
@@ -509,7 +549,9 @@ body {
 	color: black;
 }
 
-#infoContent, #addAccountContent, #exportContent {
+#infoContent,
+#addAccountContent,
+#exportContent {
 	height: 420px;
 	overflow-y: auto;
 	overflow-x: hidden;
@@ -562,7 +604,9 @@ body {
 	display: none;
 }
 
-#secret_box input, #security input, #passphrase input {
+#secret_box input,
+#security input,
+#passphrase input {
 	display: block;
 	margin: 0 10px 10px 10px;
 	padding: 10px;
@@ -582,12 +626,17 @@ body {
 	margin-left: 0 !important;
 }
 
-#secret_box label, #security label, #passphrase label, #security_warning, #passphrase_info {
+#secret_box label,
+#security label,
+#passphrase label,
+#security_warning,
+#passphrase_info {
 	display: block;
 	margin: 10px 0 0 10px;
 }
 
-#security_warning, #passphrase_info {
+#security_warning,
+#passphrase_info {
 	color: gray;
 }
 
