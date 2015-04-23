@@ -1,5 +1,5 @@
-var totp = new KeyUtilities();
-var getCode = totp.generate;
+var otp = new KeyUtilities();
+var getCode = otp.generate;
 var _secret = [];
 var deleteIdList = [];
 var deleteKeyList = [];
@@ -32,12 +32,13 @@ else if(document.cookie){
 document.getElementById('extName').innerText = chrome.i18n.getMessage('extShortName');
 document.getElementById('add_qr').innerText = chrome.i18n.getMessage('add_qr');
 document.getElementById('add_secret').innerText = chrome.i18n.getMessage('add_secret');
+document.getElementById('totp_label').innerText = chrome.i18n.getMessage('based_on_time');
+document.getElementById('hotp_label').innerText = chrome.i18n.getMessage('based_on_counter');
 document.getElementById('add_button').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('message_close').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('account_label').innerText = chrome.i18n.getMessage('account');
 document.getElementById('secret_label').innerText = chrome.i18n.getMessage('secret');
 document.getElementById('menuName').innerText = chrome.i18n.getMessage('settings');
-
 document.getElementById('security_new_phrase_label').innerText = chrome.i18n.getMessage('phrase');
 document.getElementById('security_confirm_phrase_label').innerText = chrome.i18n.getMessage('confirm_phrase');
 document.getElementById('security_warning').innerText = chrome.i18n.getMessage('security_warning');
@@ -325,6 +326,7 @@ function updateSecret(callback){
 function saveSecret(){
 	var account = document.getElementById('account_input').value;
 	var secret = document.getElementById('secret_input').value;
+	var type = document.getElementById('totp').checked?'totp':'hotp';
 	if(!account || !secret){
 		showMessage(chrome.i18n.getMessage('err_acc_sec'));
 		return;
@@ -337,6 +339,7 @@ function saveSecret(){
 				addSecret[CryptoJS.MD5(secret)] = {
 					account: account,
 					issuer: '',
+					type: type,
 					secret: CryptoJS.AES.encrypt(secret, decodedPhrase).toString(),
 					index: index,
 					encrypted: true
@@ -346,9 +349,13 @@ function saveSecret(){
 				addSecret[CryptoJS.MD5(secret)] = {
 					account: account,
 					issuer: '',
+					type: type,
 					secret: secret,
 					index: index
 				}
+			}
+			if('hotp' === type){
+				addSecret[CryptoJS.MD5(secret)].counter = 0;
 			}
 			chrome.storage.sync.set(addSecret);
 			document.getElementById('infoAction').className = '';
@@ -498,7 +505,7 @@ function updateCode(){
 				}, 200);
 			}
 		}
-		else{
+		else if(_secret[i].type !== 'hotp'){
 			document.getElementById('code-'+i).innerText = getCode(_secret[i].secret);
 		}
 	}
@@ -589,10 +596,10 @@ function showCodes(result){
 			el.id = 'codeBox-'+i;
 			el.className = 'codeBox';
 			el.innerHTML = '<div class="deleteAction" codeId="'+i+'" key="'+_secret[i].hash+'"><i class="fa fa-minus-circle"></i></div>'+
-							'<div class="sector"></div>'+
+							('hotp'===_secret[i].type?'<div codeId="'+i+'" class="counter"><i class="fa fa-refresh"></i></div>':'<div class="sector"></div>')+
 							(_secret[i].issuer?('<div class="issuer">'+_secret[i].issuer+'</div>'):'')+
 							'<div class="issuerEdit"><input class="issuerEditBox" type="text" codeId="'+i+'" value="'+(_secret[i].issuer?_secret[i].issuer:'')+'" /></div>'+
-							'<div class="code" id="code-'+i+'">&bull;&bull;&bull;&bull;&bull;&bull;</div>'+
+							'<div class="code'+('hotp'===_secret[i].type?' hotp':'')+'" id="code-'+i+'">&bull;&bull;&bull;&bull;&bull;&bull;</div>'+
 							'<div class="account">'+_secret[i].account+'</div>'+
 							'<div class="accountEdit"><input class="accountEditBox" type="text" codeId="'+i+'" value="'+_secret[i].account+'" /></div>'+
 							'<div id="showqr-'+i+'" class="showqr"><i class="fa fa-qrcode"></i></div>'+
@@ -624,6 +631,10 @@ function showCodes(result){
 		var showQrAction = document.getElementsByClassName('showqr');
 		for(var i=0; i<showQrAction.length; i++){
 			showQrAction[i].onclick = showQr;
+		}
+		var counterAction = document.getElementsByClassName('counter');
+		for(var i=0; i<counterAction.length; i++){
+			counterAction[i].onclick = getNewHotpCode;
 		}
 		var accountEditBox = document.getElementsByClassName('accountEditBox');
 		for(var i=0; i<accountEditBox.length; i++){
@@ -697,7 +708,7 @@ function showQr(){
 	codeId = Number(codeId);
 	var secret = _secret[codeId];
 	var label = secret.issuer?(secret.issuer+':'+secret.account):secret.account;
-	var otpauth = 'otpauth://totp/'+label+'?secret='+secret.secret+(secret.issuer?('&issuer='+secret.issuer):'');
+	var otpauth = 'otpauth://'+(secret.type||'totp')+'/'+label+'?secret='+secret.secret+(secret.issuer?('&issuer='+secret.issuer):'')+(('hotp'===secret.type&&secret.counter)?('&counter='+secret.counter):'');
 	var qrcode = new QRCode('qr', {
 		text: otpauth,
 		width: 128,
@@ -718,7 +729,6 @@ function showExport(){
 	document.getElementById('export').className = 'fadein';
 	setTimeout(function(){
 		document.getElementById('export').style.opacity = 1;
-		//showMessage(chrome.i18n.getMessage('exportWarning'));
 		chrome.storage.sync.get(function(data){
 			document.getElementById('exportData').value = JSON.stringify(data);
 		});
@@ -867,6 +877,31 @@ function syncTimeWithGoogle(showStatusBox){
 		}
 	};
 	xhr.send();
+}
+
+function getNewHotpCode(){
+	var codeId = this.getAttribute('codeId');
+	if(this.getAttribute('disabled')=='true'){
+		return;
+	}
+	if(document.getElementById('code-'+codeId).innerText=='Encrypted'){
+		document.getElementById('passphrase').className = 'fadein';
+		setTimeout(function(){
+			document.getElementById('passphrase').style.opacity = 1;
+		}, 200);
+		return;
+	}
+	this.setAttribute('disabled', 'true');
+	setTimeout(function(){
+		this.removeAttribute('disabled');
+	}.bind(this), 5000);
+	document.getElementById('code-'+codeId).setAttribute('hasCode', 'true');
+	document.getElementById('code-'+codeId).innerText = getCode(_secret[codeId].secret, _secret[codeId].counter);
+	_secret[codeId].counter++;
+	chrome.storage.sync.get(function(secret){
+		secret[CryptoJS.MD5(_secret[codeId].secret)].counter = _secret[codeId].counter;
+		chrome.storage.sync.set(secret);
+	});
 }
 
 (function(){

@@ -32,8 +32,8 @@
 		"description": "Scan QR Code."
 	},
 	"add_secret": {
-		"message": "输入密钥",
-		"description": "Input Secret."
+		"message": "手动输入",
+		"description": "Manual Entry."
 	},
 	"close": {
 		"message": "关闭",
@@ -54,10 +54,6 @@
 	"secret": {
 		"message": "密钥",
 		"description": "Secret."
-	},
-	"exportWarning": {
-		"message": "警告！如果你不知道正在做什么可能会丢失你的数据！",
-		"description": "Export Warning."
 	},
 	"updateSuccess": {
 		"message": "成功。",
@@ -156,7 +152,15 @@
 		"description": "Capture Failed"
 	},
 	"unencrypted_secret_warning": {
-		"message": "此密钥未被加密！点击此处打开安全设置以解决此问题。",
+		"message": "此密钥未被加密！点击此处来设置一个密码以解决此问题。",
 		"description": "Unencrypted Secret Warning"
+	},
+	"based_on_time": {
+		"message": "基于时间",
+		"description": "Time Based"
+	},
+	"based_on_counter": {
+		"message": "基于计数器",
+		"description": "Counter Based"
 	}
 }

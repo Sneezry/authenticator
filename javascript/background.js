@@ -49,7 +49,7 @@ function getQr(tab, left, top, width, height, windowWidth){
 
 function getTotp(text){
 	var id = this.tab.id;
-	if(text.indexOf('otpauth://totp/') != 0){
+	if(text.indexOf('otpauth://') != 0){
 		if(text == 'error decoding QR Code'){
 			chrome.tabs.sendMessage(id, {action: 'errorqr'});
 		}
@@ -58,7 +58,9 @@ function getTotp(text){
 		}
 	}
 	else{
-		var uri = text.split('otpauth://totp/')[1];
+		var uri = text.split('otpauth://')[1];
+		var type = uri.substr(0,4).toLowerCase();
+		uri = uri.substr(5);
 		var label = uri.split('?')[0];
 		var parameters = uri.split('?')[1];
 		if(!label || !parameters){
@@ -83,6 +85,10 @@ function getTotp(text){
 				else if(parameter[0].toLowerCase() == 'issuer'){
 					issuer = parameter[1];
 				}
+				else if(parameter[0].toLowerCase() == 'counter'){
+					counter = Number(parameter[1]);
+					counter = (isNaN(counter)||counter<0)?0:counter;
+				}
 			}
 			if(!secret){
 				chrome.tabs.sendMessage(id, {action: 'errorqr'});
@@ -98,6 +104,7 @@ function getTotp(text){
 						addSecret[CryptoJS.MD5(secret)] = {
 							account: account||'',
 							issuer: issuer||'',
+							type: type,
 							secret: CryptoJS.AES.encrypt(secret, decodedPhrase).toString(),
 							index: index,
 							encrypted: true
@@ -107,9 +114,13 @@ function getTotp(text){
 						addSecret[CryptoJS.MD5(secret)] = {
 							account: account||'',
 							issuer: issuer||'',
+							type: type,
 							secret: secret,
 							index: index
 						}
+					}
+					if('hotp' === type && counter !== undefined){
+						addSecret[CryptoJS.MD5(secret)].counter = counter;
 					}
 					chrome.storage.sync.set(addSecret, function(){
 						chrome.tabs.sendMessage(id, {action: 'added', account: account});

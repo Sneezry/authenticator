@@ -35,7 +35,7 @@ var KeyUtilities = function() {
 		return str;
 	};
 
-	var generate = function(secret) {
+	var generate = function(secret, counter) {
 		secret = secret.replace(/\s/g, '');
 		var len = 6;
 		if(/^[a-z2-7]+=*$/.test(secret.toLowerCase())) {
@@ -52,11 +52,15 @@ var KeyUtilities = function() {
 			var key = base32tohex(secret.substr(4));
 			len = 8;
 		}
-		var epoch = Math.round(new Date().getTime() / 1000.0);
-		if(localStorage.offset){
-			epoch = epoch+Number(localStorage.offset);
+		if(isNaN(counter)){
+			var epoch = Math.round(new Date().getTime() / 1000.0);
+			if(localStorage.offset){
+				epoch = epoch+Number(localStorage.offset);
+			}
+			var counter = Math.floor(epoch / 30)
 		}
-		var time = leftpad(dec2hex(Math.floor(epoch / 30)), 16, '0');
+		
+		var time = leftpad(dec2hex(counter), 16, '0');
 
 		// external library for SHA functionality
 		var hmacObj = new jsSHA(time, "HEX");

@@ -32,8 +32,8 @@
 		"description": "Scan QR Code."
 	},
 	"add_secret": {
-		"message": "Input Secret",
-		"description": "Input Secret."
+		"message": "Manual Entry",
+		"description": "Manual Entry."
 	},
 	"close": {
 		"message": "Close",
@@ -54,10 +54,6 @@
 	"secret": {
 		"message": "Secret",
 		"description": "Secret."
-	},
-	"exportWarning": {
-		"message": "Warning! You may lose your data if you do not know what you are doing!",
-		"description": "Export Warning."
 	},
 	"updateSuccess": {
 		"message": "Success.",
@@ -156,7 +152,15 @@
 		"description": "Capture Failed"
 	},
 	"unencrypted_secret_warning": {
-		"message": "This secret is not encrypted! Click here to open security setting to fix this issue.",
+		"message": "This secret is not encrypted! Click here to set a passphrase to fix this issue.",
 		"description": "Unencrypted Secret Warning"
+	},
+	"based_on_time": {
+		"message": "Time Based",
+		"description": "Time Based"
+	},
+	"based_on_counter": {
+		"message": "Counter Based",
+		"description": "Counter Based"
 	}
 }

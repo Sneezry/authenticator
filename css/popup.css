@@ -190,7 +190,7 @@ body {
 	font-size: 12px;
 	padding: 0 10px;
 	margin: 0 4px;
-	width: 290px;
+	width: 250px;
 	bottom: 4px;
 	left: 0;
 	background: #EC6959;
@@ -227,7 +227,7 @@ body {
 }
 
 #codes.edit .code {
-	color: gray;
+	color: #CCC!important;
 	-webkit-user-select: none;
 	cursor: default;
 }
@@ -258,8 +258,18 @@ body {
 	display: block;
 }
 
-#codes.timeout .code {
+#codes.timeout .code:not(.hotp) {
 	-webkit-animation: twinkling 1s infinite ease-in-out;
+}
+
+.hotp {
+	color: #555;
+	cursor: default;
+}
+
+.hotp[hasCode="true"] {
+	color: #08C;
+	cursor: pointer;
 }
 
 .movehandle {
@@ -390,7 +400,24 @@ body {
 	cursor: pointer;
 }
 
-.sector {
+.counter {
+	color: #888;
+	font-size: 18px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.counter:not([disabled="true"]):hover {
+	color: #000;
+}
+
+.counter[disabled="true"] {
+	color: #CCC;
+	cursor: default;
+}
+
+.sector,
+.counter {
 	width: 20px;
 	height: 20px;
 	position: absolute;
@@ -398,7 +425,8 @@ body {
 	bottom: 10px;
 }
 
-#codes.edit .sector {
+#codes.edit .sector,
+#codes.edit .counter {
 	display: none;
 }
 
@@ -616,12 +644,14 @@ body {
 	outline: none;
 }
 
-.checkbox_group input[type="checkbox"] {
+.checkbox_group input[type="checkbox"],
+.radio_group input[type="radio"] {
 	display: inline-block !important;
 	width: auto !important;
 }
 
-.checkbox_group label {
+.checkbox_group label,
+.radio_group label {
 	display: inline-block !important;
 	margin-left: 0 !important;
 }
