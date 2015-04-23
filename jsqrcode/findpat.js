@@ -421,7 +421,7 @@ function FinderPatternFinder()
 					});
 
 				var stdDev = Math.sqrt(square / startSize - average * average);
-				var limit = Math.max(0.2 * average, stdDev);
+				var limit = Math.max(0.1 * average, stdDev);
 				for (var i = 0; i < this.possibleCenters.length && this.possibleCenters.length > 3; i++)
 				{
 					var pattern =  this.possibleCenters[i];
