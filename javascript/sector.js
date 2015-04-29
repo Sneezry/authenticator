@@ -1,5 +1,5 @@
 function sector(ctx, cx, cy, alpha, delta, r, r2, fill) {
-    alpha -= Math.PI/2;
+    alpha -= Math.PI / 2;
     var p1, p3, p4, alpha2 = alpha + delta;
     p1 = {
         x: cx + r * Math.cos(alpha),

@@ -11,21 +11,18 @@ var decodedPhrase;
 var shownPassphrase = false;
 var capturing = false;
 
-if(localStorage.phrase){
+if (localStorage.phrase) {
 	decodedPhrase = localStorage.phrase;
-	if(localStorage.notRememberPassphrase){
-		document.cookie = 'passphrase='+CryptoJS.AES.encrypt(phrase,'').toString();
+	if (localStorage.notRememberPassphrase) {
+		document.cookie = 'passphrase=' + CryptoJS.AES.encrypt(phrase, '').toString();
 		localStorage.removeItem('encodedPhrase');
-	}
-	else{
-		localStorage.encodedPhrase = CryptoJS.AES.encrypt(phrase,'').toString();
+	} else {
+		localStorage.encodedPhrase = CryptoJS.AES.encrypt(phrase, '').toString();
 	}
 	localStorage.removeItem('phrase');
-}
-else if(localStorage.encodedPhrase){
+} else if (localStorage.encodedPhrase) {
 	decodedPhrase = CryptoJS.AES.decrypt(localStorage.encodedPhrase, '').toString(CryptoJS.enc.Utf8);
-}
-else if(document.cookie){
+} else if (document.cookie) {
 	decodedPhrase = CryptoJS.AES.decrypt(document.cookie.split('passphrase=')[1], '').toString(CryptoJS.enc.Utf8);
 }
 
@@ -49,7 +46,7 @@ document.getElementById('passphrase_phrase_label').innerText = chrome.i18n.getMe
 document.getElementById('remeber_new_phrase_label').innerText = chrome.i18n.getMessage('remeber_phrase');
 document.getElementById('remeber_phrase_label').innerText = chrome.i18n.getMessage('remeber_phrase');
 document.getElementById('passphrase_ok').innerText = chrome.i18n.getMessage('ok');
-document.getElementById('version').innerText = 'Version '+chrome.runtime.getManifest().version;
+document.getElementById('version').innerText = 'Version ' + chrome.runtime.getManifest().version;
 
 document.getElementById('menuAbout').innerHTML += chrome.i18n.getMessage('about');
 document.getElementById('menuExImport').innerHTML += chrome.i18n.getMessage('export_import');
@@ -58,7 +55,7 @@ document.getElementById('menuSyncTime').innerHTML += chrome.i18n.getMessage('syn
 document.getElementById('menuSource').innerHTML += chrome.i18n.getMessage('source');
 document.getElementById('menuFeedback').innerHTML += chrome.i18n.getMessage('feedback');
 
-if(localStorage.notRememberPassphrase==='true'){
+if (localStorage.notRememberPassphrase === 'true') {
 	document.getElementById('remeber_new_phrase').checked = false;
 	document.getElementById('remeber_phrase').checked = false;
 }
@@ -67,254 +64,249 @@ chrome.storage.sync.get(showCodes);
 
 document.getElementById('menuExImport').onclick = showExport;
 
-document.getElementById('menuAbout').onclick = function(){
+document.getElementById('menuAbout').onclick = function () {
 	document.getElementById('info').className = 'fadein';
-	setTimeout(function(){
+	setTimeout(function () {
 		document.getElementById('info').style.opacity = 1;
 		document.getElementById('infoContent').innerHTML = chrome.i18n.getMessage('info');
 	}, 200);
 }
 
-document.getElementById('menuSecurity').onclick = function(){
+document.getElementById('menuSecurity').onclick = function () {
 	document.getElementById('security').className = 'fadein';
-	setTimeout(function(){
+	setTimeout(function () {
 		document.getElementById('security').style.opacity = 1;
 	}, 200);
 }
 
 chrome.permissions.contains({
-	origins: ['https://www.google.com/']
-},function(hasPermission){
-	if(hasPermission){
+	origins : ['https://www.google.com/']
+}, function (hasPermission) {
+	if (hasPermission) {
 		syncTimeWithGoogle(false);
 	}
 });
 
-document.getElementById('menuSyncTime').onclick = function(){
+document.getElementById('menuSyncTime').onclick = function () {
 	chrome.permissions.request({
-		origins: ['https://www.google.com/']
-	}, function(granted){
-		if(granted){
+		origins : ['https://www.google.com/']
+	}, function (granted) {
+		if (granted) {
 			syncTimeWithGoogle(true);
 		}
 	});
 }
 
-document.getElementById('security_save').onclick = function(){
+document.getElementById('security_save').onclick = function () {
 	var phrase = document.getElementById('security_new_phrase').value;
 	var phrase2 = document.getElementById('security_confirm_phrase').value;
-	if(phrase === phrase2){
+	if (phrase === phrase2) {
 		document.getElementById('security_new_phrase').value = '';
 		document.getElementById('security_confirm_phrase').value = '';
 		localStorage.notRememberPassphrase = (!document.getElementById('remeber_new_phrase').checked).toString();
 		document.getElementById('remeber_phrase').checked = document.getElementById('remeber_new_phrase').checked;
-		encryptSecret(phrase, true, function(){
-			showMessage(chrome.i18n.getMessage('updateSuccess'), function(){
+		encryptSecret(phrase, true, function () {
+			showMessage(chrome.i18n.getMessage('updateSuccess'), function () {
 				document.getElementById('security').className = 'fadeout';
-				setTimeout(function(){
+				setTimeout(function () {
 					document.getElementById('security').className = '';
 					document.getElementById('security').style.opacity = 0;
 				}, 200);
 			});
-		}, function(){
+		}, function () {
 			showMessage(chrome.i18n.getMessage('phrase_incorrect'));
 		});
-	}
-	else{
+	} else {
 		showMessage(chrome.i18n.getMessage('phrase_not_match'));
 	}
 }
 
-document.getElementById('passphrase_ok').onclick = function(){
+document.getElementById('passphrase_ok').onclick = function () {
 	var phrase = document.getElementById('phrase').value;
 	document.getElementById('phrase').value = '';
 	localStorage.notRememberPassphrase = (!document.getElementById('remeber_phrase').checked).toString();
 	document.getElementById('remeber_new_phrase').checked = document.getElementById('remeber_phrase').checked;
-	encryptSecret(phrase, false, function(){
+	encryptSecret(phrase, false, function () {
 		document.getElementById('passphrase').className = 'fadeout';
-		setTimeout(function(){
+		setTimeout(function () {
 			document.getElementById('passphrase').className = '';
 			document.getElementById('passphrase').style.opacity = 0;
 		}, 200);
-	}, function(){
+	}, function () {
 		showMessage(chrome.i18n.getMessage('phrase_incorrect'));
 	});
 }
 
-document.getElementById('securityClose').onclick = function(){
+document.getElementById('securityClose').onclick = function () {
 	document.getElementById('security').className = 'fadeout';
-	setTimeout(function(){
+	setTimeout(function () {
 		document.getElementById('security').className = '';
 		document.getElementById('security').style.opacity = 0;
 	}, 200);
 }
 
-document.getElementById('passphraseClose').onclick = function(){
+document.getElementById('passphraseClose').onclick = function () {
 	document.getElementById('passphrase').className = 'fadeout';
-	setTimeout(function(){
+	setTimeout(function () {
 		document.getElementById('passphrase').className = '';
 		document.getElementById('passphrase').style.opacity = 0;
 	}, 200);
 }
 
-document.getElementById('infoAction').onclick = function(){
+document.getElementById('infoAction').onclick = function () {
 	document.getElementById('menu').className = 'slidein';
-	setTimeout(function(){
+	setTimeout(function () {
 		document.getElementById('menu').style.opacity = 1;
 	}, 200);
 }
 
-document.getElementById('menuClose').onclick = function(){
+document.getElementById('menuClose').onclick = function () {
 	document.getElementById('menu').className = 'slideout';
-	setTimeout(function(){
+	setTimeout(function () {
 		document.getElementById('menu').className = '';
 		document.getElementById('menu').style.opacity = 0;
 	}, 200);
 }
 
-document.getElementById('infoClose').onclick = function(){
+document.getElementById('infoClose').onclick = function () {
 	document.getElementById('info').className = 'fadeout';
-	setTimeout(function(){
+	setTimeout(function () {
 		document.getElementById('info').className = '';
 		document.getElementById('info').style.opacity = 0;
 		document.getElementById('infoContent').innerHTML = '';
 	}, 200);
 }
 
-document.getElementById('add').onclick = function(){
+document.getElementById('add').onclick = function () {
 	document.getElementById('add_qr').style.display = 'block';
 	document.getElementById('add_secret').style.display = 'block';
 	document.getElementById('secret_box').style.display = 'none';
 	document.getElementById('addAccount').className = 'fadein';
-	setTimeout(function(){
+	setTimeout(function () {
 		document.getElementById('addAccount').style.opacity = 1;
 	}, 200);
 }
 
-document.getElementById('addAccountClose').onclick = function(){
+document.getElementById('addAccountClose').onclick = function () {
 	document.getElementById('addAccount').className = 'fadeout';
-	setTimeout(function(){
+	setTimeout(function () {
 		document.getElementById('addAccount').className = '';
 		document.getElementById('addAccount').style.opacity = 0;
 	}, 200);
 }
 
-document.getElementById('add_qr').onclick = function(){
+document.getElementById('add_qr').onclick = function () {
 	beginCapture(false);
 };
 
-document.getElementById('add_secret').onclick = function(){
+document.getElementById('add_secret').onclick = function () {
 	document.getElementById('add_qr').style.display = 'none';
 	document.getElementById('add_secret').style.display = 'none';
 	document.getElementById('secret_box').style.display = 'block';
 }
 
-document.getElementById('exportClose').onclick = function(){
+document.getElementById('exportClose').onclick = function () {
 	document.getElementById('export').className = 'fadeout';
-	setTimeout(function(){
+	setTimeout(function () {
 		document.getElementById('export').className = '';
 		document.getElementById('export').style.opacity = 0;
 	}, 200);
 }
 
-document.getElementById('exportButton').onclick = function(){
+document.getElementById('exportButton').onclick = function () {
 	var data = document.getElementById('exportData').value;
-	try{
+	try {
 		data = JSON.parse(data);
-		chrome.storage.sync.set(data, function(){
-			if(decodedPhrase){
+		chrome.storage.sync.set(data, function () {
+			if (decodedPhrase) {
 				encryptSecret(decodedPhrase, true);
 			}
 			chrome.storage.sync.get(showCodes);
-			showMessage(chrome.i18n.getMessage('updateSuccess'), function(){
+			showMessage(chrome.i18n.getMessage('updateSuccess'), function () {
 				document.getElementById('export').className = 'fadeout';
-				setTimeout(function(){
+				setTimeout(function () {
 					document.getElementById('export').className = '';
 					document.getElementById('export').style.opacity = 0;
 					document.getElementById('exportData').value = '';
 				}, 200);
 			});
 		});
-	}
-	catch(e){
+	} catch (e) {
 		showMessage(chrome.i18n.getMessage('updateFailure'));
 	}
 }
 
-document.getElementById('editAction').onmousedown = function(){
-	editTimeout = setTimeout(function(){
-		beginCapture(true);
-	}, 500);
+document.getElementById('editAction').onmousedown = function () {
+	editTimeout = setTimeout(function () {
+			beginCapture(true);
+		}, 500);
 }
 
 document.getElementById('editAction').onclick = editCodes;
 
-document.getElementById('qr').onclick = function(){
+document.getElementById('qr').onclick = function () {
 	this.className = 'qrfadeout';
-	setTimeout(function(){
+	setTimeout(function () {
 		document.getElementById('qr').className = '';
 		document.getElementById('qr').style.opacity = 0;
 	}, 200);
 }
 
-document.getElementById('message_close').onclick = function(){
+document.getElementById('message_close').onclick = function () {
 	document.getElementById('message').style.display = 'none';
 }
 
 document.getElementById('add_button').onclick = saveSecret;
 
-function showMessage(msg, closeAction){
+function showMessage(msg, closeAction) {
 	document.getElementById('message_content').innerText = msg;
 	document.getElementById('message').style.display = 'block';
-	document.getElementById('message_close').onclick = function(){
+	document.getElementById('message_close').onclick = function () {
 		document.getElementById('message').style.display = 'none';
-		if(closeAction){
+		if (closeAction) {
 			closeAction();
 		}
 	}
 }
 
-function updateSecret(callback){
-	for(var i=0; i<_secret.length; i++){
-		if(deleteIdList.indexOf(i)!=-1){
+function updateSecret(callback) {
+	for (var i = 0; i < _secret.length; i++) {
+		if (deleteIdList.indexOf(i) != -1) {
 			_secret[i] = null;
 		}
 	}
 	_secret = sortCode();
-	chrome.storage.sync.remove(deleteKeyList, function(){
+	chrome.storage.sync.remove(deleteKeyList, function () {
 		deleteIdList = [];
 		deleteKeyList = [];
-		chrome.storage.sync.get(function(secret){
+		chrome.storage.sync.get(function (secret) {
 			var changeSecret = {};
-			for(var i=0; i<_secret.length; i++){
-				if(secret[_secret[i].secret] && (secret[_secret[i].secret].index != _secret[i].index ||
-							secret[_secret[i].secret].account != _secret[i].account ||
-							secret[_secret[i].secret].issuer != _secret[i].issuer) ||
+			for (var i = 0; i < _secret.length; i++) {
+				if (secret[_secret[i].secret] && (secret[_secret[i].secret].index != _secret[i].index ||
+						secret[_secret[i].secret].account != _secret[i].account ||
+						secret[_secret[i].secret].issuer != _secret[i].issuer) ||
 					secret[CryptoJS.MD5(_secret[i].secret)] && (secret[CryptoJS.MD5(_secret[i].secret)].index != _secret[i].index ||
-							secret[CryptoJS.MD5(_secret[i].secret)].account != _secret[i].account ||
-							secret[CryptoJS.MD5(_secret[i].secret)].issuer != _secret[i].issuer)){
+						secret[CryptoJS.MD5(_secret[i].secret)].account != _secret[i].account ||
+						secret[CryptoJS.MD5(_secret[i].secret)].issuer != _secret[i].issuer)) {
 					changeSecret[CryptoJS.MD5(_secret[i].secret)] = _secret[i];
-					if(decodedPhrase){
+					if (decodedPhrase) {
 						changeSecret[CryptoJS.MD5(_secret[i].secret)].secret = CryptoJS.AES.encrypt(_secret[i].secret, decodedPhrase).toString();
 					}
 				}
 			}
-			if(changeSecret){
-				chrome.storage.sync.set(changeSecret, function(){
-					if(callback){
+			if (changeSecret) {
+				chrome.storage.sync.set(changeSecret, function () {
+					if (callback) {
 						callback();
-					}
-					else{
+					} else {
 						chrome.storage.sync.get(showCodes);
 						codes.scrollTop = 0;
 					}
 				});
-			}
-			else{
-				if(callback){
+			} else {
+				if (callback) {
 					callback();
-				}
-				else{
+				} else {
 					chrome.storage.sync.get(showCodes);
 					codes.scrollTop = 0;
 				}
@@ -323,38 +315,37 @@ function updateSecret(callback){
 	});
 }
 
-function saveSecret(){
+function saveSecret() {
 	var account = document.getElementById('account_input').value;
 	var secret = document.getElementById('secret_input').value;
-	var type = document.getElementById('totp').checked?'totp':'hotp';
-	if(!account || !secret){
+	var type = document.getElementById('totp').checked ? 'totp' : 'hotp';
+	if (!account || !secret) {
 		showMessage(chrome.i18n.getMessage('err_acc_sec'));
 		return;
 	}
-	updateSecret(function(){
-		chrome.storage.sync.get(function(result){
+	updateSecret(function () {
+		chrome.storage.sync.get(function (result) {
 			var index = Object.keys(result).length;
 			var addSecret = {};
-			if(decodedPhrase){
+			if (decodedPhrase) {
 				addSecret[CryptoJS.MD5(secret)] = {
-					account: account,
-					issuer: '',
-					type: type,
-					secret: CryptoJS.AES.encrypt(secret, decodedPhrase).toString(),
-					index: index,
-					encrypted: true
+					account : account,
+					issuer : '',
+					type : type,
+					secret : CryptoJS.AES.encrypt(secret, decodedPhrase).toString(),
+					index : index,
+					encrypted : true
+				}
+			} else {
+				addSecret[CryptoJS.MD5(secret)] = {
+					account : account,
+					issuer : '',
+					type : type,
+					secret : secret,
+					index : index
 				}
 			}
-			else{
-				addSecret[CryptoJS.MD5(secret)] = {
-					account: account,
-					issuer: '',
-					type: type,
-					secret: secret,
-					index: index
-				}
-			}
-			if('hotp' === type){
+			if ('hotp' === type) {
 				addSecret[CryptoJS.MD5(secret)].counter = 0;
 			}
 			chrome.storage.sync.set(addSecret);
@@ -370,16 +361,20 @@ function saveSecret(){
 	});
 }
 
-function beginCapture(preventEdit){
+function beginCapture(preventEdit) {
 	capturing = !!preventEdit;
-	chrome.tabs.query({ active: true, lastFocusedWindow: true }, function(tabs){
+	chrome.tabs.query({
+		active : true,
+		lastFocusedWindow : true
+	}, function (tabs) {
 		var tab = tabs[0];
-		chrome.tabs.sendMessage(tab.id, {action: 'capture'}, function(result){
-			if(result!=='beginCapture'){
+		chrome.tabs.sendMessage(tab.id, {
+			action : 'capture'
+		}, function (result) {
+			if (result !== 'beginCapture') {
 				showMessage(chrome.i18n.getMessage('capture_failed'));
-			}
-			else{
-				updateSecret(function(){
+			} else {
+				updateSecret(function () {
 					window.close();
 				});
 			}
@@ -387,16 +382,16 @@ function beginCapture(preventEdit){
 	});
 }
 
-function startMoveBox(e){
+function startMoveBox(e) {
 	dragBox = this;
 	e.dataTransfer.effectAllowed = 'move';
 }
 
-function enterBox(){
+function enterBox() {
 	this.setAttribute('dropOver', 'true');
 }
 
-function leaveBox(){
+function leaveBox() {
 	this.removeAttribute('dropOver');
 }
 
@@ -413,30 +408,30 @@ function dropBox(e) {
 	return false;
 }
 
-function endMoveBox(){
+function endMoveBox() {
 	var deleteAction = document.getElementsByClassName('deleteAction');
-	for(var i=0; i<deleteAction.length; i++){
+	for (var i = 0; i < deleteAction.length; i++) {
 		deleteAction[i].onclick = deleteCode;
 	}
 	var showQrAction = document.getElementsByClassName('showqr');
-	for(var i=0; i<showQrAction.length; i++){
+	for (var i = 0; i < showQrAction.length; i++) {
 		showQrAction[i].onclick = showQr;
 	}
 }
 
-function overBox(e){
+function overBox(e) {
 	e.dataTransfer.dropEffect = 'move';
 	return false;
 }
 
-function editCodes(){
+function editCodes() {
 	clearTimeout(editTimeout);
-	if(capturing){
+	if (capturing) {
 		capturing = false;
 		return;
 	}
 	var codes = document.getElementById('codes');
-	if(this.getAttribute('edit') == 'false'){
+	if (this.getAttribute('edit') == 'false') {
 		document.getElementById('infoAction').className = 'hidden';
 		clearInterval(updateInterval);
 		codes.className = 'edit';
@@ -444,12 +439,12 @@ function editCodes(){
 		this.innerHTML = '<i class="fa fa-check"></i>';
 		var code = document.getElementsByClassName('code');
 		var codeBox = document.getElementsByClassName('codeBox');
-		for(var i=0; i<code.length; i++){
+		for (var i = 0; i < code.length; i++) {
 			var bulls = ''
-			for(var b=0; b<code[i].innerText.length; b++){
-				bulls += '&bull;'
-			}
-			code[i].innerHTML = bulls;
+				for (var b = 0; b < code[i].innerText.length; b++) {
+					bulls += '&bull;'
+				}
+				code[i].innerHTML = bulls;
 			codeBox[i].draggable = 'true';
 			codeBox[i].ondragstart = startMoveBox;
 			codeBox[i].ondragenter = enterBox;
@@ -459,8 +454,7 @@ function editCodes(){
 			codeBox[i].ondragend = endMoveBox;
 		}
 		codes.scrollTop = codes.scrollHeight;
-	}
-	else{
+	} else {
 		document.getElementById('infoAction').className = '';
 		codes.className = '';
 		this.setAttribute('edit', 'false');
@@ -470,11 +464,11 @@ function editCodes(){
 	}
 }
 
-function sortCode(){
+function sortCode() {
 	var codeBox = document.getElementsByClassName('codeBox');
 	var newSecret = [];
-	for(var index=0, i=0; i<codeBox.length; i++){
-		if(_secret[Number(codeBox[i].id.substr(8))] === null){
+	for (var index = 0, i = 0; i < codeBox.length; i++) {
+		if (_secret[Number(codeBox[i].id.substr(8))] === null) {
 			continue;
 		}
 		_secret[Number(codeBox[i].id.substr(8))].index = index;
@@ -484,135 +478,128 @@ function sortCode(){
 	return newSecret;
 }
 
-function deleteCode(){
+function deleteCode() {
 	var codeId = this.getAttribute('codeId');
 	var key = this.getAttribute('key');
 	codeId = Number(codeId);
 	deleteIdList.push(codeId);
 	deleteKeyList.push(key);
-	document.getElementById('codeBox-'+codeId).style.display = 'none';
+	document.getElementById('codeBox-' + codeId).style.display = 'none';
 }
 
-function updateCode(){
-	for(var i=0; i<_secret.length; i++){
-		if(!_secret[i].secret){
-			document.getElementById('code-'+i).innerText = chrome.i18n.getMessage('encrypted');
-			if(!shownPassphrase){
+function updateCode() {
+	for (var i = 0; i < _secret.length; i++) {
+		if (!_secret[i].secret) {
+			document.getElementById('code-' + i).innerText = chrome.i18n.getMessage('encrypted');
+			if (!shownPassphrase) {
 				shownPassphrase = true;
 				document.getElementById('passphrase').className = 'fadein';
-				setTimeout(function(){
+				setTimeout(function () {
 					document.getElementById('passphrase').style.opacity = 1;
 				}, 200);
 			}
-		}
-		else if(_secret[i].type !== 'hotp'){
-			document.getElementById('code-'+i).innerText = getCode(_secret[i].secret);
+		} else if (_secret[i].type !== 'hotp') {
+			document.getElementById('code-' + i).innerText = getCode(_secret[i].secret);
 		}
 	}
 }
 
-function update(){
+function update() {
 	getSector();
 	var second = new Date().getSeconds();
-	if(localStorage.offset){
-		second += Number(localStorage.offset)+30;
+	if (localStorage.offset) {
+		second += Number(localStorage.offset) + 30;
 	}
-	second = second%30;
-	if(second>25){
+	second = second % 30;
+	if (second > 25) {
 		document.getElementById('codes').className = 'timeout';
-	}
-	else{
+	} else {
 		document.getElementById('codes').className = '';
 	}
-	if(second<1){
+	if (second < 1) {
 		updateCode();
 	}
 }
 
-function getSector(){
+function getSector() {
 	var second = new Date().getSeconds();
-	if(localStorage.offset){
-		second += Number(localStorage.offset)+30;
+	if (localStorage.offset) {
+		second += Number(localStorage.offset) + 30;
 	}
-	second = second%30;
+	second = second % 30;
 	var canvas = document.getElementById('sector');
 	var ctx = canvas.getContext('2d');
-	ctx.clearRect(0,0,40,40);
+	ctx.clearRect(0, 0, 40, 40);
 	ctx.fillStyle = '#888';
-	sector(ctx, 20, 20, Math.PI/180*second/30*360, Math.PI/180*(1-second/30)*360, 16, 0, true);
+	sector(ctx, 20, 20, Math.PI / 180 * second / 30 * 360, Math.PI / 180 * (1 - second / 30) * 360, 16, 0, true);
 	var url = canvas.toDataURL();
 	var sectors = document.getElementsByClassName('sector');
-	for(var i=0; i<sectors.length; i++){
-		sectors[i].style.background = 'url('+url+') center / 20px 20px';
+	for (var i = 0; i < sectors.length; i++) {
+		sectors[i].style.background = 'url(' + url + ') center / 20px 20px';
 	}
 }
 
-function showCodes(result){
+function showCodes(result) {
 	document.getElementById('codeList').innerHTML = '';
-	if(result && result.secret){
+	if (result && result.secret) {
 		result = changeDataForm(result);
 	}
-	if(!result && !_secret){
+	if (!result && !_secret) {
 		return false;
-	}
-	else{
+	} else {
 		result = changeDataSub2Md5(result);
-		if(result){
+		if (result) {
 			_secret = [];
-			for(var i in result){
-				if(result[i].encrypted){
-					if(decodedPhrase){
-						try{
+			for (var i in result) {
+				if (result[i].encrypted) {
+					if (decodedPhrase) {
+						try {
 							result[i].secret = CryptoJS.AES.decrypt(result[i].secret, decodedPhrase).toString(CryptoJS.enc.Utf8);
-						}
-						catch(e){
+						} catch (e) {
 							result[i].secret = '';
 						}
-					}
-					else{
+					} else {
 						result[i].secret = '';
 					}
 				}
 				result[i].hash = i;
 				_secret.push(result[i]);
 			}
-			_secret.sort(function(a, b){
+			_secret.sort(function (a, b) {
 				return a.index - b.index;
 			});
 		}
 		document.getElementById('infoAction').className = '';
 		document.getElementById('editAction').setAttribute('edit', 'false');
 		document.getElementById('editAction').innerHTML = '<i class="fa fa-pencil"></i>';
-		for(var i=0; i<_secret.length; i++){
-			try{
+		for (var i = 0; i < _secret.length; i++) {
+			try {
 				_secret[i].issuer = decodeURIComponent(_secret[i].issuer);
-			}
-			catch(e){}
-			try{
+			} catch (e) {}
+			try {
 				_secret[i].account = decodeURIComponent(_secret[i].account);
-			}
-			catch(e){}
+			} catch (e) {}
 			var el = document.createElement('div');
-			el.id = 'codeBox-'+i;
+			el.id = 'codeBox-' + i;
 			el.className = 'codeBox';
-			el.innerHTML = '<div class="deleteAction" codeId="'+i+'" key="'+_secret[i].hash+'"><i class="fa fa-minus-circle"></i></div>'+
-							('hotp'===_secret[i].type?'<div codeId="'+i+'" class="counter"><i class="fa fa-refresh"></i></div>':'<div class="sector"></div>')+
-							(_secret[i].issuer?('<div class="issuer">'+_secret[i].issuer+'</div>'):'')+
-							'<div class="issuerEdit"><input class="issuerEditBox" type="text" codeId="'+i+'" value="'+(_secret[i].issuer?_secret[i].issuer:'')+'" /></div>'+
-							'<div class="code'+('hotp'===_secret[i].type?' hotp':'')+'" id="code-'+i+'">&bull;&bull;&bull;&bull;&bull;&bull;</div>'+
-							'<div class="account">'+_secret[i].account+'</div>'+
-							'<div class="accountEdit"><input class="accountEditBox" type="text" codeId="'+i+'" value="'+_secret[i].account+'" /></div>'+
-							'<div id="showqr-'+i+'" class="showqr"><i class="fa fa-qrcode"></i></div>'+
-							'<div class="movehandle"><i class="fa fa-bars"></i></div>';
+			el.innerHTML = '<div class="deleteAction" codeId="' + i + '" key="' + _secret[i].hash + '"><i class="fa fa-minus-circle"></i></div>' +
+				('hotp' === _secret[i].type ? '<div codeId="' + i + '" class="counter"><i class="fa fa-refresh"></i></div>' : '<div class="sector"></div>') +
+				(_secret[i].issuer ? ('<div class="issuer">' + _secret[i].issuer + '</div>') : '') +
+				'<div class="issuerEdit"><input class="issuerEditBox" type="text" codeId="' + i + '" value="' + (_secret[i].issuer ? _secret[i].issuer : '') + '" /></div>' +
+				'<div class="code' + ('hotp' === _secret[i].type ? ' hotp' : '') + '" id="code-' + i + '">&bull;&bull;&bull;&bull;&bull;&bull;</div>' +
+				'<div class="account">' + _secret[i].account + '</div>' +
+				'<div class="accountEdit"><input class="accountEditBox" type="text" codeId="' + i + '" value="' + _secret[i].account + '" /></div>' +
+				'<div id="showqr-' + i + '" class="showqr"><i class="fa fa-qrcode"></i></div>' +
+				'<div class="movehandle"><i class="fa fa-bars"></i></div>';
 			document.getElementById('codeList').appendChild(el);
-			if(!_secret[i].encrypted){
+			if (!_secret[i].encrypted) {
 				el.setAttribute('unencrypted', 'true');
 				var warning = document.createElement('div');
 				warning.className = 'warning';
 				warning.innerText = chrome.i18n.getMessage('unencrypted_secret_warning');
-				warning.onclick = function(){
+				warning.onclick = function () {
 					document.getElementById('security').className = 'fadein';
-					setTimeout(function(){
+					setTimeout(function () {
 						document.getElementById('security').style.opacity = 1;
 					}, 200);
 				};
@@ -621,27 +608,27 @@ function showCodes(result){
 
 		}
 		var codeCopy = document.getElementsByClassName('code');
-		for(var i=0; i<codeCopy.length; i++){
+		for (var i = 0; i < codeCopy.length; i++) {
 			codeCopy[i].onclick = copyCode;
 		}
 		var deleteAction = document.getElementsByClassName('deleteAction');
-		for(var i=0; i<deleteAction.length; i++){
+		for (var i = 0; i < deleteAction.length; i++) {
 			deleteAction[i].onclick = deleteCode;
 		}
 		var showQrAction = document.getElementsByClassName('showqr');
-		for(var i=0; i<showQrAction.length; i++){
+		for (var i = 0; i < showQrAction.length; i++) {
 			showQrAction[i].onclick = showQr;
 		}
 		var counterAction = document.getElementsByClassName('counter');
-		for(var i=0; i<counterAction.length; i++){
+		for (var i = 0; i < counterAction.length; i++) {
 			counterAction[i].onclick = getNewHotpCode;
 		}
 		var accountEditBox = document.getElementsByClassName('accountEditBox');
-		for(var i=0; i<accountEditBox.length; i++){
+		for (var i = 0; i < accountEditBox.length; i++) {
 			accountEditBox[i].onblur = saveAccount;
 		}
 		var issuerEditBox = document.getElementsByClassName('issuerEditBox');
-		for(var i=0; i<issuerEditBox.length; i++){
+		for (var i = 0; i < issuerEditBox.length; i++) {
 			issuerEditBox[i].onblur = saveIssuer;
 		}
 		updateCode();
@@ -651,34 +638,34 @@ function showCodes(result){
 	}
 }
 
-function saveAccount(){
+function saveAccount() {
 	var codeId = this.getAttribute('codeId');
 	var s = this.value;
-	s = s.replace(/&/g, "&amp;"); 
-	s = s.replace(/</g, "&lt;"); 
-	s = s.replace(/>/g, "&gt;"); 
-	s = s.replace(/ /g, "&nbsp;"); 
-	s = s.replace(/\'/g, "&#39;"); 
+	s = s.replace(/&/g, "&amp;");
+	s = s.replace(/</g, "&lt;");
+	s = s.replace(/>/g, "&gt;");
+	s = s.replace(/ /g, "&nbsp;");
+	s = s.replace(/\'/g, "&#39;");
 	s = s.replace(/\"/g, "&quot;");
 	_secret[codeId].account = s;
 }
 
-function saveIssuer(){
+function saveIssuer() {
 	var codeId = this.getAttribute('codeId');
 	var s = this.value;
-	s = s.replace(/&/g, "&amp;"); 
-	s = s.replace(/</g, "&lt;"); 
-	s = s.replace(/>/g, "&gt;"); 
-	s = s.replace(/ /g, "&nbsp;"); 
-	s = s.replace(/\'/g, "&#39;"); 
+	s = s.replace(/&/g, "&amp;");
+	s = s.replace(/</g, "&lt;");
+	s = s.replace(/>/g, "&gt;");
+	s = s.replace(/ /g, "&nbsp;");
+	s = s.replace(/\'/g, "&#39;");
 	s = s.replace(/\"/g, "&quot;");
 	_secret[codeId].issuer = s;
 }
 
-function changeDataForm(result){
+function changeDataForm(result) {
 	var secret = result.secret;
 	var newResult = {};
-	for(var i=0; i<secret.length; i++){
+	for (var i = 0; i < secret.length; i++) {
 		newResult[secret[i].secret] = secret[i];
 		newResult[secret[i].secret].index = i;
 	}
@@ -687,70 +674,69 @@ function changeDataForm(result){
 	return newResult;
 }
 
-function changeDataSub2Md5(result){
+function changeDataSub2Md5(result) {
 	var modified = false;
-	for(i in result){
-		if(i == result[i].secret){
+	for (i in result) {
+		if (i == result[i].secret) {
 			modified = true;
 			result[CryptoJS.MD5(i)] = result[i];
 			delete result[i];
 			chrome.storage.sync.remove(i);
 		}
 	}
-	if(modified){
+	if (modified) {
 		chrome.storage.sync.set(result);
 	}
 	return result;
 }
 
-function showQr(){
+function showQr() {
 	var codeId = this.id.substr(7);
 	codeId = Number(codeId);
 	var secret = _secret[codeId];
-	var label = secret.issuer?(secret.issuer+':'+secret.account):secret.account;
-	var otpauth = 'otpauth://'+(secret.type||'totp')+'/'+label+'?secret='+secret.secret+(secret.issuer?('&issuer='+secret.issuer):'')+(('hotp'===secret.type&&secret.counter)?('&counter='+secret.counter):'');
+	var label = secret.issuer ? (secret.issuer + ':' + secret.account) : secret.account;
+	var otpauth = 'otpauth://' + (secret.type || 'totp') + '/' + label + '?secret=' + secret.secret + (secret.issuer ? ('&issuer=' + secret.issuer) : '') + (('hotp' === secret.type && secret.counter) ? ('&counter=' + secret.counter) : '');
 	var qrcode = new QRCode('qr', {
-		text: otpauth,
-		width: 128,
-		height: 128,
-		colorDark : '#000000',
-		colorLight : '#ffffff',
-		correctLevel : QRCode.CorrectLevel.L
-	}, function(qrUrl){
-		document.getElementById('qr').style.backgroundImage = 'url('+qrUrl+')';
-		document.getElementById('qr').className = 'qrfadein';
-		setTimeout(function(){
-			document.getElementById('qr').style.opacity = 1;
-		}, 200);
-	});
+			text : otpauth,
+			width : 128,
+			height : 128,
+			colorDark : '#000000',
+			colorLight : '#ffffff',
+			correctLevel : QRCode.CorrectLevel.L
+		}, function (qrUrl) {
+			document.getElementById('qr').style.backgroundImage = 'url(' + qrUrl + ')';
+			document.getElementById('qr').className = 'qrfadein';
+			setTimeout(function () {
+				document.getElementById('qr').style.opacity = 1;
+			}, 200);
+		});
 }
 
-function showExport(){
+function showExport() {
 	document.getElementById('export').className = 'fadein';
-	setTimeout(function(){
+	setTimeout(function () {
 		document.getElementById('export').style.opacity = 1;
-		chrome.storage.sync.get(function(data){
+		chrome.storage.sync.get(function (data) {
 			document.getElementById('exportData').value = JSON.stringify(data);
 		});
 	}, 200);
 }
 
-function copyCode(){
+function copyCode() {
 	var code = this.innerText;
-	if('Encrypted'==code){
+	if ('Encrypted' == code) {
 		document.getElementById('passphrase').className = 'fadein';
-		setTimeout(function(){
+		setTimeout(function () {
 			document.getElementById('passphrase').style.opacity = 1;
 		}, 200);
 		return;
-	}
-	else if(!/^\d+$/.test(code)){
+	} else if (!/^\d+$/.test(code)) {
 		return;
 	}
 	chrome.permissions.request({
-		permissions: ['clipboardWrite']
-	}, function(granted){
-		if(granted){
+		permissions : ['clipboardWrite']
+	}, function (granted) {
+		if (granted) {
 			var codeClipboard = document.getElementById('codeClipboard');
 			codeClipboard.value = code;
 			codeClipboard.focus();
@@ -761,117 +747,107 @@ function copyCode(){
 	});
 }
 
-function encryptSecret(phrase, updatePhrase, success, fail){
+function encryptSecret(phrase, updatePhrase, success, fail) {
 	var errorPhrase = false;
 	var decryptedSecret;
-	chrome.storage.sync.get(function(result){
-		for(var i in result){
+	chrome.storage.sync.get(function (result) {
+		for (var i in result) {
 			decryptedSecret = '';
-			if(result[i].encrypted && decodedPhrase){
-				try{
+			if (result[i].encrypted && decodedPhrase) {
+				try {
 					decryptedSecret = CryptoJS.AES.decrypt(result[i].secret, decodedPhrase).toString(CryptoJS.enc.Utf8);
-				}
-				catch(e){
+				} catch (e) {
 					decryptedSecret = '';
 				}
-				if(decryptedSecret){
+				if (decryptedSecret) {
 					result[i].secret = decryptedSecret;
-				}
-				else if(updatePhrase){
+				} else if (updatePhrase) {
 					errorPhrase = true;
 					continue;
 				}
 			}
-			if(result[i].encrypted && !decryptedSecret && !updatePhrase){
-				try{
+			if (result[i].encrypted && !decryptedSecret && !updatePhrase) {
+				try {
 					decryptedSecret = CryptoJS.AES.decrypt(result[i].secret, phrase).toString(CryptoJS.enc.Utf8);
-				}
-				catch(e){
+				} catch (e) {
 					decryptedSecret = '';
 				}
-				if(decryptedSecret){
+				if (decryptedSecret) {
 					result[i].secret = decryptedSecret;
-				}
-				else{
+				} else {
 					errorPhrase = true;
 					continue;
 				}
 			}
-			if(phrase && decodedPhrase){
-				result[i].secret = CryptoJS.AES.encrypt(result[i].secret, updatePhrase?phrase:decodedPhrase).toString();
+			if (phrase && decodedPhrase) {
+				result[i].secret = CryptoJS.AES.encrypt(result[i].secret, updatePhrase ? phrase : decodedPhrase).toString();
 				result[i].encrypted = true;
-			}
-			else if(phrase && !decodedPhrase){
+			} else if (phrase && !decodedPhrase) {
 				result[i].secret = CryptoJS.AES.encrypt(result[i].secret, phrase).toString();
 				result[i].encrypted = true;
-			}
-			else {
+			} else {
 				result[i].encrypted = false;
 			}
 		}
-		if(updatePhrase || !decodedPhrase){
+		if (updatePhrase || !decodedPhrase) {
 			decodedPhrase = phrase;
-			if(localStorage.notRememberPassphrase==='true'){
-				document.cookie = 'passphrase='+CryptoJS.AES.encrypt(phrase,'').toString();
+			if (localStorage.notRememberPassphrase === 'true') {
+				document.cookie = 'passphrase=' + CryptoJS.AES.encrypt(phrase, '').toString();
 				localStorage.removeItem('encodedPhrase');
-			}
-			else{
-				localStorage.encodedPhrase = CryptoJS.AES.encrypt(phrase,'').toString();
+			} else {
+				localStorage.encodedPhrase = CryptoJS.AES.encrypt(phrase, '').toString();
 			}
 		}
 		chrome.storage.sync.set(result);
 		showCodes(result);
-		if(errorPhrase && fail){
+		if (errorPhrase && fail) {
 			fail();
-		}
-		else if(success){
+		} else if (success) {
 			success();
 		}
 	});
 }
 
-function showNotification(message){
+function showNotification(message) {
 	var notification = document.getElementById('notification');
 	notification.innerText = message;
 	notification.className = 'fadein';
 	clearTimeout(notificationTimeout);
-	notificationTimeout = setTimeout(function(){
-		notification.className = 'fadeout';
-		setTimeout(function(){
-			notification.className = '';
-		},200);
-	},1000);
+	notificationTimeout = setTimeout(function () {
+			notification.className = 'fadeout';
+			setTimeout(function () {
+				notification.className = '';
+			}, 200);
+		}, 1000);
 }
 
-function syncTimeWithGoogle(showStatusBox){
+function syncTimeWithGoogle(showStatusBox) {
 	var xhr = new XMLHttpRequest();
 	xhr.open('HEAD', 'https://www.google.com/');
-	var xhrAbort = setTimeout(function(){
-		xhr.abort();
-		if(showStatusBox){
-			showMessage(chrome.i18n.getMessage('updateFailure'));
-		}
-	}, 5000);
-	xhr.onreadystatechange = function() {
-		if(xhr.readyState==4) {
+	var xhrAbort = setTimeout(function () {
+			xhr.abort();
+			if (showStatusBox) {
+				showMessage(chrome.i18n.getMessage('updateFailure'));
+			}
+		}, 5000);
+	xhr.onreadystatechange = function () {
+		if (xhr.readyState == 4) {
 			clearTimeout(xhrAbort);
 			var serverTime = new Date(xhr.getResponseHeader('date'));
 			serverTime = serverTime.getTime();
 			var clientTime = new Date();
 			clientTime = clientTime.getTime();
-			var offset = Math.round((serverTime - clientTime)/1000);
-			if(!serverTime){
-				if(showStatusBox){
+			var offset = Math.round((serverTime - clientTime) / 1000);
+			if (!serverTime) {
+				if (showStatusBox) {
 					showMessage(chrome.i18n.getMessage('updateFailure'));
 				}
-			}
-			else if(Math.abs(offset) <= 300){ // within 5 minutes
-				localStorage.offset = Math.round((serverTime - clientTime)/1000);
-				if(showStatusBox){
+			} else if (Math.abs(offset) <= 300) { // within 5 minutes
+				localStorage.offset = Math.round((serverTime - clientTime) / 1000);
+				if (showStatusBox) {
 					showMessage(chrome.i18n.getMessage('updateSuccess'));
 				}
-			}
-			else{
+			} else {
 				showMessage(chrome.i18n.getMessage('clock_too_far_off'));
 			}
 		}
@@ -879,55 +855,55 @@ function syncTimeWithGoogle(showStatusBox){
 	xhr.send();
 }
 
-function getNewHotpCode(){
+function getNewHotpCode() {
 	var codeId = this.getAttribute('codeId');
-	if(this.getAttribute('disabled')=='true'){
+	if (this.getAttribute('disabled') == 'true') {
 		return;
 	}
-	if(document.getElementById('code-'+codeId).innerText=='Encrypted'){
+	if (document.getElementById('code-' + codeId).innerText == 'Encrypted') {
 		document.getElementById('passphrase').className = 'fadein';
-		setTimeout(function(){
+		setTimeout(function () {
 			document.getElementById('passphrase').style.opacity = 1;
 		}, 200);
 		return;
 	}
 	this.setAttribute('disabled', 'true');
-	setTimeout(function(){
+	setTimeout(function () {
 		this.removeAttribute('disabled');
-	}.bind(this), 5000);
-	document.getElementById('code-'+codeId).setAttribute('hasCode', 'true');
-	document.getElementById('code-'+codeId).innerText = getCode(_secret[codeId].secret, _secret[codeId].counter);
+	}
+		.bind(this), 5000);
+	document.getElementById('code-' + codeId).setAttribute('hasCode', 'true');
+	document.getElementById('code-' + codeId).innerText = getCode(_secret[codeId].secret, _secret[codeId].counter);
 	_secret[codeId].counter++;
-	chrome.storage.sync.get(function(secret){
+	chrome.storage.sync.get(function (secret) {
 		secret[CryptoJS.MD5(_secret[codeId].secret)].counter = _secret[codeId].counter;
 		chrome.storage.sync.set(secret);
 	});
 }
 
-(function(){
+(function () {
 	var clientTime = new Date();
-	clientTime = Math.floor(clientTime.getTime()/1000/3600/24);
-	if(!localStorage.lastRemindingBackupTime){
+	clientTime = Math.floor(clientTime.getTime() / 1000 / 3600 / 24);
+	if (!localStorage.lastRemindingBackupTime) {
 		localStorage.lastRemindingBackupTime = clientTime;
-	}
-	else if(clientTime-localStorage.lastRemindingBackupTime>=30 || clientTime-localStorage.lastRemindingBackupTime<0){
+	} else if (clientTime - localStorage.lastRemindingBackupTime >= 30 || clientTime - localStorage.lastRemindingBackupTime < 0) {
 		showMessage(chrome.i18n.getMessage('remind_backup'));
 		localStorage.lastRemindingBackupTime = clientTime;
 	}
 })();
 
-(function(){
+(function () {
 	var extName = document.getElementById('extName');
 	var count = 0;
 	var timer;
-	extName.onclick = function(){
+	extName.onclick = function () {
 		clearTimeout(timer);
-		timer = setTimeout(function(){
-			count = 0;
-		}, 1000);
+		timer = setTimeout(function () {
+				count = 0;
+			}, 1000);
 
 		count++;
-		if(count==5){
+		if (count == 5) {
 			count = 0;
 			showExport();
 		}
