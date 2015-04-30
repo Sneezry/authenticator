@@ -884,7 +884,6 @@ function getNewHotpCode() {
 function getZoom() {
 	var zoomList = [25, 33, 50, 67, 75, 90, 100, 110, 125, 150, 175, 200, 250, 300, 400, 500];
 	var zoom = Math.round(((window.outerWidth) / window.innerWidth)*100);
-	console.log(zoom)
 	var zoomDiff = -1;
 	for (var i = 0; i < zoomList.length; i++) {
 	    if (zoomDiff < 0 || Math.abs(zoom - zoomList[i]) < zoomDiff) {
@@ -938,4 +937,4 @@ function rezoom() {
 	}
 })();
 
-setTimeout(rezoom, 200);
+//setTimeout(rezoom, 200);
