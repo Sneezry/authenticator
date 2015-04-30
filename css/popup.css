@@ -108,6 +108,7 @@ body {
 	font-family: arial, 'Microsoft YaHei';
 	cursor: default;
 	-webkit-user-select: none;
+	transform-origin: left top;
 }
 
 #header,

@@ -881,6 +881,34 @@ function getNewHotpCode() {
 	});
 }
 
+function getZoom() {
+	var zoomList = [25, 33, 50, 67, 75, 90, 100, 110, 125, 150, 175, 200, 250, 300, 400, 500];
+	var zoom = Math.round(((window.outerWidth) / window.innerWidth)*100);
+	console.log(zoom)
+	var zoomDiff = -1;
+	for (var i = 0; i < zoomList.length; i++) {
+	    if (zoomDiff < 0 || Math.abs(zoom - zoomList[i]) < zoomDiff) {
+	        zoomDiff = Math.abs(zoom - zoomList[i]);
+	    }  else {
+	        zoom = zoomList[i - 1];
+	        break;
+	    }
+	}
+	if (zoomList.indexOf(zoom) === -1) {
+	    zoom = 500;
+	}
+	return zoom;
+}
+
+function rezoom() {
+	var zoom = getZoom();
+	if (zoom > 100) {
+		document.body.style.height = 480 * 100 / zoom + 'px';
+		document.body.style.marginRight = 320 * (100 / zoom - 1) + 'px';
+		document.body.style.transform = 'scale(' + (100 / zoom) + ')';
+	}
+}
+
 (function () {
 	var clientTime = new Date();
 	clientTime = Math.floor(clientTime.getTime() / 1000 / 3600 / 24);
@@ -909,3 +937,5 @@ function getNewHotpCode() {
 		}
 	}
 })();
+
+setTimeout(rezoom, 200);
