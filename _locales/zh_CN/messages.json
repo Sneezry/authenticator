@@ -162,5 +162,13 @@
 	"based_on_counter": {
 		"message": "基于计数器",
 		"description": "Counter Based"
+	},
+	"resize_popup_page": {
+		"message": "调整弹出页面尺寸",
+		"description": "Resize Popup Page"
+	},
+	"scale": {
+		"message": "比例",
+		"description": "Scale"
 	}
 }
