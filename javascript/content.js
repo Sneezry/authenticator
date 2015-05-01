@@ -64,6 +64,10 @@ function grayLayoutUp(event) {
     var captureBoxTop = Math.min(this.captureBoxTop, e.clientY) + 1;
     var captureBoxWidth = Math.abs(this.captureBoxLeft - e.clientX) - 1;
     var captureBoxHeight = Math.abs(this.captureBoxTop - e.clientY) - 1;
+    captureBoxLeft *= window.devicePixelRatio;
+    captureBoxTop *= window.devicePixelRatio;
+    captureBoxWidth *= window.devicePixelRatio;
+    captureBoxHeight *= window.devicePixelRatio;
     setTimeout(function () {
         captureBox.style.display = 'none';
         grayLayout.style.display = 'none';

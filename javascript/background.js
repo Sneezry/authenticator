@@ -20,13 +20,6 @@ function getQr(tab, left, top, width, height, windowWidth) {
         var qr = new Image();
         qr.src = dataUrl;
         qr.onload = function () {
-            if (windowWidth * 2 === qr.width) {
-                //Retina Display
-                left *= 2;
-                top *= 2;
-                width *= 2;
-                height *= 2;
-            }
             this.tab = tab;
             var captureCanvas = document.getElementById('__ga_captureCanvas__');
             if (!captureCanvas) {
