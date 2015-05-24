@@ -847,7 +847,7 @@ function showNotification(message) {
 
 function syncTimeWithGoogle(showStatusBox) {
     var xhr = new XMLHttpRequest();
-    xhr.open('HEAD', 'https://www.google.com/');
+    xhr.open('HEAD', 'https://www.google.com/generate_204');
     var xhrAbort = setTimeout(function () {
             xhr.abort();
             if (showStatusBox) {
