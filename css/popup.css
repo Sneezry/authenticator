@@ -303,7 +303,8 @@ body {
     opacity: 1;
 }
 
-#codes.edit .showqr {
+#codes.edit .showqr,
+.showqr.hidden {
     display: none;
 }
 

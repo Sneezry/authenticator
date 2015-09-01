@@ -515,6 +515,7 @@ function updateCode() {
     for (var i = 0; i < _secret.length; i++) {
         if (!_secret[i].secret) {
             document.getElementById('code-' + i).innerText = chrome.i18n.getMessage('encrypted');
+            document.getElementById('showqr-' + i).className = 'showqr hidden';
             if (!shownPassphrase) {
                 shownPassphrase = true;
                 document.getElementById('passphrase').className = 'fadein';
@@ -524,6 +525,7 @@ function updateCode() {
             }
         } else if (_secret[i].type !== 'hotp') {
             document.getElementById('code-' + i).innerText = getCode(_secret[i].secret);
+            document.getElementById('showqr-' + i).className = 'showqr';
         }
     }
 }
