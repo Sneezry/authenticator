@@ -137,6 +137,24 @@ document.getElementById('security_save').onclick = function () {
     }
 }
 
+document.getElementById('phrase').onkeydown = function(e) {
+    if (e.keyCode === 13) {
+        var phrase = document.getElementById('phrase').value;
+        document.getElementById('phrase').value = '';
+        localStorage.notRememberPassphrase = (!document.getElementById('remeber_phrase').checked).toString();
+        document.getElementById('remeber_new_phrase').checked = document.getElementById('remeber_phrase').checked;
+        encryptSecret(phrase, false, function () {
+            document.getElementById('passphrase').className = 'fadeout';
+            setTimeout(function () {
+                document.getElementById('passphrase').className = '';
+                document.getElementById('passphrase').style.opacity = 0;
+            }, 200);
+        }, function () {
+            showMessage(chrome.i18n.getMessage('phrase_incorrect'));
+        });
+    }
+}
+
 document.getElementById('passphrase_ok').onclick = function () {
     var phrase = document.getElementById('phrase').value;
     document.getElementById('phrase').value = '';
