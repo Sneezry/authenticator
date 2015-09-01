@@ -25,6 +25,10 @@ var KeyUtilities = function() {
 			hex = hex + parseInt(chunk, 2).toString(16);
 		}
 
+		if (hex.length % 2 && hex[hex.length - 1] === '0') {
+			hex = hex.substr(0, hex.length - 1);
+		}
+
 		return hex;
 	};
 
