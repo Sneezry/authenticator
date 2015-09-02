@@ -303,7 +303,8 @@ body {
     opacity: 1;
 }
 
-#codes.edit .showqr {
+#codes.edit .showqr,
+.showqr.hidden {
     display: none;
 }
 
@@ -595,7 +596,7 @@ body {
 }
 
 #exportData {
-    height: 340px;
+    height: 330px;
     width: 100%;
     word-break: break-all;
     resize: none;
