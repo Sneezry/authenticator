@@ -135,9 +135,9 @@
         "message": "Sync Clock with Google",
         "description": "Sync Clock"
     },
-    "remeber_phrase": {
-        "message": "Remeber Passphrase",
-        "description": "Remeber Passphrase"
+    "remember_phrase": {
+        "message": "Remember Passphrase",
+        "description": "Remember Passphrase"
     },
     "clock_too_far_off": {
         "message": "Caution! Your local clock is too far off, please fix it before continuing.",

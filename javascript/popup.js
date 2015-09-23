@@ -44,8 +44,8 @@ document.getElementById('resize_save').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('security_save').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('passphrase_info').innerText = chrome.i18n.getMessage('passphrase_info');
 document.getElementById('passphrase_phrase_label').innerText = chrome.i18n.getMessage('passphrase');
-document.getElementById('remeber_new_phrase_label').innerText = chrome.i18n.getMessage('remeber_phrase');
-document.getElementById('remeber_phrase_label').innerText = chrome.i18n.getMessage('remeber_phrase');
+document.getElementById('remember_new_phrase_label').innerText = chrome.i18n.getMessage('remember_phrase');
+document.getElementById('remember_phrase_label').innerText = chrome.i18n.getMessage('remember_phrase');
 document.getElementById('resize_list_label').innerText = chrome.i18n.getMessage('scale');
 document.getElementById('passphrase_ok').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('version').innerText = 'Version ' + chrome.runtime.getManifest().version;
@@ -59,8 +59,8 @@ document.getElementById('menuSource').innerHTML += chrome.i18n.getMessage('sourc
 document.getElementById('menuFeedback').innerHTML += chrome.i18n.getMessage('feedback');
 
 if (localStorage.notRememberPassphrase === 'true') {
-    document.getElementById('remeber_new_phrase').checked = false;
-    document.getElementById('remeber_phrase').checked = false;
+    document.getElementById('remember_new_phrase').checked = false;
+    document.getElementById('remember_phrase').checked = false;
 }
 
 chrome.storage.sync.get(showCodes);
@@ -119,8 +119,8 @@ document.getElementById('security_save').onclick = function () {
     if (phrase === phrase2) {
         document.getElementById('security_new_phrase').value = '';
         document.getElementById('security_confirm_phrase').value = '';
-        localStorage.notRememberPassphrase = (!document.getElementById('remeber_new_phrase').checked).toString();
-        document.getElementById('remeber_phrase').checked = document.getElementById('remeber_new_phrase').checked;
+        localStorage.notRememberPassphrase = (!document.getElementById('remember_new_phrase').checked).toString();
+        document.getElementById('remember_phrase').checked = document.getElementById('remember_new_phrase').checked;
         encryptSecret(phrase, true, function () {
             showMessage(chrome.i18n.getMessage('updateSuccess'), function () {
                 document.getElementById('security').className = 'fadeout';
@@ -141,8 +141,8 @@ document.getElementById('phrase').onkeydown = function(e) {
     if (e.keyCode === 13) {
         var phrase = document.getElementById('phrase').value;
         document.getElementById('phrase').value = '';
-        localStorage.notRememberPassphrase = (!document.getElementById('remeber_phrase').checked).toString();
-        document.getElementById('remeber_new_phrase').checked = document.getElementById('remeber_phrase').checked;
+        localStorage.notRememberPassphrase = (!document.getElementById('remember_phrase').checked).toString();
+        document.getElementById('remember_new_phrase').checked = document.getElementById('remember_phrase').checked;
         encryptSecret(phrase, false, function () {
             document.getElementById('passphrase').className = 'fadeout';
             setTimeout(function () {
@@ -158,8 +158,8 @@ document.getElementById('phrase').onkeydown = function(e) {
 document.getElementById('passphrase_ok').onclick = function () {
     var phrase = document.getElementById('phrase').value;
     document.getElementById('phrase').value = '';
-    localStorage.notRememberPassphrase = (!document.getElementById('remeber_phrase').checked).toString();
-    document.getElementById('remeber_new_phrase').checked = document.getElementById('remeber_phrase').checked;
+    localStorage.notRememberPassphrase = (!document.getElementById('remember_phrase').checked).toString();
+    document.getElementById('remember_new_phrase').checked = document.getElementById('remember_phrase').checked;
     encryptSecret(phrase, false, function () {
         document.getElementById('passphrase').className = 'fadeout';
         setTimeout(function () {
