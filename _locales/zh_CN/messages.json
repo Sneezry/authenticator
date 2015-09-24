@@ -135,9 +135,9 @@
 		"message": "通过Google校准时间",
 		"description": "Sync Clock"
 	},
-	"remeber_phrase": {
+	"remember_phrase": {
 		"message": "记住密码",
-		"description": "Remeber Passphrase"
+		"description": "Remember Passphrase"
 	},
 	"clock_too_far_off": {
 		"message": "注意！您的本地时钟时间差过大，请修正后再进行操作。",
