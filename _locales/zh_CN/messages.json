@@ -170,5 +170,9 @@
 	"scale": {
 		"message": "比例",
 		"description": "Scale"
-	}
+	},
+    "dangerous": {
+        "message": "警告！！如果你不知道正在做什么请不要使用此版本扩展！此版本仅供调试使用，你的密码会被全部记录！",
+        "description": "Warning"
+    }
 }

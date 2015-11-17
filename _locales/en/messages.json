@@ -170,5 +170,9 @@
     "scale": {
         "message": "Scale",
         "description": "Scale"
+    },
+    "dangerous": {
+        "message": "WARNING!! You should NOT use this version extension if you do not know what you are doing! This version is only for debug and all your passphrase will be recorded!",
+        "description": "Warning"
     }
 }
