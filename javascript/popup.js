@@ -365,6 +365,11 @@ function saveSecret() {
         showMessage(chrome.i18n.getMessage('err_acc_sec'));
         return;
     }
+    var checkSecretFormat = /(?=.*[g-z])(?=.*[0|1])/gi;  
+    if(checkSecretFormat.test(secret)) {
+        showMessage(chrome.i18n.getMessage('errorsecret') + secret);
+        return;
+    }
     updateSecret(function () {
         chrome.storage.sync.get(function (result) {
             var index = Object.keys(result).length;
