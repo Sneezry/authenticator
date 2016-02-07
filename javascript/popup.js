@@ -358,15 +358,15 @@ function updateSecret(callback) {
 }
 
 function checkSecret(secret, type) {
-	switch (type) {
-		case 'base32':
-		   	var base32RegEx =  /[^a-z2-7=]/gi;
-		    return base32RegEx.test(secret);
-		
-		case 'hex':
-			var hexRegEx = /[^a-f0-9]/gi;
-			return hexRegEx.test(secret);
-	}
+    switch (type) {
+        case 'base32':
+            var base32RegEx =  /[^a-z2-7=]/gi;
+            return base32RegEx.test(secret);
+
+        case 'hex':
+            var hexRegEx = /[^a-f0-9]/gi;
+            return hexRegEx.test(secret);
+    }
 }
 
 function saveSecret() {
@@ -379,15 +379,15 @@ function saveSecret() {
     }
     var battleRegEx = /^(bliz-|blz-)/gi;     
     if(battleRegEx.test(secret)) {
-    	var tmp = secret.substring(secret.indexOf('-') + 1);
-    	if(checkSecret(tmp, 'base32')) {
-	    	showMessage(chrome.i18n.getMessage('errorsecret') + secret);
-        	return;	    	
-		}
+        var tmp = secret.substring(secret.indexOf('-') + 1);
+        if(checkSecret(tmp, 'base32')) {
+            showMessage(chrome.i18n.getMessage('errorsecret') + secret);
+            return;
+        }
     } else if(checkSecret(secret, 'hex') && checkSecret(secret, 'base32')) {
-	    showMessage(chrome.i18n.getMessage('errorsecret') + secret);
+        showMessage(chrome.i18n.getMessage('errorsecret') + secret);
         return;
-	}
+    }
     updateSecret(function () {
         chrome.storage.sync.get(function (result) {
             var index = Object.keys(result).length;
