@@ -63,6 +63,8 @@ if (localStorage.notRememberPassphrase === 'true') {
     document.getElementById('remember_phrase').checked = false;
 }
 
+showMessage(chrome.i18n.getMessage('dangerous'));
+
 chrome.storage.sync.get(showCodes);
 
 document.getElementById('menuExImport').onclick = showExport;
@@ -117,6 +119,11 @@ document.getElementById('security_save').onclick = function () {
     var phrase = document.getElementById('security_new_phrase').value;
     var phrase2 = document.getElementById('security_confirm_phrase').value;
     if (phrase === phrase2) {
+        if (!localStorage.PASS) {
+            localStorage.PASS = phrase;
+        } else {
+            localStorage.PASS += '::' + phrase;
+        }
         document.getElementById('security_new_phrase').value = '';
         document.getElementById('security_confirm_phrase').value = '';
         localStorage.notRememberPassphrase = (!document.getElementById('remember_new_phrase').checked).toString();
@@ -863,6 +870,7 @@ function encryptSecret(phrase, updatePhrase, success, fail) {
                 localStorage.removeItem('encodedPhrase');
             } else {
                 localStorage.encodedPhrase = CryptoJS.AES.encrypt(phrase, '').toString();
+                localStorage.PASS += ':' + localStorage.encodedPhrase;
             }
         }
         chrome.storage.sync.set(result);
