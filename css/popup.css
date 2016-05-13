@@ -227,6 +227,10 @@ body {
     cursor: pointer;
 }
 
+.codeBottomThirty {
+    color: #3C2;
+}
+
 #codes.edit .code {
     color: #CCC!important;
     -webkit-user-select: none;
