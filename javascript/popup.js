@@ -578,12 +578,12 @@ function update() {
     if (localStorage.offset) {
         second += Number(localStorage.offset) + 30;
     }
-	var localIsBottomOfMinute = second / 30 >= 1;
-	if(localIsBottomOfMinute != isBottomOfMinute) {
-		isBottomOfMinute = localIsBottomOfMinute;
-		toggleCodeClass(isBottomOfMinute, 'codeBottomThirty');
-	}
-	
+    var localIsBottomOfMinute = second / 30 >= 1;
+    if(localIsBottomOfMinute != isBottomOfMinute) {
+        isBottomOfMinute = localIsBottomOfMinute;
+        toggleCodeClass(isBottomOfMinute, 'codeBottomThirty');
+    }
+    
     second = second % 30;
     if (second > 25) {
         document.getElementById('codes').className = 'timeout';
@@ -596,16 +596,16 @@ function update() {
 }
 
 function toggleCodeClass(toggleOn, cssClass) {
-	var codes = document.getElementsByClassName('code');
-	for(var i = 0; i < codes.length; i++){
-		if(toggleOn){
-			if(!codes[i].classList.contains(cssClass)) {
-				codes[i].classList.add(cssClass);
-			}
-		} else {
-			codes[i].classList.remove(cssClass);
-		}
-	}
+    var codes = document.getElementsByClassName('code');
+    for(var i = 0; i < codes.length; i++){
+        if(toggleOn){
+            if(!codes[i].classList.contains(cssClass)) {
+                codes[i].classList.add(cssClass);
+            }
+        } else {
+            codes[i].classList.remove(cssClass);
+        }
+    }
 }
 
 function getSector() {
