@@ -577,7 +577,6 @@ function update() {
     if (localStorage.offset) {
         second += Number(localStorage.offset) + 30;
     }
-    
     second = second % 30;
     if (second > 25) {
         document.getElementById('codes').className = 'timeout';
@@ -586,7 +585,7 @@ function update() {
     }
     if (second < 1) {
         updateCode();
-		resetCodesSelectedClass();
+        resetCodesSelectedClass();
     }
 }
 
