@@ -39,9 +39,26 @@ var KeyUtilities = function() {
 		return str;
 	};
 
+	var base26 = function(num) {
+		chars = '23456789BCDFGHJKMNPQRTVWXY';
+		output = '';
+		len = 5;
+		for(i=0;i<len;i++)
+		{
+			output += chars[num % chars.length];
+			num = Math.floor(num / chars.length);
+		}
+		if(output.length < len)
+		{
+			output = new Array(len - output.length + 1).join(chars[0]) + output;
+		}
+		return output;
+	};
+	
 	var generate = function(secret, counter) {
 		secret = secret.replace(/\s/g, '');
 		var len = 6;
+		var b26 = false;
 		if(/^[a-z2-7]+=*$/.test(secret.toLowerCase())) {
 			var key = base32tohex(secret);
 		}
@@ -55,6 +72,11 @@ var KeyUtilities = function() {
 		else if(/^blz\-/.test(secret.toLowerCase())) {
 			var key = base32tohex(secret.substr(4));
 			len = 8;
+		}
+		else if(/^stm\-/.test(secret.toLowerCase())) {
+			var key = base32tohex(secret.substr(4));
+			len = 10;
+			b26 = true;
 		}
 		if(isNaN(counter)){
 			var epoch = Math.round(new Date().getTime() / 1000.0);
@@ -76,6 +98,9 @@ var KeyUtilities = function() {
 		}
 
 		var otp = (hex2dec(hmac.substr(offset * 2, 8)) & hex2dec('7fffffff')) + '';
+		if(b26) {
+			return base26(otp);
+		}
 		if(otp.length < len){
 			otp = new Array(len - otp.length + 1).join('0') + otp;
 		}

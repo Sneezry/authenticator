@@ -797,7 +797,7 @@ function copyCode() {
             document.getElementById('passphrase').style.opacity = 1;
         }, 200);
         return;
-    } else if (!/^\d+$/.test(code)) {
+    } else if (!/^[0-9A-Z]+$/.test(code)) {
         return;
     }
     chrome.permissions.request({
