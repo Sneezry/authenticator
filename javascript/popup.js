@@ -586,6 +586,14 @@ function update() {
     }
     if (second < 1) {
         updateCode();
+        resetCodesSelectedClass();
+    }
+}
+
+function resetCodesSelectedClass() {
+    var codes = document.getElementsByClassName('code');
+    for(var i = 0; i < codes.length; i++){
+        codes[i].classList.remove('codeCopied');
     }
 }
 
@@ -813,6 +821,7 @@ function showExport() {
 }
 
 function copyCode() {
+    var that = this;
     var code = this.innerText;
     if ('Encrypted' == code) {
         document.getElementById('passphrase').className = 'fadein';
@@ -833,6 +842,9 @@ function copyCode() {
             codeClipboard.select();
             document.execCommand('Copy');
             showNotification(chrome.i18n.getMessage('copied'));
+            if(!that.classList.contains('codeCopied')) {
+                that.classList.add('codeCopied');
+            }
         }
     });
 }

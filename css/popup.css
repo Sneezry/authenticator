@@ -227,6 +227,10 @@ body {
     cursor: pointer;
 }
 
+.codeCopied {
+    color: #C0B;
+}
+
 #codes.edit .code {
     color: #CCC!important;
     -webkit-user-select: none;
