@@ -639,69 +639,91 @@ function showCodes(result) {
         document.getElementById('infoAction').className = '';
         document.getElementById('editAction').setAttribute('edit', 'false');
         document.getElementById('editAction').innerHTML = '<i class="fa fa-pencil"></i>';
-        for (var i = 0; i < _secret.length; i++) {
-            try {
-                _secret[i].issuer = decodeURIComponent(_secret[i].issuer);
-            } catch (e) {}
-            try {
-                _secret[i].account = decodeURIComponent(_secret[i].account);
-            } catch (e) {}
-            var el = document.createElement('div');
-            el.id = 'codeBox-' + i;
-            el.className = 'codeBox';
-            el.innerHTML = '<div class="deleteAction" codeId="' + i + '" key="' + _secret[i].hash + '"><i class="fa fa-minus-circle"></i></div>' +
-                ('hotp' === _secret[i].type ? '<div codeId="' + i + '" class="counter"><i class="fa fa-repeat"></i></div>' : '<div class="sector"></div>') +
-                (_secret[i].issuer ? ('<div class="issuer">' + _secret[i].issuer + '</div>') : '') +
-                '<div class="issuerEdit"><input class="issuerEditBox" type="text" codeId="' + i + '" value="' + (_secret[i].issuer ? _secret[i].issuer : '') + '" /></div>' +
-                '<div class="code' + ('hotp' === _secret[i].type ? ' hotp' : '') + '" id="code-' + i + '">&bull;&bull;&bull;&bull;&bull;&bull;</div>' +
-                '<div class="account">' + _secret[i].account + '</div>' +
-                '<div class="accountEdit"><input class="accountEditBox" type="text" codeId="' + i + '" value="' + _secret[i].account + '" /></div>' +
-                '<div id="showqr-' + i + '" class="showqr"><i class="fa fa-qrcode"></i></div>' +
-                '<div class="movehandle"><i class="fa fa-bars"></i></div>';
-            document.getElementById('codeList').appendChild(el);
-            //if (!_secret[i].encrypted) {
-            //    el.setAttribute('unencrypted', 'true');
-            //    var warning = document.createElement('div');
-            //    warning.className = 'warning';
-            //    warning.innerText = chrome.i18n.getMessage('unencrypted_secret_warning');
-            //    warning.onclick = function () {
-            //        document.getElementById('security').className = 'fadein';
-            //        setTimeout(function () {
-            //            document.getElementById('security').style.opacity = 1;
-            //        }, 200);
-            //    };
-            //    el.appendChild(warning);
-            //}
+        var _secret_domain = [];
+        var _secret_domain_rest = [];
+        chrome.tabs.query({
+            active : true,
+            lastFocusedWindow : true
+        }, function (tabs) {
+            var tab = tabs[0];
+            var parser = document.createElement('a');
+            parser.href = tab.url;
+            var host = parser.host;
+            for (var i = 0; i < _secret.length; i++) {
+                try {
+                    _secret[i].issuer = decodeURIComponent(_secret[i].issuer);
+                } catch (e) {}
+                if (_secret[i].issuer && _secret[i].issuer.split('::')[1] && host.indexOf((_secret[i].issuer.split('::')[1])) > -1 && host.indexOf((_secret[i].issuer.split('::')[1])) + _secret[i].issuer.split('::')[1].length === host.length) {
+                    _secret_domain.push(_secret[i]);
+                } else {
+                    _secret_domain_rest.push(_secret[i]);
+                }
+            }
+            _secret_domain = _secret_domain.concat(_secret_domain_rest);
+            for (var i = 0; i < _secret_domain.length; i++) {
+                try {
+                    _secret_domain[i].issuer = decodeURIComponent(_secret_domain[i].issuer);
+                } catch (e) {}
+                try {
+                    _secret_domain[i].account = decodeURIComponent(_secret_domain[i].account);
+                } catch (e) {}
+                var el = document.createElement('div');
+                el.id = 'codeBox-' + i;
+                el.className = 'codeBox';
+                el.innerHTML = '<div class="deleteAction" codeId="' + _secret_domain[i].index + '" key="' + _secret_domain[i].hash + '"><i class="fa fa-minus-circle"></i></div>' +
+                    ('hotp' === _secret_domain[i].type ? '<div codeId="' + _secret_domain[i].index + '" class="counter"><i class="fa fa-repeat"></i></div>' : '<div class="sector"></div>') +
+                    (_secret_domain[i].issuer ? ('<div class="issuer">' + _secret_domain[i].issuer.split('::')[0] + '</div>') : '') +
+                    '<div class="issuerEdit"><input class="issuerEditBox" type="text" codeId="' + _secret_domain[i].index + '" value="' + (_secret_domain[i].issuer ? _secret_domain[i].issuer : '') + '" /></div>' +
+                    '<div class="code' + ('hotp' === _secret_domain[i].type ? ' hotp' : '') + '" id="code-' + _secret_domain[i].index + '">&bull;&bull;&bull;&bull;&bull;&bull;</div>' +
+                    '<div class="account">' + _secret_domain[i].account + '</div>' +
+                    '<div class="accountEdit"><input class="accountEditBox" type="text" codeId="' + _secret_domain[i].index + '" value="' + _secret_domain[i].account + '" /></div>' +
+                    '<div id="showqr-' + i + '" class="showqr"><i class="fa fa-qrcode"></i></div>' +
+                    '<div class="movehandle"><i class="fa fa-bars"></i></div>';
+                document.getElementById('codeList').appendChild(el);
+                //if (!_secret_domain[i].encrypted) {
+                //    el.setAttribute('unencrypted', 'true');
+                //    var warning = document.createElement('div');
+                //    warning.className = 'warning';
+                //    warning.innerText = chrome.i18n.getMessage('unencrypted_secret_domain_warning');
+                //    warning.onclick = function () {
+                //        document.getElementById('security').className = 'fadein';
+                //        setTimeout(function () {
+                //            document.getElementById('security').style.opacity = 1;
+                //        }, 200);
+                //    };
+                //    el.appendChild(warning);
+                //}
 
-        }
-        var codeCopy = document.getElementsByClassName('code');
-        for (var i = 0; i < codeCopy.length; i++) {
-            codeCopy[i].onclick = copyCode;
-        }
-        var deleteAction = document.getElementsByClassName('deleteAction');
-        for (var i = 0; i < deleteAction.length; i++) {
-            deleteAction[i].onclick = deleteCode;
-        }
-        var showQrAction = document.getElementsByClassName('showqr');
-        for (var i = 0; i < showQrAction.length; i++) {
-            showQrAction[i].onclick = showQr;
-        }
-        var counterAction = document.getElementsByClassName('counter');
-        for (var i = 0; i < counterAction.length; i++) {
-            counterAction[i].onclick = getNewHotpCode;
-        }
-        var accountEditBox = document.getElementsByClassName('accountEditBox');
-        for (var i = 0; i < accountEditBox.length; i++) {
-            accountEditBox[i].onblur = saveAccount;
-        }
-        var issuerEditBox = document.getElementsByClassName('issuerEditBox');
-        for (var i = 0; i < issuerEditBox.length; i++) {
-            issuerEditBox[i].onblur = saveIssuer;
-        }
-        updateCode();
-        update();
-        clearInterval(updateInterval);
-        updateInterval = setInterval(update, 500);
+            }
+            var codeCopy = document.getElementsByClassName('code');
+            for (var i = 0; i < codeCopy.length; i++) {
+                codeCopy[i].onclick = copyCode;
+            }
+            var deleteAction = document.getElementsByClassName('deleteAction');
+            for (var i = 0; i < deleteAction.length; i++) {
+                deleteAction[i].onclick = deleteCode;
+            }
+            var showQrAction = document.getElementsByClassName('showqr');
+            for (var i = 0; i < showQrAction.length; i++) {
+                showQrAction[i].onclick = showQr;
+            }
+            var counterAction = document.getElementsByClassName('counter');
+            for (var i = 0; i < counterAction.length; i++) {
+                counterAction[i].onclick = getNewHotpCode;
+            }
+            var accountEditBox = document.getElementsByClassName('accountEditBox');
+            for (var i = 0; i < accountEditBox.length; i++) {
+                accountEditBox[i].onblur = saveAccount;
+            }
+            var issuerEditBox = document.getElementsByClassName('issuerEditBox');
+            for (var i = 0; i < issuerEditBox.length; i++) {
+                issuerEditBox[i].onblur = saveIssuer;
+            }
+            updateCode();
+            update();
+            clearInterval(updateInterval);
+            updateInterval = setInterval(update, 500);
+        });
     }
 }
 
