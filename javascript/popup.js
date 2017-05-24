@@ -377,8 +377,9 @@ function saveSecret() {
         showMessage(chrome.i18n.getMessage('err_acc_sec'));
         return;
     }
-    var battleRegEx = /^(bliz-|blz-)/gi;     
-    if(battleRegEx.test(secret)) {
+    var battleRegEx = /^(bliz-|blz-)/gi;
+    var steamRegEx = /^stm-/gi
+    if(battleRegEx.test(secret) || steamRegEx.test(secret)) {
         var tmp = secret.substring(secret.indexOf('-') + 1);
         if(checkSecret(tmp, 'base32')) {
             showMessage(chrome.i18n.getMessage('errorsecret') + secret);
