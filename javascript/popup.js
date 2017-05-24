@@ -677,7 +677,7 @@ function showCodes(result) {
                     '<div class="code' + ('hotp' === _secret_domain[i].type ? ' hotp' : '') + '" id="code-' + _secret_domain[i].index + '">&bull;&bull;&bull;&bull;&bull;&bull;</div>' +
                     '<div class="account">' + _secret_domain[i].account + '</div>' +
                     '<div class="accountEdit"><input class="accountEditBox" type="text" codeId="' + _secret_domain[i].index + '" value="' + _secret_domain[i].account + '" /></div>' +
-                    '<div id="showqr-' + i + '" class="showqr"><i class="fa fa-qrcode"></i></div>' +
+                    '<div id="showqr-' + _secret_domain[i].index + '" class="showqr"><i class="fa fa-qrcode"></i></div>' +
                     '<div class="movehandle"><i class="fa fa-bars"></i></div>';
                 document.getElementById('codeList').appendChild(el);
                 //if (!_secret_domain[i].encrypted) {
@@ -784,7 +784,7 @@ function showQr() {
     codeId = Number(codeId);
     var secret = _secret[codeId];
     var label = secret.issuer ? (secret.issuer + ':' + secret.account) : secret.account;
-    var otpauth = 'otpauth://' + (secret.type || 'totp') + '/' + label + '?secret=' + secret.secret + (secret.issuer ? ('&issuer=' + secret.issuer) : '') + (('hotp' === secret.type && secret.counter) ? ('&counter=' + secret.counter) : '');
+    var otpauth = 'otpauth://' + (secret.type || 'totp') + '/' + label + '?secret=' + secret.secret + (secret.issuer ? ('&issuer=' + secret.issuer.split('::')[0]) : '') + (('hotp' === secret.type && secret.counter) ? ('&counter=' + secret.counter) : '');
     var qrcode = new QRCode('qr', {
             text : otpauth,
             width : 128,
