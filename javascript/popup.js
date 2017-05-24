@@ -659,19 +659,19 @@ function showCodes(result) {
                 '<div id="showqr-' + i + '" class="showqr"><i class="fa fa-qrcode"></i></div>' +
                 '<div class="movehandle"><i class="fa fa-bars"></i></div>';
             document.getElementById('codeList').appendChild(el);
-            if (!_secret[i].encrypted) {
-                el.setAttribute('unencrypted', 'true');
-                var warning = document.createElement('div');
-                warning.className = 'warning';
-                warning.innerText = chrome.i18n.getMessage('unencrypted_secret_warning');
-                warning.onclick = function () {
-                    document.getElementById('security').className = 'fadein';
-                    setTimeout(function () {
-                        document.getElementById('security').style.opacity = 1;
-                    }, 200);
-                };
-                el.appendChild(warning);
-            }
+            //if (!_secret[i].encrypted) {
+            //    el.setAttribute('unencrypted', 'true');
+            //    var warning = document.createElement('div');
+            //    warning.className = 'warning';
+            //    warning.innerText = chrome.i18n.getMessage('unencrypted_secret_warning');
+            //    warning.onclick = function () {
+            //        document.getElementById('security').className = 'fadein';
+            //        setTimeout(function () {
+            //            document.getElementById('security').style.opacity = 1;
+            //        }, 200);
+            //    };
+            //    el.appendChild(warning);
+            //}
 
         }
         var codeCopy = document.getElementsByClassName('code');
