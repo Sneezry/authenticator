@@ -55,9 +55,9 @@ var KeyUtilities = function() {
 		return output;
 	};
 	
-	var generate = function(secret, counter) {
+	var generate = function(secret, counter, len) {
 		secret = secret.replace(/\s/g, '');
-		var len = 6;
+		len = parseInt(len, 10) === 8 ? 8 : 6;
 		var b26 = false;
 		if(/^[a-z2-7]+=*$/.test(secret.toLowerCase())) {
 			var key = base32tohex(secret);

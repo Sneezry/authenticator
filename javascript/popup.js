@@ -31,6 +31,8 @@ document.getElementById('add_qr').innerText = chrome.i18n.getMessage('add_qr');
 document.getElementById('add_secret').innerText = chrome.i18n.getMessage('add_secret');
 document.getElementById('totp_label').innerText = chrome.i18n.getMessage('based_on_time');
 document.getElementById('hotp_label').innerText = chrome.i18n.getMessage('based_on_counter');
+document.getElementById('dig6_label').innerText = chrome.i18n.getMessage('six_digit_otp');
+document.getElementById('dig8_label').innerText = chrome.i18n.getMessage('eight_digit_otp');
 document.getElementById('add_button').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('message_close').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('account_label').innerText = chrome.i18n.getMessage('account');
@@ -66,6 +68,8 @@ if (localStorage.notRememberPassphrase === 'true') {
 chrome.storage.sync.get(showCodes);
 
 document.getElementById('menuExImport').onclick = showExport;
+
+document.getElementById('secret_input').onkeyup = toggle6and8;
 
 document.getElementById('menuAbout').onclick = function () {
     document.getElementById('info').className = 'fadein';
@@ -369,7 +373,20 @@ function checkSecret(secret, type) {
     }
 }
 
+function toggle6and8() {
+    var secret = document.getElementById('secret_input').value;
+    var battleRegEx = /^(bliz-|blz-)/gi;
+    var steamRegEx = /^stm-/gi
+    if(battleRegEx.test(secret) || steamRegEx.test(secret)) {
+        document.getElementById('dig6and8').style.display="none";
+    }
+    else {
+        document.getElementById('dig6and8').style.display="block";
+    }
+}
+
 function saveSecret() {
+    var digits = document.getElementById('dig8').checked ? 8 : 6;
     var account = document.getElementById('account_input').value;
     var secret = document.getElementById('secret_input').value;
     var type = document.getElementById('totp').checked ? 'totp' : 'hotp';
@@ -395,6 +412,7 @@ function saveSecret() {
             var addSecret = {};
             if (decodedPhrase) {
                 addSecret[CryptoJS.MD5(secret)] = {
+                    digits : digits,
                     account : account,
                     issuer : '',
                     type : type,
@@ -404,6 +422,7 @@ function saveSecret() {
                 }
             } else {
                 addSecret[CryptoJS.MD5(secret)] = {
+                    digits : digits,
                     account : account,
                     issuer : '',
                     type : type,
@@ -566,7 +585,7 @@ function updateCode() {
                 }, 200);
             }
         } else if (_secret[i].type !== 'hotp') {
-            document.getElementById('code-' + i).innerText = getCode(_secret[i].secret);
+            document.getElementById('code-' + i).innerText = getCode(_secret[i].secret, undefined, _secret[i].digits);
             document.getElementById('showqr-' + i).className = 'showqr';
         }
     }
@@ -963,7 +982,7 @@ function getNewHotpCode() {
     }
         .bind(this), 5000);
     document.getElementById('code-' + codeId).setAttribute('hasCode', 'true');
-    document.getElementById('code-' + codeId).innerText = getCode(_secret[codeId].secret, _secret[codeId].counter);
+    document.getElementById('code-' + codeId).innerText = getCode(_secret[codeId].secret, _secret[codeId].counter, _secret[codeId].digits);
     _secret[codeId].counter++;
     chrome.storage.sync.get(function (secret) {
         secret[CryptoJS.MD5(_secret[codeId].secret)].counter = _secret[codeId].counter;

@@ -54,7 +54,7 @@ function getTotp(text) {
         if (!label || !parameters) {
             chrome.tabs.sendMessage(id, {action: 'errorqr'});
         } else {
-            var account, secret, issuer;
+            var account, secret, issuer, digits = 6;
             label = decodeURIComponent(label);
             if (label.indexOf(':') !== -1) {
                 issuer = label.split(':')[0];
@@ -67,6 +67,8 @@ function getTotp(text) {
                 var parameter = parameters[i].split('=');
                 if (parameter[0].toLowerCase() === 'secret') {
                     secret = parameter[1];
+                } else if (parameter[0].toLowerCase() === 'digits' && parseInt(parameter[1], 10) === 8) { // strict check, 6 is default, only 6 or 8 allowed
+                    digits = parameter[1];
                 } else if (parameter[0].toLowerCase() === 'issuer') {
                     issuer = parameter[1];
                 } else if (parameter[0].toLowerCase() === 'counter') {
@@ -84,6 +86,7 @@ function getTotp(text) {
                     var addSecret = {};
                     if (decodedPhrase) {
                         addSecret[CryptoJS.MD5(secret)] = {
+                            digits: digits||6,
                             account: account||'',
                             issuer: issuer||'',
                             type: type,
@@ -93,6 +96,7 @@ function getTotp(text) {
                         }
                     } else {
                         addSecret[CryptoJS.MD5(secret)] = {
+                            digits: digits||6,
                             account: account||'',
                             issuer: issuer||'',
                             type: type,

@@ -163,6 +163,14 @@
 		"message": "基于计数器",
 		"description": "Counter Based"
 	},
+    "six_digit_otp": {
+        "message": "6 Digit OTP",
+        "description": "6 Digit OTP"
+    },
+    "eight_digit_otp": {
+        "message": "8 Digit OTP",
+        "description": "8 Digit OTP"
+    },
 	"resize_popup_page": {
 		"message": "调整弹出页面尺寸",
 		"description": "Resize Popup Page"
