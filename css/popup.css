@@ -1,4 +1,4 @@
-@font-face {
+font-face {
   font-family: 'Droid Sans Mono';
   font-style: normal;
   font-weight: 400;
@@ -316,7 +316,6 @@ body {
     overflow: hidden;
 }
 
-#add,
 #add_qr,
 #add_secret,
 #add_button,
@@ -337,10 +336,6 @@ body {
     cursor: pointer;
 }
 
-#add {
-    margin-right: 0;
-}
-
 #message_close,
 #add_button,
 #exportButton,
@@ -351,16 +346,6 @@ body {
     margin: 20px 100px;
     padding: 10px;
     cursor: pointer;
-}
-
-#codes #add {
-    font-size: 16px;
-    line-height: 56px;
-    display: none;
-}
-
-#codes.edit #add {
-    display: block;
 }
 
 #codes .deleteAction {
@@ -393,7 +378,7 @@ body {
     display: none;
 }
 
-#editAction {
+#editAction, #add {
     position: absolute;
     right: 20px;
     bottom: 0;
@@ -404,6 +389,9 @@ body {
     cursor: pointer;
 }
 
+#add {
+    right: 50px;
+}
 .counter {
     color: #888;
     font-size: 18px;
@@ -574,7 +562,7 @@ body {
 #add_qr:hover,
 #editAction:hover,
 #infoAction:hover,
-#codes #add:hover,
+#add:hover,
 #infoClose:hover,
 #addAccountClose:hover,
 #securityClose:hover,
