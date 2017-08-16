@@ -1,3 +1,127 @@
+@-webkit-keyframes twinkling {
+  0% {
+    color: #DD4B39; }
+  100% {
+    color: #e8867a; } }
+
+@keyframes twinkling {
+  0% {
+    color: #DD4B39; }
+  100% {
+    color: #e8867a; } }
+
+@-webkit-keyframes fadeshow {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
+@keyframes fadeshow {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
+@-webkit-keyframes fadehide {
+  0% {
+    opacity: 1; }
+  100% {
+    opacity: 0; } }
+
+@keyframes fadehide {
+  0% {
+    opacity: 1; }
+  100% {
+    opacity: 0; } }
+
+@-webkit-keyframes fadein {
+  0% {
+    opacity: 0;
+    top: 110px; }
+  100% {
+    opacity: 1;
+    top: 10px; } }
+
+@keyframes fadein {
+  0% {
+    opacity: 0;
+    top: 110px; }
+  100% {
+    opacity: 1;
+    top: 10px; } }
+
+@-webkit-keyframes fadeout {
+  0% {
+    opacity: 1;
+    top: 10px; }
+  100% {
+    opacity: 0;
+    top: 110px; } }
+
+@keyframes fadeout {
+  0% {
+    opacity: 1;
+    top: 10px; }
+  100% {
+    opacity: 0;
+    top: 110px; } }
+
+@-webkit-keyframes slidein {
+  0% {
+    opacity: 0;
+    left: -55px; }
+  100% {
+    opacity: 1;
+    left: 0; } }
+
+@keyframes slidein {
+  0% {
+    opacity: 0;
+    left: -55px; }
+  100% {
+    opacity: 1;
+    left: 0; } }
+
+@-webkit-keyframes slideout {
+  0% {
+    opacity: 1;
+    left: 0; }
+  100% {
+    opacity: 0;
+    left: -55px; } }
+
+@keyframes slideout {
+  0% {
+    opacity: 1;
+    left: 0; }
+  100% {
+    opacity: 0;
+    left: -55px; } }
+
+@-webkit-keyframes qrfadein {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
+@keyframes qrfadein {
+  0% {
+    opacity: 0; }
+  100% {
+    opacity: 1; } }
+
+@-webkit-keyframes qrfadeout {
+  0% {
+    opacity: 1; }
+  100% {
+    opacity: 0; } }
+
+@keyframes qrfadeout {
+  0% {
+    opacity: 1; }
+  100% {
+    opacity: 0; } }
+
 font-face {
   font-family: "Droid Sans Mono", arial, sans-serif;
   font-style: normal;
@@ -17,8 +141,9 @@ body {
   font-family: "Microsoft YaHei", arial, sans-serif;
   cursor: default;
   -webkit-user-select: none;
-  -ms-transform-origin: left top;
-      transform-origin: left top; }
+  -webkit-transform-origin: left top;
+      -ms-transform-origin: left top;
+          transform-origin: left top; }
 
 #header {
   height: 38px;
@@ -59,11 +184,15 @@ body {
 
 #notification.fadein {
   top: 190px;
-  -webkit-animation: fadeshow 0.2s 1 ease-out; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: fadeshow 0.2s 1 ease-out;
+          animation: fadeshow 0.2s 1 ease-out; }
 
 #notification.fadeout {
   top: 190px;
-  -webkit-animation: fadehide 0.2s 1 ease-in; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: fadehide 0.2s 1 ease-in;
+          animation: fadehide 0.2s 1 ease-in; }
 
 #codes {
   height: 442px;
@@ -196,7 +325,10 @@ body {
     background: #EEE; }
 
 #codes.timeout .code:not(.hotp) {
-  -webkit-animation: twinkling 1s infinite ease-in-out; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: twinkling 1s infinite ease-out;
+          animation: twinkling 1s infinite ease-out;
+  /* color: $red; */ }
 
 .hotp {
   color: #555;
@@ -475,11 +607,15 @@ body {
 
 #menu.slidein {
   left: 0;
-  -webkit-animation: slidein 0.2s 1 ease-out; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: slidein 0.2s 1 ease-out;
+          animation: slidein 0.2s 1 ease-out; }
 
 #menu.slideout {
   left: -55px;
-  -webkit-animation: slideout 0.2s 1 ease-in; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: slideout 0.2s 1 ease-in;
+          animation: slideout 0.2s 1 ease-in; }
 
 #version {
   text-align: center;
@@ -584,51 +720,75 @@ body {
 
 #info.fadein {
   top: 10px;
-  -webkit-animation: fadein 0.2s 1 ease-out; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: fadein 0.2s 1 ease-out;
+          animation: fadein 0.2s 1 ease-out; }
 
 #addAccount.fadein {
   top: 10px;
-  -webkit-animation: fadein 0.2s 1 ease-out; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: fadein 0.2s 1 ease-out;
+          animation: fadein 0.2s 1 ease-out; }
 
 #security.fadein {
   top: 10px;
-  -webkit-animation: fadein 0.2s 1 ease-out; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: fadein 0.2s 1 ease-out;
+          animation: fadein 0.2s 1 ease-out; }
 
 #passphrase.fadein {
   top: 10px;
-  -webkit-animation: fadein 0.2s 1 ease-out; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: fadein 0.2s 1 ease-out;
+          animation: fadein 0.2s 1 ease-out; }
 
 #export.fadein {
   top: 10px;
-  -webkit-animation: fadein 0.2s 1 ease-out; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: fadein 0.2s 1 ease-out;
+          animation: fadein 0.2s 1 ease-out; }
 
 #resize.fadein {
   top: 10px;
-  -webkit-animation: fadein 0.2s 1 ease-out; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: fadein 0.2s 1 ease-out;
+          animation: fadein 0.2s 1 ease-out; }
 
 #info.fadeout {
   top: 110px;
-  -webkit-animation: fadeout 0.2s 1 ease-in; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: fadeout 0.2s 1 ease-in;
+          animation: fadeout 0.2s 1 ease-in; }
 
 #addAccount.fadeout {
   top: 110px;
-  -webkit-animation: fadeout 0.2s 1 ease-in; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: fadeout 0.2s 1 ease-in;
+          animation: fadeout 0.2s 1 ease-in; }
 
 #security.fadeout {
   top: 110px;
-  -webkit-animation: fadeout 0.2s 1 ease-in; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: fadeout 0.2s 1 ease-in;
+          animation: fadeout 0.2s 1 ease-in; }
 
 #passphrase.fadeout {
   top: 110px;
-  -webkit-animation: fadeout 0.2s 1 ease-in; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: fadeout 0.2s 1 ease-in;
+          animation: fadeout 0.2s 1 ease-in; }
 
 #export.fadeout {
   top: 110px;
-  -webkit-animation: fadeout 0.2s 1 ease-in; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: fadeout 0.2s 1 ease-in;
+          animation: fadeout 0.2s 1 ease-in; }
 
 #resize.fadeout {
   top: 110px;
-  -webkit-animation: fadeout 0.2s 1 ease-in; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: fadeout 0.2s 1 ease-in;
+          animation: fadeout 0.2s 1 ease-in; }
 
 #infoClose {
   height: 20px;
@@ -736,11 +896,15 @@ body {
 
 #qr.qrfadein {
   top: 0;
-  -webkit-animation: qrfadein 0.2s 1 ease-out; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: qrfadein 0.2s 1 ease-out;
+          animation: qrfadein 0.2s 1 ease-out; }
 
 #qr.qrfadeout {
   top: 0;
-  -webkit-animation: qrfadeout 0.2s 1 ease-in; }
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-animation: qrfadeout 0.2s 1 ease-in;
+          animation: qrfadeout 0.2s 1 ease-in; }
 
 #secret_box {
   display: none; }

@@ -12,7 +12,7 @@ var swallowError = function (error) {
 };
 
 // Browsers to target when prefixing CSS.
-var BROWSERS = ['last 2 versions', 'ie >= 9'];
+var BROWSERS = ['last 4 versions', 'ie >= 9', 'chrome > 20'];
 
 /*-----------------------------------------
  STYLES
