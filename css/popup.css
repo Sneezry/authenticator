@@ -965,3 +965,9 @@ body {
   box-shadow: 1px 1px 3px gray;
   display: none;
   z-index: 1000; }
+
+.color-gray {
+  color: #888; }
+
+.color-red {
+  color: #DD4B39; }

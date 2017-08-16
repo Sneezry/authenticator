@@ -10,6 +10,10 @@ var editTimeout;
 var decodedPhrase;
 var shownPassphrase = false;
 var capturing = false;
+var gray = window.getComputedStyle(document.getElementsByClassName('color-gray')[0]).color;
+var red = window.getComputedStyle(document.getElementsByClassName('color-red')[0]).color;
+document.getElementsByClassName('color-gray')[0].style.display = 'none';
+document.getElementsByClassName('color-red')[0].style.display = 'none';
 
 if (localStorage.phrase) {
     decodedPhrase = localStorage.phrase;
@@ -597,7 +601,6 @@ function formatCode(code) {
 }
 
 function update() {
-    getSector();
     var second = new Date().getSeconds();
     if (localStorage.offset) {
         second += Number(localStorage.offset) + 30;
@@ -611,18 +614,22 @@ function update() {
     if (second < 1) {
         updateCode();
     }
+    getSector(second);
 }
 
-function getSector() {
+function getSector(second) {
+    second = second || false;
+    if (!second && second !== 0) {
     var second = new Date().getSeconds();
-    if (localStorage.offset) {
-        second += Number(localStorage.offset) + 30;
+        if (localStorage.offset) {
+            second += Number(localStorage.offset) + 30;
+        }
+        second = second % 30;
     }
-    second = second % 30;
     var canvas = document.getElementById('sector');
     var ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, 40, 40);
-    ctx.fillStyle = '#888';
+    ctx.fillStyle = second > 25 ? red : gray;
     sector(ctx, 20, 20, Math.PI / 180 * second / 30 * 360, Math.PI / 180 * (1 - second / 30) * 360, 16, 0, true);
     var url = canvas.toDataURL();
     var sectors = document.getElementsByClassName('sector');
