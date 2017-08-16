@@ -585,10 +585,15 @@ function updateCode() {
                 }, 200);
             }
         } else if (_secret[i].type !== 'hotp') {
-            document.getElementById('code-' + i).innerText = getCode(_secret[i].secret, undefined, _secret[i].digits);
+            document.getElementById('code-' + i).innerText = formatCode(getCode(_secret[i].secret, undefined, _secret[i].digits));
             document.getElementById('showqr-' + i).className = 'showqr';
         }
     }
+}
+
+function formatCode(code) {
+    half = Math.floor(code.length/2);
+    return code.substr(0, half) + ' ' + code.substr(half);
 }
 
 function update() {
