@@ -12,10 +12,9 @@
 <link href="css/popup.css" type="text/css" rel="stylesheet" charset="utf-8" />
 </head>
 <body>
-<div id="header"><span id="extName">Google Authenticator</span><div id="infoAction"><i class="fa fa-cog"></i></div><div id="editAction" edit='false'><i class="fa fa-pencil"></i></div></div>
+<div id="header"><span id="extName">Google Authenticator</span><div id="infoAction"><i class="fa fa-bars"></i></div><div id="editAction" edit='false'><i class="fa fa-pencil"></i></div><div id="add"><i class="fa fa-plus"></i></div></div>
 <div id="codes">
 <div id="codeList"></div>
-<div id="add"><i class="fa fa-plus"></i></div>
 </div>
 <div id="notification"></div>
 <div id="menu">
@@ -51,7 +50,7 @@
 <label for="account_input" id="account_label"></label>
 <input type="text" id="account_input" />
 <label for="secret_input" id="secret_label"></label>
-<input type="text" id="secret_input" />
+<input type="text" id="secret_input"/>
 <div class="radio_group">
 <input type="radio" id="totp" name="otp_type" checked="true" />
 <label for="totp" id="totp_label"></label>
@@ -59,6 +58,16 @@
 <div class="radio_group">
 <input type="radio" id="hotp" name="otp_type" />
 <label for="hotp" id="hotp_label"></label>
+</div>
+<div id="dig6and8">
+<div class="radio_group">
+<input type="radio" id="dig6" name="otp_len" checked="true" />
+<label for="dig6" id="dig6_label">6 digits</label>
+</div>
+<div class="radio_group">
+<input type="radio" id="dig8" name="otp_len" />
+<label for="dig8" id="dig8_label">8 digits</label>
+</div>
 </div>
 <div id="add_button"></div>
 </div>
@@ -120,6 +129,7 @@
 </div>
 <div id="qr"></div>
 <canvas id="sector" width="40" height="40" style="display:none"></canvas>
+<span class="color-gray"></span><span class="color-red"></span>
 <input type="text" id="codeClipboard" />
 <script src="javascript/sector.js"></script>
 <script src="javascript/popup.js"></script>
