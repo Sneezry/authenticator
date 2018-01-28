@@ -57,6 +57,7 @@ document.getElementById('menuSyncTime').innerHTML += chrome.i18n.getMessage('syn
 document.getElementById('menuResize').innerHTML += chrome.i18n.getMessage('resize_popup_page');
 document.getElementById('menuSource').innerHTML += chrome.i18n.getMessage('source');
 document.getElementById('menuFeedback').innerHTML += chrome.i18n.getMessage('feedback');
+document.getElementById('menuTranslate').innerHTML += browser.i18n.getMessage('translate');
 
 if (localStorage.notRememberPassphrase === 'true') {
     document.getElementById('remember_new_phrase').checked = false;

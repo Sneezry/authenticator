@@ -123,6 +123,10 @@
         "message": "Feedback",
         "description": "Feedback."
     },
+    "translate": {
+        "message": "Translate",
+        "description": "Translate."
+    },
     "source": {
         "message": "Source Code",
         "description": "Source Code."
