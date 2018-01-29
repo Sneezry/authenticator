@@ -675,7 +675,13 @@ body {
     margin: 10px 0 0 10px;
 }
 
+#export_info {
+    display: block;
+    margin: 10px 10px 0 10px;
+}
+
 #security_warning,
+#export_info,
 #passphrase_info {
     color: gray;
 }

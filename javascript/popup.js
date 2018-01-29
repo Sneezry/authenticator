@@ -39,6 +39,7 @@ document.getElementById('menuName').innerText = chrome.i18n.getMessage('settings
 document.getElementById('security_new_phrase_label').innerText = chrome.i18n.getMessage('phrase');
 document.getElementById('security_confirm_phrase_label').innerText = chrome.i18n.getMessage('confirm_phrase');
 document.getElementById('security_warning').innerText = chrome.i18n.getMessage('security_warning');
+document.getElementById('export_info').innerText = chrome.i18n.getMessage('export_info');
 document.getElementById('exportButton').innerText = chrome.i18n.getMessage('update');
 document.getElementById('resize_save').innerText = chrome.i18n.getMessage('ok');
 document.getElementById('security_save').innerText = chrome.i18n.getMessage('ok');
