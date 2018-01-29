@@ -299,7 +299,7 @@ body {
     opacity: 0;
 }
 
-.showqr:hover {
+.codeBox:hover .showqr {
     opacity: 1;
 }
 
