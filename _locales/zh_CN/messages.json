@@ -123,6 +123,10 @@
 		"message": "问题反馈",
 		"description": "Feedback."
 	},
+	"translate": {
+        "message": "参与翻译",
+        "description": "Translate."
+    },
 	"source": {
 		"message": "源代码",
 		"description": "Source Code."
