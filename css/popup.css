@@ -596,7 +596,8 @@ body {
 }
 
 #exportData {
-    height: 330px;
+    margin-top: 10px;
+    height: 265px;
     width: 100%;
     word-break: break-all;
     resize: none;
